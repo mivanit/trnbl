@@ -1,0 +1,166 @@
+/* global font, and for plotly */
+* {
+	font-family: 'Roboto-mono', monospace;
+}
+/* same for any svg element */
+svg {
+	font-family: 'Roboto-mono', monospace;
+}
+
+/* when hovering a draggable element */
+.draggable:hover {
+    z-index: 999;
+	border: 1px solid blue;
+	transition-delay: 0.5s;
+}
+.draggable {
+    transition: z-index 0.5s;
+}
+.draggable:not(:hover) {
+    transition-delay: 0.5s;
+}
+
+
+/* Make sure the font-family matches the one provided by ag-Grid */
+.ag-icon {
+    font-family: "agGridAlpine" !important; 
+}
+
+option {
+    font-size: 2em !important; /* why isnt this working? */
+}
+
+.rootContainer {
+	/* display: flex; */
+	/* width: 100%; */
+	height: 100%;
+	/* flex-direction: column; */
+	/* flex-direction: row; */
+}
+
+.plotContainer {
+	border: 1px solid black;
+	background-color: #f0f0f0;
+	border-radius: 10px;
+	padding: 3px;
+}
+
+.runsManifestBox {
+	border: 1px solid black;
+	background-color: #f0f0f0;
+	border-radius: 10px;
+	padding: 3px;
+}
+
+.plotSettings {
+	/* left margin */
+	margin-left: 2px;
+}
+
+.headerButton {
+	height: 35px; /* Set the desired height for the buttons */
+	font-size: 16px;
+	line-height: 30px;
+	padding: 0 10px;
+	cursor: pointer;
+    display: inline-block;
+	color: #000000;
+	background-color: #d8d8d8;
+	border: 1px solid #3c3c3c;
+	border-radius: 5px;
+	text-align: center;
+	font-size: 16px;
+	transition: background-color 0.1s, border-color 0.1s, color 0.1s;
+}
+.headerButton:hover, .headerButton:focus {
+	background-color: #797979;
+	border-color: #213244;
+	color: #000000;
+}
+.headerButton svg {
+	/* vertically centered svg */
+	vertical-align: middle;
+}
+
+hr {
+	margin-top: 10px; /* Adjust the margin as needed */
+	border: none;
+	border-top: 1px solid #ccc; /* Set the desired color and style for the horizontal rule */
+}
+
+
+.axis-toggle-container {
+	margin-top: 10px;
+}
+
+/* .plot-div {
+	margin-bottom: 20px;	
+}
+
+.plotContainer {
+	touch-action: none;
+	box-sizing: border-box;
+} */
+
+/* The switch - the box around the slider */
+.switch {
+	position: relative;
+	display: inline-block;
+	width: 3em;
+	height: 1.5em;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+/* The slider */
+.slider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #ccc;
+	-webkit-transition: .4s;
+	transition: .4s;
+}
+
+.slider:before {
+	position: absolute;
+	content: "";
+	height: 1em;
+	width: 1em;
+	left: 4px;
+	bottom: 4px;
+	background-color: white;
+	-webkit-transition: .4s;
+	transition: .4s;
+}
+
+input:checked + .slider {
+	background-color: #2196F3;
+}
+
+input:focus + .slider {
+	box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+	-webkit-transform: translateX(1.5em);
+	-ms-transform: translateX(1.5em);
+	transform: translateX(1.5em);
+}
+
+/* Rounded sliders */
+.slider.round {
+	border-radius: 34px;
+}
+
+.slider.round:before {
+	border-radius: 50%;
+}

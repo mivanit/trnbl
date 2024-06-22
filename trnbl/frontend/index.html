@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>trnbl dashboard</title>
+    <!-- packages from the web -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://unpkg.com/interactjs/dist/interact.min.js"></script>
+    <!-- ag-grid -->
+    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
+    <!-- feather icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+    <!-- dashboard js file -->
+    <script src="dashboard.js"></script>
+    <!-- custom css -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header id="mainHeader">
+        <h1 id="projectH1">trnbl Dashboard</h1>
+        <button id="refreshButton" class="headerButton">
+            <i data-feather="refresh-cw"></i><i data-feather="bar-chart-2"></i>
+            Refresh Data
+        </button>
+        <button id="saveLayoutButton" class="headerButton">
+            <i data-feather="save"></i><i data-feather="layout"></i>
+            Save Current Layout
+        </button>
+        <button id="resetLayoutButton" class="headerButton">
+            <i data-feather="refresh-ccw"></i><i data-feather="layout"></i>
+            Reset Layout</button>
+        <button id="downloadLayoutButton" class="headerButton">
+            <i data-feather="download"></i><i data-feather="layout"></i>
+            Download Current Layout
+        </button>
+        <div class="headerButton">
+            <input type="checkbox" id="gridSnapCheckbox">
+            <label for="gridSnapCheckbox">
+                <i data-feather="grid"></i> Grid Snap
+            </label>
+        </div>
+        <button id="resetColumnStateButton" class="headerButton">
+            <i data-feather="refresh-ccw"></i><i data-feather="columns"></i>
+            Reset Column State
+        </button>
+        <hr>
+    </header>
+
+    <div class="rootContainer" id="rootContainerDiv">
+        <div id="invisHbar" style="width: 100em; height: 100em;"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

@@ -1,0 +1,1268 @@
+/*
+ ######   #######  ##    ##  ######  ########  ######
+##    ## ##     ## ###   ## ##    ##    ##    ##    ##
+##       ##     ## ####  ## ##          ##    ##
+##       ##     ## ## ## ##  ######     ##     ######
+##       ##     ## ##  ####       ##    ##          ##
+##    ## ##     ## ##   ### ##    ##    ##    ##    ##
+ ######   #######  ##    ##  ######     ##     ######
+*/
+
+
+let LAYOUT_MANAGER = null;
+let PLOTLY_LAYOUTS = {};
+let GRID_API = null;
+// const xUnitsKeys = ['samples', 'batches', "timestamp"]; // TODO: read dynamically, add epochs & runs
+const DEFAULT_XUNITS = 'samples';
+
+// settings
+const SETTINGS_WIDTH_PX = 100;
+const PLOT_BOTTOM_MARGIN_PX = 5;
+const SNAP_INTERVAL_DEFAULT = 50;
+const NOTIFICATION_COLORS = {
+	'info': 'lightgreen',
+	'warning': 'lightyellow',
+	'error': 'lightcoral',
+}
+const DEFAULT_STYLE = {
+	border: '1px solid black',
+	backgroundColor: '#f0f0f0',
+	borderRadius: '10px',
+	padding: '3px',
+}
+const PLOTLY_LAYOUT_MARGIN = { l: 40, r: 30, b: 40, t: 50, pad: 0 };
+
+
+/*
+####  #######     ##     ## ##    ##  ######
+ ##  ##     ##    ###   ### ###   ## ##    ##
+ ##  ##     ##    #### #### ####  ## ##
+ ##  ##     ##    ## ### ## ## ## ## ##   ####
+ ##  ##     ##    ##     ## ##  #### ##    ##
+ ##  ##     ##    ##     ## ##   ### ##    ##
+####  #######     ##     ## ##    ##  ######
+*/
+
+class IOManager {
+    async fetchJson(path) {
+        try {
+            const response = await fetch(path);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            return await response.json();
+        } catch (error) {
+            console.error('Fetch JSON error:', error);
+            return null;
+        }
+    }
+
+    async fetchJsonLines(path) {
+		try {
+		  const response = await fetch(path);
+		  if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+		  const text = await response.text();
+		  const lines = text.trim().split('\n');
+		  const validLines = lines.slice(0, -1).map(line => JSON.parse(line));
+	  
+		  // Try parsing the last line
+		  try {
+			const lastLine = JSON.parse(lines[lines.length - 1]);
+			validLines.push(lastLine);
+		  } catch (error) {
+			console.error(`Invalid JSON in the last line of ${path}: `, error);
+		  }
+	  
+		  return validLines;
+		} catch (error) {
+		  console.error('Fetch JSON Lines error:', error);
+		  return null;
+		}
+	  }
+
+	async saveJsonLocal(name, data) {
+		const data_json = JSON.stringify(data);
+		localStorage.setItem(name, btoa(data_json));
+	}
+	
+	async readJsonLocal(name) {
+		const data_encoded = localStorage.getItem(name);
+		if (data_encoded) {
+			const data_json = atob(data_encoded);
+			return JSON.parse(data_json);
+		} else {
+			return null;
+		}
+	}
+
+	async deleteJsonLocal(name) {
+		localStorage.removeItem(name);
+	}
+}
+
+const IO_MANAGER = new IOManager();
+
+
+/*
+########  ##     ## ##    ##    ########     ###    ########    ###
+##     ## ##     ## ###   ##    ##     ##   ## ##      ##      ## ##
+##     ## ##     ## ####  ##    ##     ##  ##   ##     ##     ##   ##
+########  ##     ## ## ## ##    ##     ## ##     ##    ##    ##     ##
+##   ##   ##     ## ##  ####    ##     ## #########    ##    #########
+##    ##  ##     ## ##   ###    ##     ## ##     ##    ##    ##     ##
+##     ##  #######  ##    ##    ########  ##     ##    ##    ##     ##
+*/
+
+class RunData {
+    constructor(path) {
+        this.path = path;
+        this.config = null;
+        this.meta = null;
+        this.metrics = null;
+        this.logs = null;
+        this.artifacts = null;
+    }
+
+    async loadData() {
+        this.config = await IO_MANAGER.fetchJson(`${this.path}/config.json`);
+        this.meta = await IO_MANAGER.fetchJson(`${this.path}/meta.json`);
+        this.metrics = await IO_MANAGER.fetchJsonLines(`${this.path}/metrics.jsonl`);
+        this.logs = await IO_MANAGER.fetchJsonLines(`${this.path}/log.jsonl`);
+        this.artifacts = await IO_MANAGER.fetchJsonLines(`${this.path}/artifacts.jsonl`);
+    }
+
+    pairMetrics(xKey, yKey) {
+        const xVals = [];
+        const yVals = [];
+        if (this.metrics) {
+            this.metrics.forEach(metric => {
+                const xv = metric[xKey];
+				const yv = metric[yKey];
+				if ( !isNaN(xv) && !isNaN(yv)) {
+                    xVals.push(xv);
+                    yVals.push(yv);
+                }
+            });
+        }
+        return [xVals, yVals];
+    }
+
+	static smoothData(data, span = null, method = 'SMA') {
+		if (data.some(isNaN)) {
+			createNotification('Data contains NaN values', 'warning');
+		}
+
+		if (!span) {
+			return data;
+		}
+		
+		const smoothed = [];
+		switch(method) {
+			case 'SMA':
+				for (let i = 0; i < data.length; i++) {
+					const start = Math.max(0, i - span + 1);
+					const window = data.slice(start, i + 1);
+					const sum = window.reduce((acc, val) => acc + val, 0);
+					const avg = sum / window.length;
+					smoothed.push(avg);
+				}
+				break;
+			case 'EMA':
+				let ema = data[0]; // Starting with the first data point
+				const alpha = 2 / (span + 1);
+				for (let i = 0; i < data.length; i++) {
+					ema = alpha * data[i] + (1 - alpha) * (i > 0 ? ema : data[i]);
+					smoothed.push(ema);
+				}
+				break;
+			case 'Gaussian':
+				// Gaussian smoothing requires calculating weights for each point in the window
+				// We'll use a simplified Gaussian kernel for demonstration purposes
+				for (let i = 0; i < data.length; i++) {
+					let weightedSum = 0;
+					let weightSum = 0;
+					for (let j = -span; j <= span; j++) {
+						if (i + j >= 0 && i + j < data.length) {
+							// Calculate the Gaussian weight
+							const weight = Math.exp(-(j * j) / (2 * span * span));
+							weightedSum += data[i + j] * weight;
+							weightSum += weight;
+						}
+					}
+					const gaussianAverage = weightedSum / weightSum;
+					smoothed.push(gaussianAverage);
+				}
+				break;
+			default:
+				console.error("Invalid smoothing method.");
+				return [];
+		}
+	
+		return smoothed;
+	}
+}
+
+/*
+########     ###    ########    ###       ##     ## ##    ##  ######
+##     ##   ## ##      ##      ## ##      ###   ### ###   ## ##    ##
+##     ##  ##   ##     ##     ##   ##     #### #### ####  ## ##
+##     ## ##     ##    ##    ##     ##    ## ### ## ## ## ## ##   ####
+##     ## #########    ##    #########    ##     ## ##  #### ##    ##
+##     ## ##     ##    ##    ##     ##    ##     ## ##   ### ##    ##
+########  ##     ##    ##    ##     ##    ##     ## ##    ##  ######
+*/
+
+class DataManager {
+    constructor() {
+        this.manifest = null;
+        this.allRuns = {};
+        this.metricNames = new Set();
+        this.projectName = null;
+        this.summaryManifest = null;
+    }
+
+	async loadManifest() {
+		// load data
+		this.manifest = await IO_MANAGER.fetchJsonLines('runs.jsonl');
+		if (!this.manifest) {
+			createNotification('Failed to load manifest', 'error');
+		}
+		
+		// get project name, metric names
+		const projectNames = new Set();
+		for (const run of this.manifest) {
+			projectNames.add(run.project);
+
+			run.metric_names.forEach(metricName => {
+				this.metricNames.add(metricName);
+			});
+		}
+		// project names should match
+        if (projectNames.size === 1) {
+            this.projectName = projectNames.values().next().value;
+        } else {
+            // console.error('Project names are not consistent across runs', projectNames);
+			createNotification(`Project names are not consistent across runs: ${projectNames}`, 'error');
+        }
+	}
+
+	async loadRuns() {
+		// load manifest if not already loaded
+		if (!this.manifest) {
+			this.loadManifest();
+		}
+		
+		// load each run
+		for (const run of this.manifest) {
+			const runData = new RunData(`runs/${run.run_id}`);
+			await runData.loadData();
+			this.allRuns[run.run_id] = runData;
+		}
+		
+		// update summary manifest (final metrics, timestamps, etc)
+		this.updateSummaryManifest();
+	}
+
+    updateSummaryManifest() {
+		// make sure there are runs
+		try {
+			if (Object.keys(this.allRuns).length === 0) {
+				throw 'No runs found';
+			}
+		} catch (error) {
+			createNotification(`Could not find any runs to update summary manifest: ${error}`, 'error');
+		}
+
+		// create the summary manifest dictionary
+        this.summaryManifest = Object.values(this.allRuns).map(run => {
+            // final timestamp, from logs
+			const finalTimestamp = run.logs.length > 0 ? run.logs[run.logs.length - 1].timestamp : null;
+
+			// final values for each metric
+            let finalMetrics = {};
+			// Iterate over the metrics array in reverse to find the last value for each metricName
+			for (let i = run.metrics.length - 1; i >= 0; i--) {
+				this.metricNames.forEach(metricName => {
+					// Check if the metric name is present in the current metric and hasn't been added to lastValues yet
+					if (run.metrics[i][metricName] !== undefined && finalMetrics[metricName] === undefined) {
+						finalMetrics[metricName] = run.metrics[i][metricName];
+					}
+				});
+			}
+			
+			// return the summary manifest object, for each run
+            return {
+				id: {
+					syllabic: run.meta.syllabic_id,
+					run: run.meta.run_id,
+				},
+				timing: {
+					start: run.meta.run_init_timestamp,
+					final: finalTimestamp,
+					duration: new Date(finalTimestamp) - new Date(run.meta.run_init_timestamp),
+				},
+				final_metrics: finalMetrics,
+				config: run.config,
+            };
+        });
+    }
+}
+
+const DATA_MANAGER = new DataManager();
+
+
+
+
+/*
+##          ###    ##    ##  #######  ##     ## ########
+##         ## ##    ##  ##  ##     ## ##     ##    ##
+##        ##   ##    ####   ##     ## ##     ##    ##
+##       ##     ##    ##    ##     ## ##     ##    ##
+##       #########    ##    ##     ## ##     ##    ##
+##       ##     ##    ##    ##     ## ##     ##    ##
+######## ##     ##    ##     #######   #######     ##
+*/
+
+class LayoutManager {
+    constructor(
+			projectName, 
+			default_plot_cont_height = 300, 
+			plotcont_frac = 0.4,
+		) {
+		this.projectName = projectName;
+		this.layout = {};
+		this.do_snap = true;
+		this.snapInterval = SNAP_INTERVAL_DEFAULT;
+		this.plot_configs = {};
+		this.grid_state = null;
+		// default layout stuff
+		this.init_y = this.round_to_snap_interval(130),
+		this.default_plot_cont_height = this.round_to_snap_interval(default_plot_cont_height);
+		// calculate widths
+		const window_width = window.innerWidth;
+		this.default_plot_cont_width = this.round_to_snap_interval(window_width * plotcont_frac);
+		this.table_width = this.round_to_snap_interval(window_width - (this.default_plot_cont_width + this.snapInterval));
+    }
+
+	round_to_snap_interval(value) {
+		return Math.ceil(value / this.snapInterval) * this.snapInterval;
+	}
+
+	get_default_layout(
+		plot_names, 
+		update_to_default = true,
+	) {
+		// convert plot_names to list
+		const plot_names_arr = Array.from(plot_names);
+	
+		// init layout
+		var layout = {};
+		const plot_y_step = this.round_to_snap_interval(this.default_plot_cont_height * 1.1)
+	
+		// plot containers
+		for (let i = 0; i < plot_names_arr.length; i++) {
+			const metricName = plot_names_arr[i];
+			layout[`plotContainer-${metricName}`] = {
+				x: 0,
+				y: this.init_y + i * plot_y_step,
+				height: this.default_plot_cont_height,
+				width: this.default_plot_cont_width,
+			};
+		};
+	
+		// table
+		layout['runsManifest'] = {
+			x: this.default_plot_cont_width + SNAP_INTERVAL_DEFAULT,
+			y: this.init_y,
+			height: 800,
+			width: this.table_width,
+		};
+	
+		// write to global
+		if (update_to_default) {
+			this.layout = layout;
+		}
+
+		return layout;
+	}
+
+	async getDefaultPlotConfig() {
+        return {
+            size: { width: this.default_plot_cont_width - SETTINGS_WIDTH_PX, height: this.default_plot_cont_height },
+            axisScales: { x: 'linear', y: 'linear' },
+			smoothing_method: 'SMA',
+            smoothing_span: null,
+			xUnits: DEFAULT_XUNITS,
+        };
+    }
+
+	async getPlotConfig(metricName) {
+		if (!(metricName in this.plot_configs)) {
+			this.plot_configs[metricName] = await this.getDefaultPlotConfig();
+		}
+		return this.plot_configs[metricName];
+	}
+
+    makeElementDraggable(element) {
+		// get id and position
+        const id = element.id;
+        let position = this.getInitialPosition(element);
+
+		// add .draggable class if its not there
+		if (!element.classList.contains('draggable')) {
+			element.classList.add('draggable');
+		}
+
+		// make draggable and resizable
+        this.initializeDragInteraction(element, position);
+        this.initializeResizeInteraction(element, position);
+		
+		// update layout
+        this.updateElementLayout(element, position.x, position.y, true);
+    }
+
+    getInitialPosition(element) {
+        const id = element.id;
+        if (this.layout[id]) {
+            return { x: this.layout[id].x, y: this.layout[id].y };
+        } else {
+            return {
+                x: parseFloat(element.getAttribute('data-x')) || 0,
+                y: parseFloat(element.getAttribute('data-y')) || 0,
+            };
+        }
+    }
+
+    initializeDragInteraction(element, position) {
+        interact(element).draggable({
+            ignoreFrom: '.draglayer, .ag-header, .ag-center-cols-container, .no-drag, .legend, .bg, .scrollbox',
+            modifiers: [
+                interact.modifiers.snap({
+                    targets: [interact.snappers.grid({ x: this.snapInterval, y: this.snapInterval })],
+                    range: Infinity,
+                    relativePoints: [{ x: 0, y: 0 }]
+                }),
+                interact.modifiers.restrict({
+                    restriction: 'parent',
+                    elementRect: { top: 0, left: 0, bottom: 1, right: 1 },
+                    endOnly: true
+                })
+            ],
+            inertia: true
+        }).on('dragmove', (event) => {
+            position.x += event.dx;
+            position.y += event.dy;
+
+            this.updateElementLayout(event.target, position.x, position.y, true);
+        });
+    }
+
+    initializeResizeInteraction(element, position) {
+        interact(element).resizable({
+            edges: { left: true, right: true, bottom: true, top: true },
+            modifiers: [
+                interact.modifiers.snapSize({
+                    targets: [interact.snappers.grid({ width: this.snapInterval, height: this.snapInterval })],
+                    range: Infinity,
+                }),
+                interact.modifiers.restrictSize({
+                    min: { width: 250, height: 150 }
+                }),
+            ],
+            inertia: true
+        }).on('resizemove', (event) => {
+            const { width, height } = event.rect;
+            position.x += event.deltaRect.left;
+            position.y += event.deltaRect.top;
+
+			const target = event.target;
+            this.updateElementLayout(target, position.x, position.y, false, width, height);
+
+			const isPlotContainer = target.classList.contains('plotContainer');
+			if (isPlotContainer) {
+				// Adjust sizes of plotDiv and plotSettings inside the container
+				const plotSettings = target.querySelector('.plotSettings');
+				const plotDiv = target.querySelector('.plotDiv');
+
+				// Set plotSettings width and adjust plotDiv width
+				var plotDivWidth = event.rect.width - SETTINGS_WIDTH_PX;
+				plotSettings.style.width = plotDivWidth;
+
+				// Update plotDiv and Plotly plot size
+				plotDiv.style.width = `${plotDivWidth}px`;
+				plotDiv.style.height = `${event.rect.height}px`;
+
+				// Now, instruct Plotly to resize the plot
+				const plotID = plotDiv.id;
+				Plotly.relayout(plotID, {
+					width: plotDivWidth, // New width for the plot
+					height: event.rect.height - PLOT_BOTTOM_MARGIN_PX, // New height for the plot
+				});
+
+				// save in plot configs
+				const metricName = plotID.split('-')[1];
+				this.plot_configs[metricName].size = { width: plotDivWidth, height: event.rect.height };
+				PLOTLY_LAYOUTS[metricName].width = plotDivWidth;
+				PLOTLY_LAYOUTS[metricName].height = event.rect.height - PLOT_BOTTOM_MARGIN_PX;
+			}
+        });
+    }
+
+    updateElementLayout(element, x, y, updatePosition = true, width = null, height = null) {
+		// update position if provided
+        if (updatePosition) {
+            // element.style.transform = `translate(${x}px, ${y}px)`;
+            // element.setAttribute('data-x', x);
+            // element.setAttribute('data-y', y);
+			element.style.left = `${x}px`;
+			element.style.top = `${y}px`;
+        }
+
+		// update width and height if provided
+        if (width && height) {
+            element.style.width = `${width}px`;
+            element.style.height = `${height}px`;
+        }
+		else {
+			width = element.offsetWidth;
+			height = element.offsetHeight;
+		}
+
+		// store in layout
+		this.layout[element.id] = {
+			x: x,
+			y: y,
+			width: width,
+			height: height,
+		};
+		// console.log('Updated layout for:', element.id, this.layout[element.id]);
+    }
+
+	updateAllLayouts() {
+		for (const id in this.layout) {
+			const new_layout = this.layout[id];
+			const element = document.getElementById(id);
+			// console.log('Updating layout for: ', id, new_layout);
+			const position = this.getInitialPosition(element);
+			this.updateElementLayout(element, new_layout.x, new_layout.y, true, new_layout.width, new_layout.height);
+		}
+	}
+
+	get_local_storage_key() {
+		return `${this.projectName}_layout`;
+	}
+
+    async saveLayout() {
+		this.updateGridState();
+        const layoutKey = this.get_local_storage_key();
+        IO_MANAGER.saveJsonLocal(layoutKey, this);
+		const layout_read = await IO_MANAGER.readJsonLocal(layoutKey);
+		if (layout_read && (JSON.stringify(layout_read) == JSON.stringify(this))) {
+			console.log('Layout saved:', layout_read);
+			createNotification('Layout saved', 'info');
+		} else {
+			console.error('Layout not saved:', this, layout_read);
+			createNotification('Layout not saved', 'error');
+		}
+    }
+
+	async loadLayout(do_update = true) {
+		const layoutKey = this.get_local_storage_key();
+		const savedLayout = await IO_MANAGER.readJsonLocal(layoutKey);
+		if (savedLayout) {
+			this.projectName = savedLayout.projectName;
+			this.layout = savedLayout.layout;
+			this.do_snap = savedLayout.do_snap;
+			this.snapInterval = savedLayout.snapInterval;
+			this.plot_configs = savedLayout.plot_configs;
+			this.grid_state = savedLayout.grid_state;
+		} else {
+			this.layout = this.get_default_layout(DATA_MANAGER.metricNames);
+		}
+		console.log('Layout loaded:', this);
+		if (do_update) {
+			this.updateAllLayouts();
+		}
+	}
+
+	async updateSnap(do_snap = true, snapInterval = SNAP_INTERVAL_DEFAULT) {
+		this.do_snap = do_snap;
+		if (!do_snap) {
+			snapInterval = 1;
+		}
+		this.snapInterval = snapInterval;
+
+		console.log('Snap settings updated:', this.do_snap, this.snapInterval);
+
+		for (const id in this.layout) {
+			const element = document.getElementById(id);
+			let position = this.getInitialPosition(element);
+
+			this.initializeDragInteraction(element, position);
+			this.initializeResizeInteraction(element, position);
+		}
+	}
+
+	updateGridState() {
+		this.grid_state = GRID_API.getState();
+	}
+}
+
+
+
+/*
+########  ##        #######  ########     ######  ########  ######
+##     ## ##       ##     ##    ##       ##    ## ##       ##    ##
+##     ## ##       ##     ##    ##       ##       ##       ##
+########  ##       ##     ##    ##       ##       ######   ##   ####
+##        ##       ##     ##    ##       ##       ##       ##    ##
+##        ##       ##     ##    ##       ##    ## ##       ##    ##
+##        ########  #######     ##        ######  ##        ######
+*/
+
+class PlotManager {
+    constructor() {
+        this.plots = {}; // Keyed by metricName, values are objects with Plotly plot div ID and settings
+    }
+
+    async createPlot(metricName) {
+		// get ids
+		const plotContainer_id = `plotContainer-${metricName}`;
+		const plotDiv_id = `plot-${metricName}`;
+		const plotSettings_id = `plotSettings-${metricName}`;
+		
+		// config and layout
+		const plotConfig = await LAYOUT_MANAGER.getPlotConfig(metricName);
+		const layout = LAYOUT_MANAGER.layout[plotContainer_id];
+	
+		const plotContainerHTML = `
+			<div
+				id="${plotContainer_id}"
+				class="plotContainer" 
+				style="margin-bottom: 10px; display: flex; flex-direction: row; position: absolute; width: ${layout.width}px; height: ${layout.height}px; left: ${layout.x}px; top: ${layout.y}px; ${DEFAULT_STYLE}"
+			>
+				<div 
+					id="${plotDiv_id}"
+					class="plotDiv" 
+					style="width: ${layout.width - SETTINGS_WIDTH_PX}px; height: ${layout.height - PLOT_BOTTOM_MARGIN_PX}px;"
+				></div>
+				<div 
+					id="${plotSettings_id}"
+					class="plotSettings" 
+					style="width: ${SETTINGS_WIDTH_PX}; flex-shrink: 0; flex-grow: 0;"
+				></div>
+			</div>
+		`;
+	
+		// Add plot container to the root div
+		document.getElementById('rootContainerDiv').insertAdjacentHTML('beforeend', plotContainerHTML);
+	
+		// Store plot info for later reference
+		this.plots[metricName] = {
+			plotID: plotDiv_id,
+			containerID: plotContainer_id,
+			settingsID: plotSettings_id,
+		};
+	
+		// Specify plot layout and create empty plot
+		const plotly_layout = {
+			title: `${metricName} over ${plotConfig.xUnits}`,
+			autosize: true,
+			xaxis: {
+				title: plotConfig.xUnits,
+				type: plotConfig.axisScales.x,
+				showgrid: true,
+			},
+			yaxis: {
+				title: metricName,
+				type: plotConfig.axisScales.y,
+				showgrid: true,
+			},
+			margin: PLOTLY_LAYOUT_MARGIN,
+			width: layout.width - SETTINGS_WIDTH_PX,
+			height: layout.height - PLOT_BOTTOM_MARGIN_PX,
+		};
+	
+		// Store layout
+		PLOTLY_LAYOUTS[metricName] = plotly_layout;
+	
+		// To newPlot, pass copy, don't reference
+		Plotly.newPlot(plotDiv_id, [], JSON.parse(JSON.stringify(plotly_layout)));
+	
+		// Add settings menu items
+		this.createAxisToggles(metricName);
+		this.createSmoothingInput(metricName);
+	
+		// Make draggable
+		LAYOUT_MANAGER.makeElementDraggable(document.getElementById(plotContainer_id));
+	}
+
+	async createAllPlots(
+		origin_x = 50,
+		origin_y = 150,
+	) {
+		const metrics = DATA_MANAGER.metricNames;
+		let n_metrics_counter = 0;
+
+		metrics.forEach(metricName => {
+			n_metrics_counter += 1;
+			console.log(`creating plot ${n_metrics_counter} for ${metricName}`);
+			this.createPlot(metricName);
+		});
+	}
+
+    async updatePlot(metricName) {
+		// get and set settings & config
+        const plotInfo = this.plots[metricName];
+		const plotConfig = await LAYOUT_MANAGER.getPlotConfig(metricName);
+        if (!plotInfo) {
+            console.error(`Plot for metric ${metricName} not found.`);
+            return;
+        }
+
+		// get data
+		// data manager will handle reloading the data, if necessary
+		var traces = [];
+		for (const runId in DATA_MANAGER.allRuns) {
+			const run = DATA_MANAGER.allRuns[runId];
+			const run_syllabic_id = run.meta.syllabic_id;
+
+			const [x_vals, y_vals] = run.pairMetrics(DEFAULT_XUNITS, metricName);
+			
+			// Apply smoothing based on the selected method and span
+			let smoothedYVals = RunData.smoothData(y_vals, plotConfig.smoothing_span, plotConfig.smoothing_method);
+			
+			const trace = {
+				x: x_vals,
+				y: smoothedYVals,
+				mode: 'lines',
+				line: plotConfig.smoothing_span ? { shape: 'spline' } : {},
+				name: run_syllabic_id,
+			};
+			traces.push(trace);
+		}
+		
+		// Update the layout properties
+		PLOTLY_LAYOUTS[metricName].xaxis.type = plotConfig.axisScales.x;
+		PLOTLY_LAYOUTS[metricName].yaxis.type = plotConfig.axisScales.y;
+		PLOTLY_LAYOUTS[metricName].uirevision = metricName;
+
+        // Update Plotly plot
+        Plotly.react(
+			plotInfo.plotID, 
+			traces,
+			JSON.parse(JSON.stringify(PLOTLY_LAYOUTS[metricName])),
+		);
+    }
+
+	async populateAllPlots() {
+		// for each metric
+		for (const metricName of DATA_MANAGER.metricNames) {
+			this.updatePlot(metricName);
+		}
+	}
+
+    updateAxisScale(metricName, axis, scale) {
+		// get plot info
+		const plotInfo = this.plots[metricName];
+		if (!plotInfo) {
+			console.error(`Plot for metric ${metricName} not found.`);
+			return;
+		}
+
+		// Update scale in settings
+		const plotConfig = LAYOUT_MANAGER.plot_configs[metricName];
+		plotConfig.axisScales[axis] = scale;
+
+        // Reflect change in Plotly plot
+        Plotly.relayout(
+			plotInfo.plotID, 
+			{ 
+				[`${axis}axis`]: { type: scale },
+				uirevision: metricName,
+			},	
+		);
+    }
+
+
+	createAxisToggles(metricName) {
+		const plotSettingsId = this.plots[metricName].settingsID;
+		const plotDivId = this.plots[metricName].plotID;
+		const plotSettings = document.getElementById(plotSettingsId);
+		
+		['x', 'y'].forEach(axis => {
+			const toggleId = `${plotDivId}-${axis}Toggle`;
+			const toggleHtml = `
+				<div class="axis-toggle-container" style="display: block;">
+					<label for="${toggleId}" style="display: block;">${axis.toUpperCase()} Scale</label>
+					<div style="display: flex; align-items: center;">
+						<i data-feather="arrow-up-right">lin</i>
+						<label class="switch">
+							<input type="checkbox" id="${toggleId}">
+							<span class="slider round"></span>
+						</label>
+						<i data-feather="corner-right-up">log</i>
+					</div>
+				</div>
+			`;
+	
+			const toggleDiv = document.createElement('div');
+			toggleDiv.innerHTML = toggleHtml.trim();
+			plotSettings.appendChild(toggleDiv);			
+	
+			const input = document.getElementById(toggleId);
+			input.checked = LAYOUT_MANAGER.plot_configs[metricName].axisScales[axis] === 'log';
+			input.onchange = () => {
+				const scale = input.checked ? 'log' : 'linear';
+				this.updateAxisScale(metricName, axis, scale);
+			};
+	
+		});
+	}
+
+	async createSmoothingInput(metricName) {
+		// get the div ids
+		const plotDivId = this.plots[metricName].plotID;
+		const plotSettingsId = this.plots[metricName].settingsID;
+
+		// Define the smoothing methods
+		const smoothingMethods = ['SMA', 'EMA', 'Gaussian'];
+		
+		// Create the HTML string for the smoothing input container
+		const smoothSettingHtml = `
+			<div class="smoothing-input-container no-drag" style="display: block; margin-top: 10px; border: 1px solid grey; border-radius: 3px;">
+				<label for="smoothingInput-${plotDivId}" style="font-weight: bold;">Smooth:</label><br>
+				<label for="smoothingMethodSelect-${plotDivId}">Method</label><br>
+				<select class="no-drag" id="smoothingMethodSelect-${plotDivId}" style="width: 6em;">
+					${smoothingMethods.map(method => `<option value="${method}">${method}</option>`).join('')}
+				</select><br>
+				<label for="smoothingInput-${plotDivId}">Span</label><br>
+				<input class="no-drag" type="number" min="0" max="1000" value="0" id="smoothingInput-${plotDivId}" style="width: 4.2em;">
+			</div>
+		`;
+	
+		// Create a container for the smoothing input
+		const smoothSettingContainer = document.createElement('div');
+		smoothSettingContainer.innerHTML = smoothSettingHtml.trim();
+	
+		// Append the input container to the plot settings
+		const plotSettings = document.getElementById(plotSettingsId);
+		plotSettings.appendChild(smoothSettingContainer);
+	
+		// Get references to the input elements
+		const spanInput = document.getElementById(`smoothingInput-${plotDivId}`);
+		const smoothingMethodSelect = document.getElementById(`smoothingMethodSelect-${plotDivId}`);
+	
+		// Set values to those from plot_configs
+		spanInput.value = LAYOUT_MANAGER.plot_configs[metricName].smoothing_span;
+		smoothingMethodSelect.value = LAYOUT_MANAGER.plot_configs[metricName].smoothing_method;
+	
+		// On change, modify the plot config and call updatePlot
+		spanInput.onchange = () => {
+			LAYOUT_MANAGER.plot_configs[metricName].smoothing_span = parseInt(spanInput.value);
+			this.updatePlot(metricName);
+		};
+		smoothingMethodSelect.onchange = () => {
+			LAYOUT_MANAGER.plot_configs[metricName].smoothing_method = smoothingMethodSelect.value;
+			this.updatePlot(metricName); // Update the plot when smoothing method changes
+		};
+	}
+}
+
+let PLOT_MANAGER = new PlotManager();
+
+
+
+/*
+##     ## ########    ###    ########  ######## ########
+##     ## ##         ## ##   ##     ## ##       ##     ##
+##     ## ##        ##   ##  ##     ## ##       ##     ##
+######### ######   ##     ## ##     ## ######   ########
+##     ## ##       ######### ##     ## ##       ##   ##
+##     ## ##       ##     ## ##     ## ##       ##    ##
+##     ## ######## ##     ## ########  ######## ##     ##
+*/
+
+async function headerButtons() {
+	// get the project name, set the header
+	const projectH1 = document.getElementById('projectH1');
+	projectH1.textContent = DATA_MANAGER.projectName + ' trnbl Dashboard';
+	const gridSnapCheckbox = document.getElementById('gridSnapCheckbox');
+
+	// set up grid snap checkbox
+	gridSnapCheckbox.checked = LAYOUT_MANAGER.do_snap;
+	gridSnapCheckbox.addEventListener('change', function() {
+		LAYOUT_MANAGER.updateSnap(gridSnapCheckbox.checked);
+	});
+
+	// save layout to local storage
+	document.getElementById('saveLayoutButton').addEventListener(
+		'click',
+		async () => {
+			await LAYOUT_MANAGER.saveLayout();
+		}
+	);
+
+	// download layout as json
+	document.getElementById('downloadLayoutButton').addEventListener(
+		'click',
+		async () => {
+			const layoutKey = LAYOUT_MANAGER.get_local_storage_key();
+			const layout_json = JSON.stringify(LAYOUT_MANAGER, null, '\t');
+			const blob = new Blob([layout_json], { type: 'application/json' });
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = layoutKey + '.json';
+			document.body.appendChild(a);
+			a.click();
+			a.remove();
+			URL.revokeObjectURL(url);
+		}
+	);
+
+	// reset layout to default
+	document.getElementById('resetLayoutButton').addEventListener(
+		'click',
+		async () => {
+			// delete
+			const layoutKey = LAYOUT_MANAGER.get_local_storage_key();
+			IO_MANAGER.deleteJsonLocal(layoutKey);
+			// reload page
+			location.reload();
+			createNotification('Layout resetting...', 'info');
+		}
+	);
+	
+	// refresh data
+	document.getElementById('refreshButton').addEventListener(
+		'click',
+		async () => {
+			createNotification('Not yet implemented!', 'error');
+			// Implementing the refresh data button functionality
+			// document.getElementById('refreshButton').addEventListener('click', async () => {
+			// 	// Assuming paths to all relevant files are stored in an array `dataPaths`
+			// 	for (const path of dataPaths) {
+			// 		await dataManager.refreshDataIfModified(path, dataManager.fetchJson); // Or dataManager.fetchJsonLines for .jsonl files
+			// 	}
+			// 	// After refreshing data, you might want to update your application state or UI accordingly
+			// 	console.log('Data refresh process completed.');
+			// });
+		}
+	);
+
+	// reset colum state of table
+	document.getElementById('resetColumnStateButton').addEventListener(
+		'click',
+		async () => {
+			GRID_API.resetColumnState();
+		}
+	);
+}
+
+function createNotification(message, type = 'info') {
+	const log_str = `[${type}]: ${message}`;
+	// print to console
+	switch (type) {
+		case 'info':
+			console.log(log_str);
+			break;
+		case 'warning':
+			console.warn(log_str);
+			break;
+		case 'error':
+			console.error(log_str);
+			break;
+		default:
+			console.log(log_str);
+	}
+
+	// create notification div
+	const successDiv = document.createElement('div');
+	successDiv.textContent = message;
+	successDiv.style.cssText = `position: absolute; top: 0; right: 0; padding: 10px; border-radius: 10px; background-color: ${NOTIFICATION_COLORS[type]};`; 
+	document.body.appendChild(successDiv);
+
+	// make it disappear after 3 seconds
+	setTimeout(() => {
+		successDiv.remove();
+	}, 3000);
+}
+
+
+/*
+########    ###    ########  ##       ########
+   ##      ## ##   ##     ## ##       ##
+   ##     ##   ##  ##     ## ##       ##
+   ##    ##     ## ########  ##       ######
+   ##    ######### ##     ## ##       ##
+   ##    ##     ## ##     ## ##       ##
+   ##    ##     ## ########  ######## ########
+*/
+
+
+function isISODate(value) {
+    // This regex matches ISO 8601 date strings with optional fractional seconds and timezone information
+    const dateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(.\d+)?(Z|[+-]\d{2}:\d{2})?$/;
+    return dateRegex.test(value);
+}
+
+// fancy cell rendering -- hover/copy/open the data, make it emojis if its too long
+function fancyCellRenderer(params) {
+	// check if params.value is undefined
+	var value;
+	if (params.value === undefined) {
+		return div;
+	}
+	else {
+		value = params.value;
+	}
+	// Create the div element
+	var div = document.createElement('div');
+	// set content
+	div.title = value;
+	div.textContent = value;
+	div.style.cursor = 'pointer';
+	// if its too long, make it emojis
+	if (value !== null) {
+		// if object, convert to string
+		if (typeof value === 'object') {
+			value = JSON.stringify(value, null, 4);
+		}
+		if (value.length > 50) {
+			div.title = value;
+			div.innerHTML = feather.icons["mouse-pointer"].toSvg() + feather.icons["copy"].toSvg();
+			div.style.cssText = 'font-size: 20px; display: flex; justify-content: center; align-items: center; background-color: #f4f4f4; border: 1px solid #d4d4d4; border-radius: 5px; height: 30px; width: 60px;';
+		}
+	}
+
+	// Add click event listener to copy text to the clipboard
+	div.onclick = function() {
+		navigator.clipboard.writeText(value).then(function() {
+			console.log('Successfully copied to clipboard');
+		}).catch(function(err) {
+			console.error('Could not copy text to clipboard: ', err);
+		});
+	};
+
+	// on right click, open a new plain text tab whose contents are the cell's value
+	div.oncontextmenu = function() {
+		const newWindow = window.open('', '_blank');
+		// set the contents of the new window to the cell's value
+		newWindow.document.write('<pre>' + value + '</pre>');
+		// set the title of the page to the rows "name.default_alias" and the column's header
+		newWindow.document.title = params.node.data['id.run'] + ' : ' + params.colDef.headerName; // TODO: page has "undefined" in title
+		newWindow.document.close();
+	};
+
+	// Return the div as the cell's DOM
+	return div;
+}
+
+
+function createColumnDefs(summaryManifest) {
+    var columnDefs = [
+        {
+            headerName: 'view/hide',
+            field: 'selected',
+            width: 30,
+            checkboxSelection: true,
+            headerCheckboxSelection: true,
+            headerCheckboxSelectionFilteredOnly: true,
+        },
+    ];
+
+	// date filter
+	const date_def = {
+		filter: 'agDateColumnFilter',
+		filterParams: {
+			comparator: function(filterValue, cellValue) {
+				// Assuming cellValue is an ISO date string
+				const cellDate = new Date(cellValue);
+				const filterDate = new Date(filterValue);
+				if (cellDate < filterDate) {
+					return -1;
+				} else if (cellDate > filterDate) {
+					return 1;
+				}
+				return 0;
+			},
+			// Disable the use of the browser-provided date picker for this filter
+			browserDatePicker: false,
+			// Add the inRange filter option
+			inRangeInclusive: true,
+		}
+	}
+
+
+    // Define column groups
+    const columnGroupDefs = [
+        {
+            headerName: 'Name',
+            children: [
+                { field: 'id.syllabic', headerName: 'Syllabic ID', columnGroupShow: null },
+                { field: 'id.run', headerName: 'Full Run ID', columnGroupShow: 'open' },
+            ],
+			marryChildren: true,
+        },
+        {
+            headerName: 'Timing',
+            children: [
+                { field: 'timing.start', headerName: 'Start', columnGroupShow: null, ...date_def },
+                { field: 'timing.final', headerName: 'End', columnGroupShow: 'open', ...date_def },
+                { field: 'timing.duration', headerName: 'Duration (ms)', columnGroupShow: 'open', },
+            ],
+			marryChildren: true,
+        },
+        {
+            headerName: 'Final Metrics',
+            children: [],
+        },
+        {
+            headerName: 'Config',
+            children: [
+                {
+                    field: 'config',
+                    headerName: 'Config',
+                    // width: 50, // TODO: this width is broken
+					cellRenderer: fancyCellRenderer,
+                },
+            ],
+			marryChildren: true,
+        },
+    ];
+
+    // Dynamically add final metric columns
+    const finalMetricKeys = new Set();
+    summaryManifest.forEach(item => {
+        Object.keys(item.final_metrics).forEach(key => finalMetricKeys.add(key));
+    });
+	var final_metrics_counter = 0;
+    finalMetricKeys.forEach(key => {
+        columnGroupDefs[2].children.push({
+			field: `final_metrics.${key}`, 
+			headerName: key,
+			columnGroupShow: final_metrics_counter === 1 ? null : 'open',
+		});
+		final_metrics_counter += 1;
+    });
+
+    // Add column group definitions to the main column definitions
+    columnDefs = columnDefs.concat(columnGroupDefs);
+
+    return columnDefs;
+}
+
+function adjustTableHeight(table) {
+	// Adjust the height of the table container
+	const gridHeight = table.querySelector('.ag-center-cols-viewport').offsetHeight;
+	const headerHeight = table.querySelector('.ag-header').offsetHeight;
+	const paginationHeight = table.querySelector('.ag-paging-panel').offsetHeight;
+	const tableMinHeight = gridHeight + headerHeight + paginationHeight + 50;
+	table.style.minHeight = `${tableMinHeight}px`;
+}
+
+
+function createRunsManifestTable(summaryManifest) {
+	// create plot container
+	const runsManifestTable = document.createElement('div');
+	runsManifestTable.id = 'runsManifest';
+	runsManifestTable.classList.add('runsManifestBox', 'ag-theme-alpine');
+	document.getElementById('rootContainerDiv').appendChild(runsManifestTable);
+
+	// load layout
+	const layout = LAYOUT_MANAGER.layout[runsManifestTable.id];
+	if (layout) {
+		runsManifestTable.style.cssText = `position: absolute; width: ${layout.width}px; height: ${layout.height}px; left: ${layout.x}px; top: ${layout.y}px; margin-bottom: 20px; ${DEFAULT_STYLE}`;
+	}
+	// make draggable
+	LAYOUT_MANAGER.makeElementDraggable(runsManifestTable);
+
+	// create the grid options
+	const gridOptions = {
+        columnDefs: createColumnDefs(summaryManifest),
+        rowData: summaryManifest,
+        pagination: true,
+		enableCellTextSelection: true,
+		enableBrowserTooltips: true,
+		rowSelection: 'multiple',
+		// customize pagination
+		pagination: true,
+		paginationPageSize: 10,
+		paginationPageSizeSelector: [1, 2, 5, 10, 25, 50, 100, 500, 1000],
+		defaultColDef: {
+			resizable: true,
+			filter: true,
+			// always show the floating filter
+			floatingFilter: true,
+			// disable filter hamburger menu (for space)
+			menuTabs: [],
+		},
+		domLayout: 'autoHeight',
+		onFirstDataRendered: function(params) {
+            adjustTableHeight(runsManifestTable);
+        },
+        onPaginationChanged: function(params) {
+            adjustTableHeight(runsManifestTable);
+        },
+		initialState: LAYOUT_MANAGER.grid_state,
+    };
+
+	// create the ag-Grid table, api to global
+	// api is used in LayoutManager.updateGridState
+	GRID_API = agGrid.createGrid(runsManifestTable, gridOptions);
+
+}
+
+
+
+
+/*
+#### ##    ## #### ########
+ ##  ###   ##  ##     ##
+ ##  ####  ##  ##     ##
+ ##  ## ## ##  ##     ##
+ ##  ##  ####  ##     ##
+ ##  ##   ###  ##     ##
+#### ##    ## ####    ##
+*/
+
+
+async function init() {
+	// load basic data
+	// await loadManifestAndMetrics();
+	await DATA_MANAGER.loadManifest();
+	// layout stuff
+	LAYOUT_MANAGER = new LayoutManager(DATA_MANAGER.projectName);
+	LAYOUT_MANAGER.loadLayout(do_update = false);
+	// set up header and buttons
+	await headerButtons();
+	// create empty plots
+	await PLOT_MANAGER.createAllPlots();
+	// load data
+	await DATA_MANAGER.loadRuns();
+	// populate table
+	await createRunsManifestTable(DATA_MANAGER.summaryManifest);
+	// populate plots
+	await PLOT_MANAGER.populateAllPlots();
+	// load layout
+	// LAYOUT_MANAGER.updateAllLayouts();
+	// update draggables
+	// await updateDraggableSnapIntervals();
+
+	// feather icons
+	try {
+		// replace the icons
+		feather.replace();
+		// if no errors, look for any <i> tags with class `data-feather` and remove the text
+		const featherIcons = document.querySelectorAll('i[data-feather]');
+		featherIcons.forEach(icon => {
+			icon.innerHTML = '';
+		});
+	}
+	catch (e) {
+		console.error('Feather icons not found');
+		displayNotification('Feather icons not found, keeping text fallback', 'error');
+	}
+	console.log('init complete');
+
+	feather.replace();
+}

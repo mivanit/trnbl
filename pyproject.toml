@@ -8,7 +8,7 @@ packages = [{include = "trnbl"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-muutils = "^0.5.11"
+muutils = "^0.6.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.2.1"

@@ -163,7 +163,7 @@ check-format:
 # python -m pylint $(PACKAGE_NAME)/
 # python -m pylint tests/
 .PHONY: typing
-typing: clean gen-extra-tests
+typing: clean
 	@echo "running type checks"
 	$(PYTHON) -m mypy --config-file $(PYPROJECT) $(TYPECHECK_ARGS) $(PACKAGE_NAME)/
 	$(PYTHON) -m mypy --config-file $(PYPROJECT) $(TYPECHECK_ARGS) tests/

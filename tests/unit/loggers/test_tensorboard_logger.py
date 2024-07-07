@@ -29,21 +29,30 @@ def test_tensorboard_logger_message():
 	logger = TensorBoardLogger(log_dir=log_dir)
 
 	logger.message("Test message", key="value")
+	logger.flush()
 
 	event_files = list(Path(log_dir).glob("**/events.out.tfevents.*"))
+	print(f"{event_files = }")
+
 	assert len(event_files) > 0  # Ensure at least one event file is created
 
 	logger.flush()
 
 	# Inspect the content of the event files
+	found_content: bool = False
 	for event_file in event_files:
+		print(f"{event_file = }")
 		for event in read_event_file(event_file):
+			print(f"\t{event = }")
 			if event.HasField("summary"):
 				for value in event.summary.value:
-					if value.tag == "message":
+					if value.tag == "message/text_summary":
 						message = value.tensor.string_val[0].decode("utf-8")
 						assert "Test message" in message
 						assert '"key": "value"' in message
+						found_content = True
+
+	assert found_content
 
 	logger.finish()
 

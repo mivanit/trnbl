@@ -1,5 +1,4 @@
 import json
-import pytest
 import math
 from pathlib import Path
 from datetime import datetime
@@ -76,7 +75,7 @@ def test_tensorboard_logger_metrics():
 	found_loss: bool = False
 	for event_file in event_files:
 		print(f"{event_file = }")
-		print(f"====================================")
+		print("====================================")
 		for event in read_event_file(event_file):
 			print(f"{event = }")
 			if event.HasField("summary"):
@@ -121,22 +120,35 @@ def test_tensorboard_logger_artifact():
 		print(f"{event_file = }")
 		for event in read_event_file(event_file):
 			print(f"{event = }")
-			if hasattr(event, 'summary'):
+			if hasattr(event, "summary"):
 				for value in event.summary.value:
 					if value.tag == "artifact/text_summary":
 						found_artifact = True
 						artifact_data = json.loads(value.tensor.string_val[0])
-						
+
 						# Check artifact data
-						assert Path(artifact_data["path"]).as_posix() == artifact_path.as_posix(), f"Expected path {artifact_path}, got {artifact_data['path']}"
-						assert artifact_data["type"] == "text", f"Expected type 'text', got {artifact_data['type']}"
-						assert artifact_data["aliases"] == ["alias1"], f"Expected aliases ['alias1'], got {artifact_data['aliases']}"
-						assert artifact_data["metadata"] == {"key": "value"}, f"Expected metadata {{'key': 'value'}}, got {artifact_data['metadata']}"
-						
-						# Check timestamp format (assuming it's ISO format)						
-						timestamp_datetime = datetime.fromisoformat(artifact_data["timestamp"])
+						assert (
+							Path(artifact_data["path"]).as_posix()
+							== artifact_path.as_posix()
+						), f"Expected path {artifact_path}, got {artifact_data['path']}"
+						assert (
+							artifact_data["type"] == "text"
+						), f"Expected type 'text', got {artifact_data['type']}"
+						assert (
+							artifact_data["aliases"] == ["alias1"]
+						), f"Expected aliases ['alias1'], got {artifact_data['aliases']}"
+						assert (
+							artifact_data["metadata"] == {"key": "value"}
+						), f"Expected metadata {{'key': 'value'}}, got {artifact_data['metadata']}"
+
+						# Check timestamp format (assuming it's ISO format)
+						timestamp_datetime = datetime.fromisoformat(
+							artifact_data["timestamp"]
+						)
 						# Check if the timestamp is within the last 5 minutes
-						assert (datetime.now() - timestamp_datetime).total_seconds() < 300, f"Timestamp is not within the last 5 minutes: {timestamp_datetime}"
+						assert (
+							(datetime.now() - timestamp_datetime).total_seconds() < 300
+						), f"Timestamp is not within the last 5 minutes: {timestamp_datetime}"
 
 	assert found_artifact, "Artifact data not found in event files"
 	logger.finish()
@@ -154,4 +166,3 @@ def test_tensorboard_logger_run_path():
 	logger = TensorBoardLogger(log_dir=log_dir)
 	assert logger.run_path == Path(log_dir)
 	logger.finish()
-

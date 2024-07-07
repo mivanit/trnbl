@@ -1,6 +1,8 @@
+import json
 import pytest
 import math
 from pathlib import Path
+from datetime import datetime
 
 from tensorboard.backend.event_processing.event_file_loader import EventFileLoader
 
@@ -106,6 +108,7 @@ def test_tensorboard_logger_artifact():
 	logger.artifact(
 		artifact_path, type="text", aliases=["alias1"], metadata={"key": "value"}
 	)
+	logger.flush()
 
 	event_files = list(Path(log_dir).glob("**/events.out.tfevents.*"))
 	assert len(event_files) > 0  # Ensure at least one event file is created
@@ -113,17 +116,29 @@ def test_tensorboard_logger_artifact():
 	logger.flush()
 
 	# Inspect the content of the event files
+	found_artifact = False
 	for event_file in event_files:
+		print(f"{event_file = }")
 		for event in read_event_file(event_file):
-			if event.HasField("summary"):
+			print(f"{event = }")
+			if hasattr(event, 'summary'):
 				for value in event.summary.value:
-					if value.tag == "artifact":
-						logged_text = value.tensor.string_val[0].decode("utf-8")
-						assert "test_artifact.txt" in logged_text
-						assert "alias1" in logged_text
-						assert '"key": "value"' in logged_text
+					if value.tag == "artifact/text_summary":
+						found_artifact = True
+						artifact_data = json.loads(value.tensor.string_val[0])
+						
+						# Check artifact data
+						assert Path(artifact_data["path"]).as_posix() == artifact_path.as_posix(), f"Expected path {artifact_path}, got {artifact_data['path']}"
+						assert artifact_data["type"] == "text", f"Expected type 'text', got {artifact_data['type']}"
+						assert artifact_data["aliases"] == ["alias1"], f"Expected aliases ['alias1'], got {artifact_data['aliases']}"
+						assert artifact_data["metadata"] == {"key": "value"}, f"Expected metadata {{'key': 'value'}}, got {artifact_data['metadata']}"
+						
+						# Check timestamp format (assuming it's ISO format)						
+						timestamp_datetime = datetime.fromisoformat(artifact_data["timestamp"])
+						# Check if the timestamp is within the last 5 minutes
+						assert (datetime.now() - timestamp_datetime).total_seconds() < 300, f"Timestamp is not within the last 5 minutes: {timestamp_datetime}"
 
-	artifact_path.unlink()
+	assert found_artifact, "Artifact data not found in event files"
 	logger.finish()
 
 
@@ -140,6 +155,3 @@ def test_tensorboard_logger_run_path():
 	assert logger.run_path == Path(log_dir)
 	logger.finish()
 
-
-if __name__ == "__main__":
-	pytest.main()

@@ -409,6 +409,12 @@ def test_training_manager_empty_dataloader() -> None:
 		)
 
 
-# Run the tests
-if __name__ == "__main__":
-	pytest.main([__file__])
+def test_training_manager_0_batchsize() -> None:
+	with pytest.raises(ValueError):
+		empty_dataloader: DataLoader = DataLoader(
+			TensorDataset(torch.Tensor([]), torch.Tensor([])), batch_size=0
+		)
+		logger: LocalLogger = LocalLogger(**logger_config)
+		TrainingManager(
+			model=model, dataloader=empty_dataloader, logger=logger, epochs=1
+		)

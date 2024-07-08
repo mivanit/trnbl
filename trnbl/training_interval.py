@@ -2,11 +2,16 @@ from typing import Any, Iterable, Literal
 from dataclasses import dataclass
 
 from muutils.misc import str_to_numeric
+from muutils.errormode import ErrorMode
 
 _EPSILON: float = 1e-6
 
 # units of training intervals -- we convert this all to batches
 TrainingIntervalUnit = Literal["runs", "epochs", "batches", "samples"]
+
+# what to do if interval is < 1 batch
+# if WARN or IGNORE, set it to 1 batch
+WhenIntervalLessThanBatch: ErrorMode = ErrorMode.WARN
 
 
 @dataclass(frozen=True)
@@ -43,12 +48,9 @@ class TrainingInterval:
 
 	def __post_init__(self):
 		try:
-			if self.unit == "samples":
-				assert isinstance(self.quantity, int), "samples should be an integer"
-			else:
-				assert isinstance(
-					self.quantity, (int, float)
-				), "quantity should be an integer or float"
+			assert isinstance(
+				self.quantity, (int, float)
+			), "quantity should be an integer or float"
 
 			assert (
 				self.unit in TrainingIntervalUnit.__args__
@@ -58,6 +60,24 @@ class TrainingInterval:
 			raise AssertionError(
 				f"Error initializing TrainingInterval\n{self}\n{e}"
 			) from e
+
+		# if samples is the unit, round to integer and assert positive
+		if self.unit == "samples":
+			# frozen dataclass
+			self.__dict__["quantity"] = int(round(self.quantity))
+			assert self.quantity > 0, f"samples must be positive, got {self = }"
+
+		# if batches is the unit, round to integer and assert positive
+		if self.unit == "batches":
+			self.__dict__["quantity"] = int(round(self.quantity))
+			if self.quantity < 0:
+				raise ValueError(f"batches must be positive, got {self = }")
+			if self.quantity < 1:
+				WhenIntervalLessThanBatch.process(
+					f"interval {self} is less than 1 batch, will set to 1 batch if not erroring out",
+					except_cls=ValueError,
+				)
+				self.__dict__["quantity"] = 1
 
 	def __eq__(self, other: Any) -> bool:
 		if not isinstance(other, self.__class__):
@@ -72,22 +92,56 @@ class TrainingInterval:
 		batches_per_epoch: int,
 		epochs: int | None = None,
 	) -> int:
-		"""given the batchsize, number of batches per epoch, and number of epochs, return the interval as a number of batches"""
+		"""given the batchsize, number of batches per epoch, and number of epochs, return the interval as a number of batches
+
+		# Parameters:
+		 - `batchsize: int`
+		   the size of a batch
+		 - `batches_per_epoch: int`
+		   the number of batches in an epoch
+		 - `epochs: int|None`
+		   the number of epochs to run (only required if the interval is in "runs")
+
+		# Returns:
+		 - `int`
+		   the interval as a number of batches
+
+		# Raises:
+		 - `ValueError`
+		   if the interval is less than 1 batch, and the `trnbl.training_interval.WhenIntervalLessThanBatch` is set to `muutils.errormode.ErrorMode.ERROR`
+		   otherwise, will warn or ignore and set the interval to 1 batch
+		 - `ValueError`
+		   if the unit is not one of "runs", "epochs", "batches", or "samples"
+
+
+		"""
+
+		output: int | float
 
 		match self.unit:
 			case "runs":
 				assert (
 					epochs is not None
 				), "epochs must be provided to convert runs to batches"
-				return int(self.quantity * epochs * batches_per_epoch)
+				output = self.quantity * epochs * batches_per_epoch
 			case "epochs":
-				return int(self.quantity * batches_per_epoch)
+				output = self.quantity * batches_per_epoch
 			case "batches":
-				return int(self.quantity)
+				output = self.quantity
 			case "samples":
-				return int(self.quantity / batchsize)
+				output = self.quantity / batchsize
 			case _:
 				raise ValueError(f"invalid unit {self.unit}")
+
+		# check if interval is less than 1 batch
+		if output < 1:
+			WhenIntervalLessThanBatch.process(
+				f"interval {self} is less than 1 batch, will set to 1 batch if not erroring out",
+				except_cls=ValueError,
+			)
+			output = 1
+
+		return int(round(output))
 
 	def normalized(
 		self,
@@ -121,11 +175,24 @@ class TrainingInterval:
 
 		"""
 		try:
-			raw_split = raw.split()
-			quantity_str: str = " ".join(raw_split[:-1])
-			unit: str = raw_split[-1]
+			# remove prefix and suffix (optionally)
+			raw = raw.removeprefix("TrainingInterval(").removesuffix(")")
+
+			# process quantity
+			raw_split: str
+			quantity_str: str
+			if "," in raw:
+				raw_split = raw.split(",")
+				quantity_str = ",".join(raw_split[:-1])
+			else:
+				raw_split = raw.split()
+				quantity_str = " ".join(raw_split[:-1])
 
 			quantity: int | float = str_to_numeric(quantity_str)
+
+			# process unit
+			unit: str = raw_split[-1]
+			unit.strip().strip("'\"").strip()
 
 			# unit should be one of the allowed units
 			assert unit in TrainingIntervalUnit.__args__

@@ -125,6 +125,22 @@ class TrainingManager:
 		self.samples: int = 0
 		self.checkpoints: int = 0
 
+		# check if the dataloader has a finite nonzero length
+		if self.samples_per_epoch == 0:
+			raise ValueError(
+				"Dataloader has no samples. Please provide a dataloader with a non-zero length."
+			)
+
+		if self.batches_per_epoch == 0:
+			raise ValueError(
+				"Dataloader has no batches. Please provide a dataloader with a non-zero length."
+			)
+
+		if self.batch_size == 0:
+			raise ValueError(
+				"Dataloader has a batch size of 0. Please provide a dataloader with a non-zero batch size."
+			)
+
 		# normalize intervals
 		_batch_info_kwargs: dict[str, int] = dict(
 			batches_per_epoch=self.batches_per_epoch,

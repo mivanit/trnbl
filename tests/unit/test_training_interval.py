@@ -250,17 +250,17 @@ def test_as_batch_count_without_epochs() -> None:
 @pytest.mark.parametrize(
 	"input_data, expected",
 	[
-		("0 runs", TrainingInterval(0, "runs")),
-		("0.0 epochs", TrainingInterval(0, "epochs")),
-		("1e-10 batches", TrainingInterval(1e-10, "batches")),
-		("0.1 runs", TrainingInterval(0.1, "runs")),
-		("1/1000 epochs", TrainingInterval(0.001, "epochs")),
+		("0 runs", (0, "runs")),
+		("0.0 epochs", (0, "epochs")),
+		("1e-10 batches", (1e-10, "batches")),
+		("0.1 runs", (0.1, "runs")),
+		("1/1000 epochs", (0.001, "epochs")),
 	],
 )
-def test_from_str_edge_cases(input_data: str, expected: TrainingInterval) -> None:
+def test_from_str_edge_cases(input_data: str, expected: tuple[float|int, str]) -> None:
 	result = TrainingInterval.from_str(input_data)
 	assert (
-		result == expected
+		result == TrainingInterval(*expected)
 	), f"Expected {expected}, but got {result} for input '{input_data}'"
 
 
@@ -282,17 +282,17 @@ def test_from_str_invalid_inputs(input_data: str) -> None:
 @pytest.mark.parametrize(
 	"input_data, expected",
 	[
-		((0, "runs"), TrainingInterval(0, "runs")),
-		(["0.0", "epochs"], TrainingInterval(0, "epochs")),
-		(TrainingInterval(1e-10, "batches"), TrainingInterval(1e-10, "batches")),
-		("0.1 runs", TrainingInterval(0.1, "runs")),
-		(("1/1000", "epochs"), TrainingInterval(0.001, "epochs")),
-	],
+		((0, "runs"), (0, "runs")),
+		(["0.0", "epochs"], (0, "epochs")),
+		((1e-10, "batches"), (1e-10, "batches")),
+		("0.1 runs", (0.1, "runs")),
+		(("1/1000", "epochs"), (0.001, "epochs")),
+	]
 )
-def test_from_any_edge_cases(input_data: Any, expected: TrainingInterval) -> None:
+def test_from_any_edge_cases(input_data: Any, expected: tuple[float|int, str]) -> None:
 	result = TrainingInterval.from_any(input_data)
 	assert (
-		result == expected
+		result == TrainingInterval(*expected)
 	), f"Expected {expected}, but got {result} for input {input_data}"
 
 

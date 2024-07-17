@@ -1,4 +1,4 @@
-from typing import Any, Iterable, Literal
+from typing import Any, Iterable, Literal, Callable
 from dataclasses import dataclass
 
 from muutils.misc import str_to_numeric
@@ -15,6 +15,13 @@ _TRAINING_INTERVAL_UNITS_RANGES: dict[TrainingIntervalUnit, Interval] = {
 	"epochs": Interval(0, float("inf"), is_closed=False),
 	"batches": Interval(1, float("inf"), is_closed=True),
 	"samples": Interval(1, float("inf"), is_closed=True),
+}
+
+_TRAINING_INTERVAL_UNITS_CAST: dict[TrainingIntervalUnit, Callable] = {
+	"runs": lambda x: x,
+	"epochs": lambda x: x,
+	"batches": lambda x: int(round(x)),
+	"samples": lambda x: int(round(x)),
 }
 
 # what to do if interval is < 1 batch
@@ -72,34 +79,20 @@ class TrainingInterval:
 			raise AssertionError(
 				f"Error initializing TrainingInterval\n{self}\n{e}"
 			) from e
-		
+
+		# check values in proper ranges
 		expected_interval: Interval = _TRAINING_INTERVAL_UNITS_RANGES[self.unit]
+		print(f"{self.quantity = } {expected_interval = }")
 		if self.quantity not in expected_interval:
 			WhenIntervalLessThanBatch.process(
 				f"interval {self} has invalid quantity, expected in interval {expected_interval}, will set to closest bound if not erroring out",
 				except_cls=IntervalValueError,
 				warn_cls=IntervalValueError,
 			)
-			self.__dict__["quantity"] = 1
+			self.__dict__["quantity"] = expected_interval.clamp(self.quantity)
 
-		# if samples is the unit, round to integer and assert positive
-		if self.unit == "samples":
-			# frozen dataclass
-			self.__dict__["quantity"] = int(round(self.quantity))
-			assert self.quantity > 0, f"samples must be positive, got {self = }"
-
-		# if batches is the unit, round to integer and assert positive
-		if self.unit == "batches":
-			self.__dict__["quantity"] = int(round(self.quantity))
-			if self.quantity < 0:
-				raise ValueError(f"batches must be positive, got {self = }")
-			if self.quantity < 1:
-				WhenIntervalLessThanBatch.process(
-					f"interval {self} is less than 1 batch, will set to 1 batch if not erroring out",
-					except_cls=IntervalValueError,
-					warn_cls=IntervalValueError,
-				)
-				self.__dict__["quantity"] = 1
+		# cast if necessary
+		self.__dict__["quantity"] = _TRAINING_INTERVAL_UNITS_CAST[self.unit](self.quantity)
 
 	def __eq__(self, other: Any) -> bool:
 		if not isinstance(other, self.__class__):

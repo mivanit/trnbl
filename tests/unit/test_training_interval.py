@@ -189,8 +189,8 @@ def test_unpacking():
 @pytest.mark.parametrize(
 	"quantity, unit",
 	[
-		(0, "runs"),
-		(0, "epochs"),
+		(0.1, "runs"),
+		(0.1, "epochs"),
 		(0.0001, "runs"),
 		(1e-10, "epochs"),
 	],
@@ -202,7 +202,7 @@ def test_very_small_values(quantity: Union[int, float], unit: str) -> None:
 
 
 def test_zero_samples() -> None:
-	with pytest.raises(AssertionError):
+	with pytest.warns(IntervalValueError):
 		TrainingInterval(0, "samples")
 
 
@@ -267,15 +267,17 @@ def test_from_str_edge_cases(input_data: str, expected: tuple[float|int, str]) -
 @pytest.mark.parametrize(
 	"input_data",
 	[
-		"0 samples",
-		"-1 runs",
-		"1e-20 samples",
 		"invalid unit",
 		"1.5.5 epochs",
+		"123",
+		"1/2/3 batches",
+		"0.0.0 batches",
+		"ten samples",
+		"1/2/3 samples",
 	],
 )
 def test_from_str_invalid_inputs(input_data: str) -> None:
-	with pytest.raises((ValueError, AssertionError)):
+	with pytest.raises(ValueError):
 		TrainingInterval.from_str(input_data)
 
 
@@ -298,14 +300,13 @@ def test_from_any_edge_cases_nowarn(input_data: Any, expected: tuple[float|int, 
 @pytest.mark.parametrize(
 	"input_data, expected",
 	[
-		((1e-10, "batches"), (1e-10, "batches")),
 		((1e-10, "batches"), (1, "batches")),
-		((0, "batches"), (0, "batches")),
+		((1e-10, "batches"), (1, "batches")),
 		((0, "batches"), (1, "batches")),
-		("0.0 batches", (0, "batches")),
-		((0, "samples"), (0, "samples")),
-		((1, "samples"), (1, "samples")),
-		((2, "samples"), (2, "samples")),
+		((0, "batches"), (1, "batches")),
+		(("1/2 batches"), (1, "batches")),
+		("0.0 batches", (1, "batches")),
+		((0, "samples"), (1, "samples")),
 	]
 )
 def test_from_any_edge_cases_warn(input_data: Any, expected: tuple[float|int, str]) -> None:
@@ -321,16 +322,15 @@ def test_from_any_edge_cases_warn(input_data: Any, expected: tuple[float|int, st
 @pytest.mark.parametrize(
 	"input_data",
 	[
-		(0, "samples"),
-		[-1, "runs"],
-		(1e-20, "samples"),
+		(0, "potatoes"),
 		"invalid unit",
 		(1.5, 5, "epochs"),
 		123,
+		("1", "batches", "lol"),
 	],
 )
 def test_from_any_invalid_inputs(input_data: Any) -> None:
-	with pytest.raises((ValueError, AssertionError)):
+	with pytest.raises(ValueError):
 		TrainingInterval.from_any(input_data)
 
 

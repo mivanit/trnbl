@@ -32,6 +32,7 @@ WhenIntervalLessThanBatch: ErrorMode = ErrorMode.WARN
 
 class IntervalValueError(UserWarning):
 	"""Error for when the interval is less than 1 batch"""
+
 	pass
 
 
@@ -93,11 +94,15 @@ class TrainingInterval:
 			self.__dict__["quantity"] = expected_interval.clamp(self.quantity)
 
 		# cast if necessary
-		self.__dict__["quantity"] = _TRAINING_INTERVAL_UNITS_CAST[self.unit](self.quantity)
+		self.__dict__["quantity"] = _TRAINING_INTERVAL_UNITS_CAST[self.unit](
+			self.quantity
+		)
 
 	def __eq__(self, other: Any) -> bool:
 		if not isinstance(other, self.__class__):
-			raise TypeError(f"invalid type {type(other)} for comparison with TrainingInterval")
+			raise TypeError(
+				f"invalid type {type(other)} for comparison with TrainingInterval"
+			)
 		return (
 			abs(self.quantity - other.quantity) < _EPSILON and self.unit == other.unit
 		)

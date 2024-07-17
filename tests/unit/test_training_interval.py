@@ -248,7 +248,6 @@ def test_as_batch_count_edge_cases(
 	assert result == expected, f"Expected {expected}, but got {result} for {interval}"
 
 
-
 def test_as_batch_count_without_epochs() -> None:
 	interval = TrainingInterval(0.1, "runs")
 	with pytest.raises(AssertionError):
@@ -265,10 +264,12 @@ def test_as_batch_count_without_epochs() -> None:
 		("1/1000 epochs", (0.001, "epochs")),
 	],
 )
-def test_from_str_edge_cases(input_data: str, expected: tuple[float|int, str]) -> None:
+def test_from_str_edge_cases(
+	input_data: str, expected: tuple[float | int, str]
+) -> None:
 	result = TrainingInterval.from_str(input_data)
-	assert (
-		result == TrainingInterval(*expected)
+	assert result == TrainingInterval(
+		*expected
 	), f"Expected {expected}, but got {result} for input '{input_data}'"
 
 
@@ -296,14 +297,17 @@ def test_from_str_invalid_inputs(input_data: str) -> None:
 		(["0.1", "epochs"], (0.1, "epochs")),
 		("0.1 runs", (0.1, "runs")),
 		(("1/1000", "epochs"), (0.001, "epochs")),
-	]
+	],
 )
-def test_from_any_edge_cases_nowarn(input_data: Any, expected: tuple[float|int, str]) -> None:
+def test_from_any_edge_cases_nowarn(
+	input_data: Any, expected: tuple[float | int, str]
+) -> None:
 	"no warnings because batchsize is unknown"
 	result = TrainingInterval.from_any(input_data)
-	assert (
-		result == TrainingInterval(*expected)
+	assert result == TrainingInterval(
+		*expected
 	), f"Expected {expected}, but got {result} for input {input_data}"
+
 
 @pytest.mark.parametrize(
 	"input_data, expected",
@@ -315,16 +319,17 @@ def test_from_any_edge_cases_nowarn(input_data: Any, expected: tuple[float|int, 
 		(("1/2 batches"), (1, "batches")),
 		("0.0 batches", (1, "batches")),
 		((0, "samples"), (1, "samples")),
-	]
+	],
 )
-def test_from_any_edge_cases_warn(input_data: Any, expected: tuple[float|int, str]) -> None:
+def test_from_any_edge_cases_warn(
+	input_data: Any, expected: tuple[float | int, str]
+) -> None:
 	"no warnings because batchsize is unknown"
 	with pytest.warns(IntervalValueError):
 		result = TrainingInterval.from_any(input_data)
-	assert (
-		result == TrainingInterval(*expected)
+	assert result == TrainingInterval(
+		*expected
 	), f"Expected {expected}, but got {result} for input {input_data}"
-
 
 
 @pytest.mark.parametrize(

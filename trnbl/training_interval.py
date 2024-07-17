@@ -11,8 +11,9 @@ _EPSILON: float = 1e-6
 TrainingIntervalUnit = Literal["runs", "epochs", "batches", "samples"]
 
 _TRAINING_INTERVAL_UNITS_RANGES: dict[TrainingIntervalUnit, Interval] = {
-	"runs": Interval(0, 1, is_closed=False),
-	"epochs": Interval(0, float("inf"), is_closed=False),
+	# epochs and runs should not actually be closed, but we allow it
+	"runs": Interval(0, 1, is_closed=True),
+	"epochs": Interval(0, float("inf"), is_closed=True),
 	"batches": Interval(1, float("inf"), is_closed=True),
 	"samples": Interval(1, float("inf"), is_closed=True),
 }
@@ -96,7 +97,7 @@ class TrainingInterval:
 
 	def __eq__(self, other: Any) -> bool:
 		if not isinstance(other, self.__class__):
-			return False
+			raise TypeError(f"invalid type {type(other)} for comparison with TrainingInterval")
 		return (
 			abs(self.quantity - other.quantity) < _EPSILON and self.unit == other.unit
 		)

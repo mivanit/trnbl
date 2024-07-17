@@ -122,12 +122,13 @@ def test_process_to_batches():
 
 
 def test_edge_cases():
-	assert (
-		TrainingInterval(0, "runs").as_batch_count(
-			batchsize=32, batches_per_epoch=100, epochs=10
+	with pytest.warns(IntervalValueError):
+		assert (
+			TrainingInterval(0, "runs").as_batch_count(
+				batchsize=32, batches_per_epoch=100, epochs=10
+			)
+			== 1
 		)
-		== 1
-	)
 	assert TrainingInterval(1e6, "batches").as_batch_count(
 		batchsize=32, batches_per_epoch=100, epochs=10
 	) == int(1e6)
@@ -162,6 +163,12 @@ def test_boundary_cases():
 			batchsize=1, batches_per_epoch=100, epochs=10
 		)
 		== 1000
+	)
+	assert (
+		TrainingInterval(0.9, "runs").as_batch_count(
+			batchsize=1, batches_per_epoch=100, epochs=10
+		)
+		== 900
 	)
 	assert (
 		TrainingInterval(1, "epochs").as_batch_count(batchsize=32, batches_per_epoch=1)
@@ -208,7 +215,11 @@ def test_zero_samples() -> None:
 
 @pytest.mark.parametrize("quantity", [0.51, 0.9, 1.1, 1.49])
 def test_samples_rounding(quantity: float) -> None:
-	interval = TrainingInterval(quantity, "samples")
+	if quantity < 1:
+		with pytest.warns(IntervalValueError):
+			interval = TrainingInterval(quantity, "samples")
+	else:
+		interval = TrainingInterval(quantity, "samples")
 	assert interval.quantity == 1
 	assert interval.unit == "samples"
 
@@ -216,16 +227,11 @@ def test_samples_rounding(quantity: float) -> None:
 @pytest.mark.parametrize(
 	"quantity, unit, batchsize, batches_per_epoch, epochs, expected",
 	[
-		(0, "runs", 32, 100, 10, 1),
-		(0, "epochs", 32, 100, 10, 1),
-		(0, "batches", 32, 100, 10, 1),
 		(1, "samples", 32, 100, 10, 1),
-		(0.1, "runs", 32, 100, 10, 100),
-		(0.01, "epochs", 32, 100, 10, 1),
-		(0.1, "batches", 32, 100, 10, 1),
+		(0.000001, "runs", 32, 100, 10, 1),
+		(0.0001, "epochs", 32, 100, 10, 1),
 		(1e-10, "runs", 32, 100, 10, 1),
 		(1e-10, "epochs", 32, 100, 10, 1),
-		(1e-10, "batches", 32, 100, 10, 1),
 	],
 )
 def test_as_batch_count_edge_cases(
@@ -237,8 +243,10 @@ def test_as_batch_count_edge_cases(
 	expected: int,
 ) -> None:
 	interval = TrainingInterval(quantity, unit)
-	result = interval.as_batch_count(batchsize, batches_per_epoch, epochs)
+	with pytest.warns(IntervalValueError):
+		result = interval.as_batch_count(batchsize, batches_per_epoch, epochs)
 	assert result == expected, f"Expected {expected}, but got {result} for {interval}"
+
 
 
 def test_as_batch_count_without_epochs() -> None:
@@ -250,9 +258,9 @@ def test_as_batch_count_without_epochs() -> None:
 @pytest.mark.parametrize(
 	"input_data, expected",
 	[
-		("0 runs", (0, "runs")),
-		("0.0 epochs", (0, "epochs")),
-		("1e-10 batches", (1e-10, "batches")),
+		("0.1 runs", (0.1, "runs")),
+		("0.1 epochs", (0.1, "epochs")),
+		("1 batches", (1, "batches")),
 		("0.1 runs", (0.1, "runs")),
 		("1/1000 epochs", (0.001, "epochs")),
 	],
@@ -284,8 +292,8 @@ def test_from_str_invalid_inputs(input_data: str) -> None:
 @pytest.mark.parametrize(
 	"input_data, expected",
 	[
-		((0, "runs"), (0, "runs")),
-		(["0.0", "epochs"], (0, "epochs")),
+		((0.1, "runs"), (0.1, "runs")),
+		(["0.1", "epochs"], (0.1, "epochs")),
 		("0.1 runs", (0.1, "runs")),
 		(("1/1000", "epochs"), (0.001, "epochs")),
 	]
@@ -371,11 +379,11 @@ def test_normalization_edge_cases() -> None:
 
 
 def test_equality_edge_cases() -> None:
-	assert TrainingInterval(0, "runs") == TrainingInterval(0, "runs")
-	assert TrainingInterval(0, "runs") != TrainingInterval(0, "epochs")
+	assert TrainingInterval(0.1, "runs") == TrainingInterval(0.1, "runs")
+	assert TrainingInterval(0.1, "runs") != TrainingInterval(0.1, "epochs")
 
 	with pytest.warns(IntervalValueError):
-		assert TrainingInterval(1e-10, "batches") == TrainingInterval(1e-10, "batches")
+		assert TrainingInterval(1e-10, "batches") == TrainingInterval(1, "batches")
 
 
 def test_iteration_and_indexing() -> None:

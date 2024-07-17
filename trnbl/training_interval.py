@@ -25,6 +25,13 @@ _TRAINING_INTERVAL_UNITS_CAST: dict[TrainingIntervalUnit, Callable] = {
 	"samples": lambda x: int(round(x)),
 }
 
+_TRAINING_INTERVAL_UNIT_ALIASES: dict[str, str] = {
+	"run": "runs",
+	"epoch": "epochs",
+	"batch": "batches",
+	"sample": "samples",
+}
+
 # what to do if interval is < 1 batch
 # if WARN or IGNORE, set it to 1 batch
 WhenIntervalLessThanBatch: ErrorMode = ErrorMode.WARN
@@ -73,6 +80,15 @@ class TrainingInterval:
 			assert isinstance(
 				self.quantity, (int, float)
 			), "quantity should be an integer or float"
+
+			if self.unit not in TrainingIntervalUnit.__args__:
+				unit_dealised: str | None = _TRAINING_INTERVAL_UNIT_ALIASES.get(
+					self.unit.lower(), None
+				)
+				if isinstance(unit_dealised, str):
+					self.__dict__["unit"] = unit_dealised
+				else:
+					raise ValueError(f"invalid unit {self.unit = }")
 
 			assert (
 				self.unit in TrainingIntervalUnit.__args__
@@ -217,6 +233,16 @@ class TrainingInterval:
 			unit.strip().strip("'\"").strip()
 
 			# unit should be one of the allowed units
+			unit_dealised: str | None
+			if unit.lower() in TrainingIntervalUnit.__args__:
+				unit_dealised = unit.lower()
+			else:
+				unit_dealised = _TRAINING_INTERVAL_UNIT_ALIASES.get(unit.lower(), None)
+			if isinstance(unit_dealised, str):
+				unit = unit_dealised
+			else:
+				raise ValueError(f"invalid unit {unit}")
+
 			assert unit in TrainingIntervalUnit.__args__
 		except Exception as e:
 			raise ValueError(f"Error parsing {raw} as a TrainingInterval\n{e}") from e

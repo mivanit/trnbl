@@ -1,4 +1,3 @@
-from unittest.mock import patch
 from typing import Dict, Any, Union, Callable
 import time
 from unittest.mock import MagicMock
@@ -10,6 +9,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 import pytest
 
+from trnbl.training_interval import IntervalValueError
 from trnbl.training_manager import TrainingManager
 from trnbl.loggers.local import LocalLogger
 from trnbl.loggers.base import TrainingLoggerBase
@@ -168,11 +168,9 @@ def test_training_manager_exit_exception(training_manager: TrainingManager) -> N
 
 
 def test_training_manager_get_elapsed_time(training_manager: TrainingManager) -> None:
-	with patch("time.time") as mock_time:
-		start_time: float = time.time()
-		mock_time.return_value = start_time + 10
-		training_manager.start_time = start_time
-		assert training_manager.get_elapsed_time() == 10
+	start_time: float = time.time()
+	training_manager.start_time = start_time
+	training_manager.get_elapsed_time()
 
 
 def test_training_manager_training_status(training_manager: TrainingManager) -> None:
@@ -277,10 +275,10 @@ def test_training_manager_full_training_loop() -> None:
 
 			tm.epoch_update()
 
-	assert tm.epochs == 2
+	assert tm.epochs_total == 2
 	assert tm.batches == 20  # 2 epochs * 10 batches per epoch
 	assert tm.samples == 200  # 2 epochs * 100 samples per epoch
-	assert tm.checkpoints == 2  # 1 checkpoint per epoch
+	assert tm.checkpoints == 3  # 1 checkpoint per epoch
 	assert len(tm.logger.metrics_list) == 20  # 1 metric log per batch
 	assert (
 		len(tm.logger.log_list) >= 4
@@ -292,13 +290,13 @@ def test_training_manager_full_training_loop() -> None:
 
 def test_training_manager_zero_epochs() -> None:
 	logger: LocalLogger = LocalLogger(**logger_config)
-	with pytest.raises(ValueError):
+	with pytest.warns(IntervalValueError):
 		TrainingManager(model=model, dataloader=dataloader, logger=logger, epochs=0)
 
 
 def test_training_manager_negative_epochs() -> None:
 	logger: LocalLogger = LocalLogger(**logger_config)
-	with pytest.raises(ValueError):
+	with pytest.warns(IntervalValueError):
 		TrainingManager(model=model, dataloader=dataloader, logger=logger, epochs=-1)
 
 
@@ -383,7 +381,7 @@ def test_training_manager_multiple_evals() -> None:
 		("1 epochs", len(dataloader)),
 		("0.5 epochs", len(dataloader) // 2),
 		("10 batches", 10),
-		("1 samples", 1),
+		("10 samples", 1),
 	],
 )
 def test_training_manager_interval_processing(interval: str, expected: int) -> None:

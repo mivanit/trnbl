@@ -52,12 +52,14 @@ class LocalLogger(TrainingLoggerBase):
 		base_path: str | Path = Path("trnbl-logs"),
 		memusage_as_metrics: bool = True,
 	):
+		# set up lists
+		self.log_list: list[dict] = list()
+		self.metrics_list: list[dict] = list()
+		self.artifacts_list: list[dict] = list()
+
 		# copy kwargs
 		self.train_config: dict = train_config
 		self.project: str = project
-		self.metric_names: list[str] = metric_names
-		if memusage_as_metrics:
-			self.metric_names += list(self.get_mem_usage().keys())
 		self.name: str = name
 		self.base_path: Path = Path(base_path)
 
@@ -72,6 +74,24 @@ class LocalLogger(TrainingLoggerBase):
 		# make sure the run path doesn't already exist
 		assert not self._run_path.exists()
 		self._run_path.mkdir(parents=True, exist_ok=True)
+
+		# set up files and objects for logs, artifacts, and metrics
+		# ----------------------------------------
+
+		self.log_file: io.TextIOWrapper = open(self.run_path / FilePaths.LOG, "a")
+
+		self.metrics_file: io.TextIOWrapper = open(
+			self.run_path / FilePaths.METRICS, "a"
+		)
+
+		self.artifacts_file: io.TextIOWrapper = open(
+			self.run_path / FilePaths.ARTIFACTS, "a"
+		)
+
+		# metric names (getting mem usage might cause problems if we have an error)
+		self.metric_names: list[str] = metric_names
+		if memusage_as_metrics:
+			self.metric_names += list(self.get_mem_usage().keys())
 
 		# put everything in a config
 		self.logger_meta: dict = dict(
@@ -99,22 +119,6 @@ class LocalLogger(TrainingLoggerBase):
 		# training/model/dataset config
 		with open(self.run_path / FilePaths.TRAIN_CONFIG, "w") as f:
 			json.dump(train_config, f, indent="\t")
-
-		# set up files and objects for logs, artifacts, and metrics
-		# ----------------------------------------
-
-		self.log_list: list[dict] = list()
-		self.log_file: io.TextIOWrapper = open(self.run_path / FilePaths.LOG, "a")
-
-		self.metrics_list: list[dict] = list()
-		self.metrics_file: io.TextIOWrapper = open(
-			self.run_path / FilePaths.METRICS, "a"
-		)
-
-		self.artifacts_list: list[dict] = list()
-		self.artifacts_file: io.TextIOWrapper = open(
-			self.run_path / FilePaths.ARTIFACTS, "a"
-		)
 
 		self.message("starting logger")
 

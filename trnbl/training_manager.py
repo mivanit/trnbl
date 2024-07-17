@@ -110,7 +110,6 @@ class TrainingManager:
 		self.model: "torch.nn.Module" = model
 		self.dataloader: "torch.utils.data.DataLoader" = dataloader
 		self.logger: TrainingLoggerBase = logger
-		self.epochs: int = epochs
 		self.save_model: Callable[["torch.nn.Module", Path], None] = save_model
 
 		# number of epochs, batches, and samples

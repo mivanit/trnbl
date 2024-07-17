@@ -38,6 +38,16 @@ wandb = ["wandb"]
 tensorboard = ["tensorboard", "numpy"]
 monitoring = ["gputil", "psutil"]
 
+# pytest cfg
+[tool.pytest.ini_options]
+# Ignore DeprecationWarnings
+filterwarnings = [
+	# <frozen importlib._bootstrap>:488: DeprecationWarning: Type google._upb._message.MessageMapContainer uses PyType_Spec with a metaclass that has custom tp_new. This is deprecated and will no longer be allowed in Python 3.14.
+    "ignore::DeprecationWarning:google._upb._message:", 
+    "ignore::DeprecationWarning:importlib._bootstrap:",
+    "ignore::DeprecationWarning:GPUtil.GPUtil:",
+]
+
 # ruff config
 [tool.ruff]
 exclude = ["trnbl/_old/**"]
@@ -45,7 +55,6 @@ exclude = ["trnbl/_old/**"]
 [tool.ruff.format]
 indent-style = "tab"
 skip-magic-trailing-comma = false
-
 
 [build-system]
 requires = ["poetry-core"]

@@ -1,6 +1,6 @@
 from typing import Union, Any
 import pytest
-from trnbl.training_interval import TrainingInterval
+from trnbl.training_interval import TrainingInterval, IntervalValueError
 
 
 def test_as_batch_count():
@@ -284,16 +284,38 @@ def test_from_str_invalid_inputs(input_data: str) -> None:
 	[
 		((0, "runs"), (0, "runs")),
 		(["0.0", "epochs"], (0, "epochs")),
-		((1e-10, "batches"), (1e-10, "batches")),
 		("0.1 runs", (0.1, "runs")),
 		(("1/1000", "epochs"), (0.001, "epochs")),
 	]
 )
-def test_from_any_edge_cases(input_data: Any, expected: tuple[float|int, str]) -> None:
+def test_from_any_edge_cases_nowarn(input_data: Any, expected: tuple[float|int, str]) -> None:
+	"no warnings because batchsize is unknown"
 	result = TrainingInterval.from_any(input_data)
 	assert (
 		result == TrainingInterval(*expected)
 	), f"Expected {expected}, but got {result} for input {input_data}"
+
+@pytest.mark.parametrize(
+	"input_data, expected",
+	[
+		((1e-10, "batches"), (1e-10, "batches")),
+		((1e-10, "batches"), (1, "batches")),
+		((0, "batches"), (0, "batches")),
+		((0, "batches"), (1, "batches")),
+		("0.0 batches", (0, "batches")),
+		((0, "samples"), (0, "samples")),
+		((1, "samples"), (1, "samples")),
+		((2, "samples"), (2, "samples")),
+	]
+)
+def test_from_any_edge_cases_warn(input_data: Any, expected: tuple[float|int, str]) -> None:
+	"no warnings because batchsize is unknown"
+	with pytest.warns(IntervalValueError):
+		result = TrainingInterval.from_any(input_data)
+	assert (
+		result == TrainingInterval(*expected)
+	), f"Expected {expected}, but got {result} for input {input_data}"
+
 
 
 @pytest.mark.parametrize(
@@ -319,7 +341,6 @@ def test_from_any_invalid_inputs(input_data: Any) -> None:
 		("1e-10 epochs", 32, 100, 10, 1),
 		("0.1 batches", 32, 100, 10, 1),
 		("1 samples", 32, 100, 10, 1),
-		("0.01 runs", 32, 100, 10, 10),
 	],
 )
 def test_process_to_batches_edge_cases(
@@ -329,9 +350,10 @@ def test_process_to_batches_edge_cases(
 	epochs: int,
 	expected: int,
 ) -> None:
-	result = TrainingInterval.process_to_batches(
-		interval, batchsize, batches_per_epoch, epochs
-	)
+	with pytest.warns(IntervalValueError):
+		result = TrainingInterval.process_to_batches(
+			interval, batchsize, batches_per_epoch, epochs
+		)
 	assert result == expected, f"Expected {expected}, but got {result} for {interval}"
 
 
@@ -342,7 +364,8 @@ def test_normalization_edge_cases() -> None:
 	assert normalized.unit == "batches"
 
 	interval = TrainingInterval(1e-10, "epochs")
-	normalized = interval.normalized(batchsize=32, batches_per_epoch=100)
+	with pytest.warns(IntervalValueError):
+		normalized = interval.normalized(batchsize=32, batches_per_epoch=100)
 	assert normalized.quantity == 1
 	assert normalized.unit == "batches"
 
@@ -350,7 +373,9 @@ def test_normalization_edge_cases() -> None:
 def test_equality_edge_cases() -> None:
 	assert TrainingInterval(0, "runs") == TrainingInterval(0, "runs")
 	assert TrainingInterval(0, "runs") != TrainingInterval(0, "epochs")
-	assert TrainingInterval(1e-10, "batches") == TrainingInterval(1e-10, "batches")
+
+	with pytest.warns(IntervalValueError):
+		assert TrainingInterval(1e-10, "batches") == TrainingInterval(1e-10, "batches")
 
 
 def test_iteration_and_indexing() -> None:

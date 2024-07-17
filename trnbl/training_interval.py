@@ -3,15 +3,28 @@ from dataclasses import dataclass
 
 from muutils.misc import str_to_numeric
 from muutils.errormode import ErrorMode
+from muutils.interval import Interval
 
 _EPSILON: float = 1e-6
 
 # units of training intervals -- we convert this all to batches
 TrainingIntervalUnit = Literal["runs", "epochs", "batches", "samples"]
 
+_TRAINING_INTERVAL_UNITS_RANGES: dict[TrainingIntervalUnit, Interval] = {
+	"runs": Interval(0, 1, is_closed=False),
+	"epochs": Interval(0, float("inf"), is_closed=False),
+	"batches": Interval(1, float("inf"), is_closed=True),
+	"samples": Interval(1, float("inf"), is_closed=True),
+}
+
 # what to do if interval is < 1 batch
 # if WARN or IGNORE, set it to 1 batch
 WhenIntervalLessThanBatch: ErrorMode = ErrorMode.WARN
+
+
+class IntervalValueError(UserWarning):
+	"""Error for when the interval is less than 1 batch"""
+	pass
 
 
 @dataclass(frozen=True)
@@ -55,11 +68,19 @@ class TrainingInterval:
 			assert (
 				self.unit in TrainingIntervalUnit.__args__
 			), f"invalid unit {self.unit}"
-			assert self.quantity >= 0, "quantity should be non-negative"
 		except AssertionError as e:
 			raise AssertionError(
 				f"Error initializing TrainingInterval\n{self}\n{e}"
 			) from e
+		
+		expected_interval: Interval = _TRAINING_INTERVAL_UNITS_RANGES[self.unit]
+		if self.quantity not in expected_interval:
+			WhenIntervalLessThanBatch.process(
+				f"interval {self} has invalid quantity, expected in interval {expected_interval}, will set to closest bound if not erroring out",
+				except_cls=IntervalValueError,
+				warn_cls=IntervalValueError,
+			)
+			self.__dict__["quantity"] = 1
 
 		# if samples is the unit, round to integer and assert positive
 		if self.unit == "samples":
@@ -75,7 +96,8 @@ class TrainingInterval:
 			if self.quantity < 1:
 				WhenIntervalLessThanBatch.process(
 					f"interval {self} is less than 1 batch, will set to 1 batch if not erroring out",
-					except_cls=ValueError,
+					except_cls=IntervalValueError,
+					warn_cls=IntervalValueError,
 				)
 				self.__dict__["quantity"] = 1
 
@@ -137,7 +159,8 @@ class TrainingInterval:
 		if output < 1:
 			WhenIntervalLessThanBatch.process(
 				f"interval {self} is less than 1 batch, will set to 1 batch if not erroring out",
-				except_cls=ValueError,
+				except_cls=IntervalValueError,
+				warn_cls=IntervalValueError,
 			)
 			output = 1
 

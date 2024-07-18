@@ -20,10 +20,16 @@ const SETTINGS_WIDTH_PX = 100;
 const PLOT_BOTTOM_MARGIN_PX = 5;
 const SNAP_INTERVAL_DEFAULT = 50;
 const NOTIFICATION_COLORS = {
-	'info': 'lightgreen',
-	'warning': 'lightyellow',
-	'error': 'lightcoral',
-}
+    'info': 'lightgreen',
+    'warning': 'lightyellow',
+    'error': 'lightcoral',
+};
+
+const NOTIFICATION_BORDER_COLORS = {
+    'info': 'green',
+    'warning': 'orange',
+    'error': 'red',
+};
 const DEFAULT_STYLE = {
 	border: '1px solid black',
 	backgroundColor: '#f0f0f0',
@@ -44,6 +50,10 @@ const PLOTLY_LAYOUT_MARGIN = { l: 40, r: 30, b: 40, t: 50, pad: 0 };
 */
 
 class IOManager {
+	constructor() {
+        this.fileTimestamps = {};
+    }
+
     async fetchJson(path) {
         try {
             const response = await fetch(path);
@@ -96,6 +106,45 @@ class IOManager {
 	async deleteJsonLocal(name) {
 		localStorage.removeItem(name);
 	}
+
+	async getFileModificationTime(path) {
+        try {
+            const response = await fetch(path, { method: 'HEAD' });
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            return new Date(response.headers.get('Last-Modified'));
+        } catch (error) {
+            console.error('Error fetching file modification time:', error);
+            return null;
+        }
+    }
+
+    async fetchJsonIfModified(path) {
+        const lastModified = await this.getFileModificationTime(path);
+        if (!lastModified) return null;
+
+        if (!this.fileTimestamps[path] || lastModified > this.fileTimestamps[path]) {
+            const data = await this.fetchJson(path);
+            if (data !== null) {
+                this.fileTimestamps[path] = lastModified;
+            }
+            return data;
+        }
+        return null; // File not modified
+    }
+
+    async fetchJsonLinesIfModified(path) {
+        const lastModified = await this.getFileModificationTime(path);
+        if (!lastModified) return null;
+
+        if (!this.fileTimestamps[path] || lastModified > this.fileTimestamps[path]) {
+            const data = await this.fetchJsonLines(path);
+            if (data !== null) {
+                this.fileTimestamps[path] = lastModified;
+            }
+            return data;
+        }
+        return null; // File not modified
+    }
 }
 
 const IO_MANAGER = new IOManager();
@@ -217,6 +266,8 @@ class DataManager {
         this.metricNames = new Set();
         this.projectName = null;
         this.summaryManifest = null;
+        this.lastRefreshTime = null;
+		this.updatedRuns = new Set();
     }
 
 	async loadManifest() {
@@ -303,6 +354,71 @@ class DataManager {
 				config: run.config,
             };
         });
+    }
+
+	async refreshData() {
+        console.log("Checking for updated data...");
+        let dataUpdated = false;
+        this.updatedRuns.clear(); // Clear the set at the start of each refresh
+        
+        // Refresh manifest
+        const newManifest = await IO_MANAGER.fetchJsonLinesIfModified('runs.jsonl');
+        if (newManifest) {
+            this.manifest = newManifest;
+            dataUpdated = true;
+            console.log("Manifest updated");
+            createNotification("Manifest file updated", "info");
+        }
+
+        // Refresh run data
+        for (const run of this.manifest) {
+            const runPath = `runs/${run.run_id}`;
+            const newConfig = await IO_MANAGER.fetchJsonIfModified(`${runPath}/config.json`);
+            const newMeta = await IO_MANAGER.fetchJsonIfModified(`${runPath}/meta.json`);
+            const newMetrics = await IO_MANAGER.fetchJsonLinesIfModified(`${runPath}/metrics.jsonl`);
+            const newLogs = await IO_MANAGER.fetchJsonLinesIfModified(`${runPath}/log.jsonl`);
+            const newArtifacts = await IO_MANAGER.fetchJsonLinesIfModified(`${runPath}/artifacts.jsonl`);
+
+            if (newConfig || newMeta || newMetrics || newLogs || newArtifacts) {
+                const runData = this.allRuns[run.run_id] || new RunData(runPath);
+                if (newConfig) runData.config = newConfig;
+                if (newMeta) runData.meta = newMeta;
+                if (newMetrics) runData.metrics = newMetrics;
+                if (newLogs) runData.logs = newLogs;
+                if (newArtifacts) runData.artifacts = newArtifacts;
+                this.allRuns[run.run_id] = runData;
+                dataUpdated = true;
+                this.updatedRuns.add(run.run_id);
+                console.log(`Updated data for run ${run.run_id}`);
+            }
+        }
+
+        if (dataUpdated) {
+            // Update metric names
+            this.metricNames.clear();
+            for (const run of this.manifest) {
+                run.metric_names.forEach(metricName => {
+                    this.metricNames.add(metricName);
+                });
+            }
+
+            // Update summary manifest
+            this.updateSummaryManifest();
+
+            this.lastRefreshTime = new Date();
+            console.log("Data refresh completed");
+        } else {
+            console.log("No updates found");
+        }
+
+        return dataUpdated;
+    }
+
+    getUpdatedRunsInfo() {
+        return {
+            count: this.updatedRuns.size,
+            runs: Array.from(this.updatedRuns)
+        };
     }
 }
 
@@ -936,16 +1052,37 @@ async function headerButtons() {
 	document.getElementById('refreshButton').addEventListener(
 		'click',
 		async () => {
-			createNotification('Not yet implemented!', 'error');
-			// Implementing the refresh data button functionality
-			// document.getElementById('refreshButton').addEventListener('click', async () => {
-			// 	// Assuming paths to all relevant files are stored in an array `dataPaths`
-			// 	for (const path of dataPaths) {
-			// 		await dataManager.refreshDataIfModified(path, dataManager.fetchJson); // Or dataManager.fetchJsonLines for .jsonl files
-			// 	}
-			// 	// After refreshing data, you might want to update your application state or UI accordingly
-			// 	console.log('Data refresh process completed.');
-			// });
+			createNotification('Checking for data updates...', 'info');
+			const dataUpdated = await DATA_MANAGER.refreshData();
+			if (dataUpdated) {
+				const updatedRunsInfo = DATA_MANAGER.getUpdatedRunsInfo();
+				
+				// Update plots
+				await PLOT_MANAGER.populateAllPlots();
+				
+				// Update table
+				const gridApi = GRID_API.getGridApi();
+				gridApi.setRowData(DATA_MANAGER.summaryManifest);
+				
+				// Detailed notification
+				if (updatedRunsInfo.count > 0) {
+					if (updatedRunsInfo.count < 3) {
+						createNotification(`Data refreshed successfully. ${updatedRunsInfo.count} run(s) updated: ${updatedRunsInfo.runs.join(', ')}`, 'info');
+					}
+					else {
+						createNotification(`Data refreshed successfully. ${updatedRunsInfo.count} run(s) updated.`, 'info');
+					}
+					
+					// Notify about each updated run
+					updatedRunsInfo.runs.forEach(runId => {
+						createNotification(`Run ${runId} was updated`, 'info');
+					});
+				} else {
+					createNotification('Manifest updated, but no individual runs were changed', 'info');
+				}
+			} else {
+				createNotification('No new data updates found', 'info');
+			}
 		}
 	);
 
@@ -959,32 +1096,71 @@ async function headerButtons() {
 }
 
 function createNotification(message, type = 'info') {
-	const log_str = `[${type}]: ${message}`;
-	// print to console
-	switch (type) {
-		case 'info':
-			console.log(log_str);
-			break;
-		case 'warning':
-			console.warn(log_str);
-			break;
-		case 'error':
-			console.error(log_str);
-			break;
-		default:
-			console.log(log_str);
-	}
+    const log_str = `[${type}]: ${message}`;
+    // print to console
+    switch (type) {
+        case 'info':
+            console.log(log_str);
+            break;
+        case 'warning':
+            console.warn(log_str);
+            break;
+        case 'error':
+            console.error(log_str);
+            break;
+        default:
+            console.log(log_str);
+    }
 
-	// create notification div
-	const successDiv = document.createElement('div');
-	successDiv.textContent = message;
-	successDiv.style.cssText = `position: absolute; top: 0; right: 0; padding: 10px; border-radius: 10px; background-color: ${NOTIFICATION_COLORS[type]};`; 
-	document.body.appendChild(successDiv);
+    // create notification div
+    const notificationDiv = document.createElement('div');
+    notificationDiv.textContent = message;
+    notificationDiv.style.cssText = `
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        padding: 10px;
+        border-radius: 5px;
+        background-color: ${NOTIFICATION_COLORS[type]};
+        border: 1px solid ${NOTIFICATION_BORDER_COLORS[type]};
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        transition: transform 0.3s ease-out;
+        z-index: 1000;
+    `;
+    
+    // Function to update positions of all notifications
+    function updateNotificationPositions() {
+        const notifications = document.querySelectorAll('.notification');
+        let currentTop = 10;
+        notifications.forEach((notification, index) => {
+            notification.style.transform = `translateY(${currentTop}px)`;
+            currentTop += notification.offsetHeight + 10; // 10px gap between notifications
+        });
+    }
 
-	// make it disappear after 3 seconds
-	setTimeout(() => {
-		successDiv.remove();
-	}, 3000);
+    // Add a class for easier selection
+    notificationDiv.classList.add('notification');
+
+    // Insert the new notification at the top
+    const firstNotification = document.querySelector('.notification');
+    if (firstNotification) {
+        document.body.insertBefore(notificationDiv, firstNotification);
+    } else {
+        document.body.appendChild(notificationDiv);
+    }
+
+    // Update positions after a short delay to allow for DOM update
+    setTimeout(updateNotificationPositions, 10);
+
+    // Remove the notification after 3 seconds
+    setTimeout(() => {
+        notificationDiv.style.opacity = '0';
+        notificationDiv.style.transform += ' translateX(100%)';
+        setTimeout(() => {
+            notificationDiv.remove();
+            updateNotificationPositions();
+        }, 300); // Match this with the CSS transition time
+    }, 3000);
 }
 
 

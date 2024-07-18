@@ -115,11 +115,11 @@ class LocalLogger(TrainingLoggerBase):
 		# write the index.html and start_server.py files
 		# ----------------------------------------
 		from trnbl.loggers.local.html_frontend import get_html_frontend
-		with open(self.run_path / FilePaths.HTML_INDEX, "w") as f:
+		with open(self.project_path / FilePaths.HTML_INDEX, "w") as f:
 			f.write(get_html_frontend())
 		
 		import trnbl.loggers.local.start_server as start_server_module
-		with open(self.run_path / FilePaths.START_SERVER, "w") as f:
+		with open(self.project_path / FilePaths.START_SERVER, "w") as f:
 			f.write(inspect.getsource(start_server_module))
 
 		# write init files

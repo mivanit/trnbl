@@ -101,7 +101,7 @@ def build_dist(
 				# insert script element
 				new_script: Tag = soup.new_tag("script")
 				new_script.string = file_text
-				soup.html.body.append(new_script)
+				soup.html.head.append(new_script)
 
 	# Find image tags. example: <img src="images/img1.png">
 	for tag in soup.find_all("img", src=True):

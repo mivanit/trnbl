@@ -216,13 +216,21 @@ build-frontend:
 	echo "import json" > $(HTML_FRONTEND_FILE); \
 	echo "def get_html_frontend() -> str:" >> $(HTML_FRONTEND_FILE); \
 	echo "    return (" >> $(HTML_FRONTEND_FILE); \
-	$(PYTHON) -m trnbl.loggers.local.build_dist -j index_src.html >> $(HTML_FRONTEND_FILE); \
+	$(PYTHON) -m trnbl.loggers.local.build_dist --no-minify -j index_src.html >> $(HTML_FRONTEND_FILE); \
 	echo ")" >> $(HTML_FRONTEND_FILE); \
+	echo "if __name__ == '__main__':" >> $(HTML_FRONTEND_FILE); \
+	echo "    print(get_html_frontend())" >> $(HTML_FRONTEND_FILE); \
 	$(PYTHON) -m ruff format --config ../../../../$(PYPROJECT) $(HTML_FRONTEND_FILE)
 
 .PHONY: build
 build: build-frontend
 	poetry build
+
+.PHONY: update-demo-frontend
+update-demo-frontend: build-frontend
+	@echo "update frontend html for iris demo"
+	pwd
+	$(PYTHON) -m trnbl.loggers.local.html_frontend > demos/local/iris-demo/index.html
 
 .PHONY: publish
 publish: gen-commit-log check build verify-git version gen-version-info

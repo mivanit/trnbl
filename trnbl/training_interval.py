@@ -100,7 +100,6 @@ class TrainingInterval:
 
 		# check values in proper ranges
 		expected_interval: Interval = _TRAINING_INTERVAL_UNITS_RANGES[self.unit]
-		print(f"{self.quantity = } {expected_interval = }")
 		if self.quantity not in expected_interval:
 			WhenIntervalLessThanBatch.process(
 				f"interval {self} has invalid quantity, expected in interval {expected_interval}, will set to closest bound if not erroring out",

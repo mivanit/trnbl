@@ -5,8 +5,11 @@ from typing import Any
 from pathlib import Path
 import io
 import random
+import inspect
 
 from trnbl.loggers.base import TrainingLoggerBase
+from trnbl.loggers.local.html_frontend import HTML_FRONTEND
+import trnbl.loggers.local.start_server as start_server_module
 
 
 class FilePaths:
@@ -20,6 +23,8 @@ class FilePaths:
 	)  # relative to project path instead of run path
 	RUNS_DIR: Path = Path("runs")  # relative to project path instead of run path
 	ERROR_FILE: Path = Path("ERROR.txt")
+	HTML_INDEX: Path = Path("index.html")
+	START_SERVER: Path = Path("start_server.py")
 
 
 VOWELS: str = "aeiou"
@@ -108,6 +113,14 @@ class LocalLogger(TrainingLoggerBase):
 		with open(self.project_path / FilePaths.RUNS_MANIFEST, "a") as f:
 			json.dump(self.logger_meta, f)
 			f.write("\n")
+
+		# write the index.html and start_server.py files
+		# ----------------------------------------
+		with open(self.run_path / FilePaths.HTML_INDEX, "w") as f:
+			f.write(HTML_FRONTEND)
+		
+		with open(self.run_path / FilePaths.START_SERVER, "w") as f:
+			f.write(inspect.getsource(start_server_module))
 
 		# write init files
 		# ----------------------------------------

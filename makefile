@@ -232,6 +232,14 @@ update-demo-frontend: build-frontend
 	pwd
 	$(PYTHON) -m trnbl.loggers.local.html_frontend > demos/local/iris-demo/index.html
 
+.PHONY: copy-dev-frontend
+copy-dev-frontend:
+	@echo "update frontend html with raw dev version for iris demo"
+	pwd
+	cp trnbl/loggers/local/frontend_src/index_src.html demos/local/iris-demo/index.html
+	cp trnbl/loggers/local/frontend_src/dashboard.js demos/local/iris-demo/dashboard.js
+	cp trnbl/loggers/local/frontend_src/style.css demos/local/iris-demo/style.css
+
 .PHONY: publish
 publish: gen-commit-log check build verify-git version gen-version-info
 	@echo "run all checks, build, and then publish"

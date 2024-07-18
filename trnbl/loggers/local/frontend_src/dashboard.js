@@ -668,6 +668,7 @@ class LayoutManager {
 
     async saveLayout() {
 		this.updateGridState();
+        this.visibilityState = PLOT_MANAGER.visibilityState;
         const layoutKey = this.get_local_storage_key();
         IO_MANAGER.saveJsonLocal(layoutKey, this);
 		const layout_read = await IO_MANAGER.readJsonLocal(layoutKey);
@@ -690,6 +691,8 @@ class LayoutManager {
 			this.snapInterval = savedLayout.snapInterval;
 			this.plot_configs = savedLayout.plot_configs;
 			this.grid_state = savedLayout.grid_state;
+			this.visibilityState = savedLayout.visibilityState || {};
+            PLOT_MANAGER.visibilityState = this.visibilityState;
 		} else {
 			this.layout = this.get_default_layout(DATA_MANAGER.metricNames);
 		}
@@ -737,6 +740,7 @@ class LayoutManager {
 class PlotManager {
     constructor() {
         this.plots = {}; // Keyed by metricName, values are objects with Plotly plot div ID and settings
+		this.visibilityState = {};
     }
 
     async createPlot(metricName) {
@@ -852,6 +856,7 @@ class PlotManager {
 				mode: 'lines',
 				line: plotConfig.smoothing_span ? { shape: 'spline' } : {},
 				name: run_syllabic_id,
+				visible: this.visibilityState[run_syllabic_id] !== false ? true : 'legendonly',
 			};
 			traces.push(trace);
 		}
@@ -867,6 +872,30 @@ class PlotManager {
 			traces,
 			JSON.parse(JSON.stringify(PLOTLY_LAYOUTS[metricName])),
 		);
+    }
+
+	updateTraceVisibility(runId, isVisible) {
+        this.visibilityState[runId] = isVisible;
+        for (const metricName of DATA_MANAGER.metricNames) {
+            const plotInfo = this.plots[metricName];
+            if (plotInfo) {
+                Plotly.restyle(plotInfo.plotID, {
+                    visible: isVisible ? true : 'legendonly'
+                }, [this.getTraceIndex(plotInfo.plotID, runId)]);
+            }
+        }
+    }
+
+    getTraceIndex(plotId, runId) {
+        const plotDiv = document.getElementById(plotId);
+        const data = plotDiv.data;
+        return data.findIndex(trace => trace.name === runId);
+    }
+
+    updateAllVisibility() {
+        for (const metricName of DATA_MANAGER.metricNames) {
+            this.updatePlot(metricName);
+        }
     }
 
 	async populateAllPlots() {
@@ -985,7 +1014,13 @@ class PlotManager {
 
 let PLOT_MANAGER = new PlotManager();
 
+function updatePlotVisibility(runId, isVisible) {
+    PLOT_MANAGER.updateTraceVisibility(runId, isVisible);
+}
 
+function updateAllPlotsVisibility() {
+    PLOT_MANAGER.updateAllVisibility();
+}
 
 /*
 ##     ## ########    ###    ########  ######## ########
@@ -1244,12 +1279,63 @@ function fancyCellRenderer(params) {
 function createColumnDefs(summaryManifest) {
     var columnDefs = [
         {
-            headerName: 'view/hide',
-            field: 'selected',
-            width: 30,
-            checkboxSelection: true,
-            headerCheckboxSelection: true,
-            headerCheckboxSelectionFilteredOnly: true,
+            headerName: 'View/Hide',
+            field: 'visible',
+            width: 80,
+            cellRenderer: params => {
+                const cellDiv = document.createElement('div');
+                cellDiv.style.display = 'flex';
+                cellDiv.style.alignItems = 'center';
+                cellDiv.style.justifyContent = 'center';
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = params.value !== false; // Default to true if not set
+                checkbox.style.marginRight = '5px';
+
+                const icon = document.createElement('i');
+                icon.setAttribute('data-feather', checkbox.checked ? 'eye' : 'eye-off');
+
+                cellDiv.appendChild(checkbox);
+                cellDiv.appendChild(icon);
+
+                checkbox.addEventListener('change', (event) => {
+                    params.setValue(checkbox.checked);
+                    icon.setAttribute('data-feather', checkbox.checked ? 'eye' : 'eye-off');
+                    feather.replace(); // Update the icon
+                    updatePlotVisibility(params.data['id.syllabic'], checkbox.checked);
+                });
+
+                return cellDiv;
+            },
+            headerComponent: params => {
+                const headerDiv = document.createElement('div');
+                headerDiv.style.display = 'flex';
+                headerDiv.style.alignItems = 'center';
+                headerDiv.style.justifyContent = 'center';
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = true;
+                checkbox.style.marginRight = '5px';
+
+                const icon = document.createElement('i');
+                icon.setAttribute('data-feather', 'eye');
+
+                headerDiv.appendChild(checkbox);
+                headerDiv.appendChild(icon);
+
+                checkbox.addEventListener('change', () => {
+                    const api = params.api;
+                    api.forEachNode(node => {
+                        node.setDataValue('visible', checkbox.checked);
+                    });
+                    api.refreshCells({force: true, columns: ['visible']});
+                    updateAllPlotsVisibility();
+                });
+
+                return headerDiv;
+            },
         },
     ];
 
@@ -1411,25 +1497,33 @@ function createRunsManifestTable(summaryManifest) {
 
 async function init() {
 	// load basic data
-	// await loadManifestAndMetrics();
 	await DATA_MANAGER.loadManifest();
+	
 	// layout stuff
 	LAYOUT_MANAGER = new LayoutManager(DATA_MANAGER.projectName);
-	LAYOUT_MANAGER.loadLayout(do_update = false);
+	await LAYOUT_MANAGER.loadLayout(do_update=false);
+	
 	// set up header and buttons
 	await headerButtons();
+	
 	// create empty plots
 	await PLOT_MANAGER.createAllPlots();
+	
 	// load data
 	await DATA_MANAGER.loadRuns();
-	// populate table
+	
+	// populate table and get grid API
 	await createRunsManifestTable(DATA_MANAGER.summaryManifest);
+	
+	// Apply visibility state to the table
+	GRID_API.forEachNode(node => {
+		const runId = node.data['id.syllabic'];
+		node.setDataValue('visible', LAYOUT_MANAGER.visibilityState[runId] !== false);
+	});
+	GRID_API.refreshCells({force: true, columns: ['visible']});
+	
 	// populate plots
 	await PLOT_MANAGER.populateAllPlots();
-	// load layout
-	// LAYOUT_MANAGER.updateAllLayouts();
-	// update draggables
-	// await updateDraggableSnapIntervals();
 
 	// feather icons
 	try {
@@ -1443,7 +1537,7 @@ async function init() {
 	}
 	catch (e) {
 		console.error('Feather icons not found');
-		displayNotification('Feather icons not found, keeping text fallback', 'error');
+		createNotification('Feather icons not found, keeping text fallback', 'error');
 	}
 	console.log('init complete');
 

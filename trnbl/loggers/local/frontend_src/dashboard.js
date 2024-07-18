@@ -1124,15 +1124,16 @@ function createNotification(message, type = 'info') {
         background-color: ${NOTIFICATION_COLORS[type]};
         border: 1px solid ${NOTIFICATION_BORDER_COLORS[type]};
         box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        transition: transform 0.3s ease-out;
+        transition: transform 0.3s ease-out, opacity 0.3s ease-out;
         z-index: 1000;
+        opacity: 0;  // Start with 0 opacity for fade-in effect
     `;
     
     // Function to update positions of all notifications
     function updateNotificationPositions() {
         const notifications = document.querySelectorAll('.notification');
         let currentTop = 10;
-        notifications.forEach((notification, index) => {
+        notifications.forEach((notification) => {
             notification.style.transform = `translateY(${currentTop}px)`;
             currentTop += notification.offsetHeight + 10; // 10px gap between notifications
         });
@@ -1148,6 +1149,12 @@ function createNotification(message, type = 'info') {
     } else {
         document.body.appendChild(notificationDiv);
     }
+
+    // Trigger reflow to ensure the initial state is applied before changing opacity
+    notificationDiv.offsetHeight;
+
+    // Fade in the notification
+    notificationDiv.style.opacity = '1';
 
     // Update positions after a short delay to allow for DOM update
     setTimeout(updateNotificationPositions, 10);

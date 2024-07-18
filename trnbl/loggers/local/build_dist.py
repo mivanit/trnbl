@@ -3,7 +3,6 @@ import base64
 import requests
 import json
 
-import rjsmin
 from bs4 import BeautifulSoup, Tag
 
 
@@ -95,8 +94,6 @@ def build_dist(
 			)
 
 			if file_text is not None:
-				if minify:
-					file_text = rjsmin.jsmin(file_text)
 
 				# remove the tag from soup
 				tag.extract()

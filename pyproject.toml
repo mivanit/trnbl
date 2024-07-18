@@ -33,6 +33,9 @@ minify-html = "^0.15.0"
 beautifulsoup4 = "^4.12.3"
 # type hints
 torch = "^2.0.0"
+# running demo
+pandas = "^2.2.2"
+ipykernel = "^6.29.5"
 
 [tool.poetry.extras]
 wandb = ["wandb"]

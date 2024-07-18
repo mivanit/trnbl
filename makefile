@@ -214,7 +214,8 @@ build-frontend:
 	@echo "building html frontend"
 	cd $(PACKAGE_NAME)/loggers/local/frontend_src/; \
 	echo "import json" > $(HTML_FRONTEND_FILE); \
-	echo "HTML_FRONTEND: str = json.loads(" >> $(HTML_FRONTEND_FILE); \
+	echo "def get_html_frontend() -> str:" >> $(HTML_FRONTEND_FILE); \
+	echo "    return (" >> $(HTML_FRONTEND_FILE); \
 	$(PYTHON) -m trnbl.loggers.local.build_dist -j index_src.html >> $(HTML_FRONTEND_FILE); \
 	echo ")" >> $(HTML_FRONTEND_FILE); \
 	$(PYTHON) -m ruff format --config ../../../../$(PYPROJECT) $(HTML_FRONTEND_FILE)

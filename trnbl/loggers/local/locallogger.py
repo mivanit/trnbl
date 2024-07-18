@@ -8,8 +8,6 @@ import random
 import inspect
 
 from trnbl.loggers.base import TrainingLoggerBase
-from trnbl.loggers.local.html_frontend import HTML_FRONTEND
-import trnbl.loggers.local.start_server as start_server_module
 
 
 class FilePaths:
@@ -116,9 +114,11 @@ class LocalLogger(TrainingLoggerBase):
 
 		# write the index.html and start_server.py files
 		# ----------------------------------------
+		from trnbl.loggers.local.html_frontend import get_html_frontend
 		with open(self.run_path / FilePaths.HTML_INDEX, "w") as f:
-			f.write(HTML_FRONTEND)
+			f.write(get_html_frontend())
 		
+		import trnbl.loggers.local.start_server as start_server_module
 		with open(self.run_path / FilePaths.START_SERVER, "w") as f:
 			f.write(inspect.getsource(start_server_module))
 

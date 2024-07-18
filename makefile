@@ -27,7 +27,14 @@ PYPROJECT := pyproject.toml
 PYTHON_BASE := python
 # where the commit log will be stored
 COMMIT_LOG_FILE := .github/local/.commit_log
+# where the html frontend will be stored after minification
+HTML_FRONTEND_FILE := html_frontend.py
 
+# default target (help)
+# ==================================================
+
+.PHONY: default
+default: help
 
 # reading information and command line options
 # ==================================================
@@ -83,12 +90,10 @@ ifeq ($(COV),1)
 endif
 
 
-# default target (help)
+
+
+# installation and setup
 # ==================================================
-
-.PHONY: default
-default: help
-
 .PHONY: version
 version: gen-commit-log
 	@echo "Current version is $(VERSION), last auto-uploaded version is $(LAST_VERSION)"
@@ -99,9 +104,6 @@ version: gen-commit-log
 		exit 1; \
 	fi
 
-
-# installation and setup
-# ==================================================
 # whether to enter the poetry shell after `make setup`
 USE_SHELL ?= 1
 ifdef NO_SHELL
@@ -207,8 +209,18 @@ verify-git:
 	fi; \
 
 
+.PHONY: build-frontend
+build-frontend:
+	@echo "building html frontend"
+	cd $(PACKAGE_NAME)/frontend/; \
+	echo "import json" > $(HTML_FRONTEND_FILE); \
+	echo "HTML_FRONTEND: str = json.loads(" >> $(HTML_FRONTEND_FILE); \
+	$(PYTHON) -m trnbl.frontend.build_dist -j index_src.html >> $(HTML_FRONTEND_FILE); \
+	echo ")" >> $(HTML_FRONTEND_FILE); \
+	$(PYTHON) -m ruff format --config ../../$(PYPROJECT) $(HTML_FRONTEND_FILE)
+
 .PHONY: build
-build: 
+build: build-frontend
 	poetry build
 
 .PHONY: publish

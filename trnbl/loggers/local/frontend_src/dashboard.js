@@ -1092,8 +1092,7 @@ async function headerButtons() {
 				await PLOT_MANAGER.populateAllPlots();
 				
 				// Update table
-				const gridApi = GRID_API.getGridApi();
-				gridApi.setRowData(DATA_MANAGER.summaryManifest);
+				GRID_API.setRowData(DATA_MANAGER.summaryManifest);
 				
 				// Detailed notification
 				if (updatedRunsInfo.count > 0) {
@@ -1122,6 +1121,7 @@ async function headerButtons() {
 		'click',
 		async () => {
 			GRID_API.resetColumnState();
+			createNotification('Column state reset', 'info');
 		}
 	);
 }
@@ -1281,7 +1281,7 @@ function createColumnDefs(summaryManifest) {
 		{
         	headerName: 'View/Hide',
             field: 'visible',
-            width: 80,
+            width: 100,
             cellRenderer: params => {
                 const cellDiv = document.createElement('div');
                 cellDiv.style.display = 'flex';
@@ -1308,22 +1308,22 @@ function createColumnDefs(summaryManifest) {
 
                 return cellDiv;
             },
-            headerComponentParams: {
-                template: 
-                    '<div class="ag-cell-label-container" role="presentation">' +
-                    '  <span ref="eMenu" class="ag-header-icon ag-header-cell-menu-button"></span>' +
-                    '  <div ref="eLabel" class="ag-header-cell-label" role="presentation">' +
-                    '    <span ref="eText" class="ag-header-cell-text"></span>' +
-                    '    <span ref="eFilter" class="ag-header-icon ag-filter-icon"></span>' +
-                    '    <span ref="eSortOrder" class="ag-header-icon ag-sort-order"></span>' +
-                    '    <span ref="eSortAsc" class="ag-header-icon ag-sort-ascending-icon"></span>' +
-                    '    <span ref="eSortDesc" class="ag-header-icon ag-sort-descending-icon"></span>' +
-                    '    <span ref="eSortNone" class="ag-header-icon ag-sort-none-icon"></span>' +
-                    '    <input ref="eSelectAll" class="ag-input-field-input ag-checkbox-input" type="checkbox"/>' +
-                    '  </div>' +
-                    '</div>',
-                selectAllCheckbox: true
-            }
+            // headerComponentParams: {
+            //     template: 
+            //         '<div class="ag-cell-label-container" role="presentation">' +
+            //         '  <span ref="eMenu" class="ag-header-icon ag-header-cell-menu-button"></span>' +
+            //         '  <div ref="eLabel" class="ag-header-cell-label" role="presentation">' +
+            //         '    <span ref="eText" class="ag-header-cell-text"></span>' +
+            //         '    <span ref="eFilter" class="ag-header-icon ag-filter-icon"></span>' +
+            //         '    <span ref="eSortOrder" class="ag-header-icon ag-sort-order"></span>' +
+            //         '    <span ref="eSortAsc" class="ag-header-icon ag-sort-ascending-icon"></span>' +
+            //         '    <span ref="eSortDesc" class="ag-header-icon ag-sort-descending-icon"></span>' +
+            //         '    <span ref="eSortNone" class="ag-header-icon ag-sort-none-icon"></span>' +
+            //         '    <input ref="eSelectAll" class="ag-input-field-input ag-checkbox-input" type="checkbox"/>' +
+            //         '  </div>' +
+            //         '</div>',
+            //     selectAllCheckbox: true
+            // },
         },
     ];
 
@@ -1418,6 +1418,7 @@ function adjustTableHeight(table) {
 }
 
 
+
 function createRunsManifestTable(summaryManifest) {
 	// create plot container
 	const runsManifestTable = document.createElement('div');
@@ -1476,6 +1477,13 @@ function createRunsManifestTable(summaryManifest) {
 	// api is used in LayoutManager.updateGridState
 	GRID_API = agGrid.createGrid(runsManifestTable, gridOptions);
 
+	// load in the visibility state of the runs
+	GRID_API.forEachNode(node => {
+		const runId = node.data.id.syllabic;
+		const isVisible = LAYOUT_MANAGER.visibilityState[runId] !== false;
+		node.setDataValue('visible', isVisible);
+	});
+	GRID_API.refreshCells({force: true, columns: ['visible']});
 }
 
 

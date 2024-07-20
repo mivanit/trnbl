@@ -1290,34 +1290,45 @@ function fancyCellRenderer(params) {
 function createColumnDefs(summaryManifest) {
     var columnDefs = [
 		{
-        	headerName: 'View/Hide',
-            field: 'visible',
-            width: 100,
-            cellRenderer: params => {
-                const cellDiv = document.createElement('div');
-				cellDiv.style.cssText = 'display: flex; align-items: center; justify-content: center;';
-
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.checked = params.value !== false; // Default to true if not set
-                checkbox.style.marginRight = '5px';
-
-                const icon = document.createElement('i');
-                icon.setAttribute('data-feather', checkbox.checked ? 'eye' : 'eye-off');
-
-                cellDiv.appendChild(checkbox);
-                cellDiv.appendChild(icon);
-
-                checkbox.addEventListener('change', (event) => {
-                    params.setValue(checkbox.checked);
-                    icon.setAttribute('data-feather', checkbox.checked ? 'eye' : 'eye-off');
-                    feather.replace(); // Update the icon
-                    PLOT_MANAGER.updateTraceVisibility(params.data.id.syllabic, checkbox.checked);
-                });
-
-                return cellDiv;
-            },
-        },
+			headerName: 'View/Hide',
+			field: 'visible',
+			width: 100,
+			cellRenderer: params => {
+				const cellDiv = document.createElement('div');
+				cellDiv.className = 'ag-cell-wrapper';
+				cellDiv.style.display = 'flex';
+				cellDiv.style.alignItems = 'center';
+				cellDiv.style.justifyContent = 'center';
+		
+				const checkbox = document.createElement('input');
+				checkbox.type = 'checkbox';
+				checkbox.checked = params.value !== false;
+				checkbox.style.marginRight = '5px';
+		
+				const iconDiv = document.createElement('div');
+				iconDiv.innerHTML = feather.icons[checkbox.checked ? 'eye' : 'eye-off'].toSvg();
+				iconDiv.style.pointerEvents = 'none'; // Make icon non-interactive
+		
+				cellDiv.appendChild(checkbox);
+				cellDiv.appendChild(iconDiv);
+		
+				const updateVisibility = (isVisible) => {
+					params.setValue(isVisible);
+					checkbox.checked = isVisible;
+					iconDiv.innerHTML = feather.icons[isVisible ? 'eye' : 'eye-off'].toSvg();
+					PLOT_MANAGER.updateTraceVisibility(params.data.id.syllabic, isVisible);
+				};
+		
+				checkbox.addEventListener('change', () => updateVisibility(checkbox.checked));
+				cellDiv.addEventListener('click', (event) => {
+					if (event.target !== checkbox) {
+						updateVisibility(!checkbox.checked);
+					}
+				});
+		
+				return cellDiv;
+			},
+		},		
     ];
 
 	// date filter
@@ -1436,7 +1447,11 @@ function toggleRowsVisibility(affectVisible) {
         PLOT_MANAGER.updatePlot(metricName);
     });
 
-    GRID_API.refreshCells({force: true, columns: ['visible']});
+    GRID_API.refreshCells({
+        force: true,
+        columns: ['visible'],
+        rowNodes: rowsToToggle
+    });
 }
 
 function createRunsManifestTable(summaryManifest) {

@@ -60,7 +60,7 @@ class IOManager {
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             return await response.json();
         } catch (error) {
-            console.error('Fetch JSON error:', error);
+			createNotification(`Fetch JSON error: ${error}`, 'error', error);
             return null;
         }
     }
@@ -78,12 +78,12 @@ class IOManager {
 			const lastLine = JSON.parse(lines[lines.length - 1]);
 			validLines.push(lastLine);
 		  } catch (error) {
-			console.error(`Invalid JSON in the last line of ${path}: `, error);
+			createNotification(`Invalid JSON in the last line of ${path}: ${error}`, 'error', error);
 		  }
 	  
 		  return validLines;
 		} catch (error) {
-		  console.error('Fetch JSON Lines error:', error);
+		  createNotification(`Fetch JSON Lines error: ${error}`, 'error', error);
 		  return null;
 		}
 	  }
@@ -113,7 +113,7 @@ class IOManager {
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             return new Date(response.headers.get('Last-Modified'));
         } catch (error) {
-            console.error('Error fetching file modification time:', error);
+			createNotification(`Error fetching file modification time: ${error}`, 'error', error);
             return null;
         }
     }
@@ -241,7 +241,7 @@ class RunData {
 				}
 				break;
 			default:
-				console.error("Invalid smoothing method.");
+				createNotification(`Invalid smoothing method: ${method}`, 'error');
 				return [];
 		}
 	
@@ -290,7 +290,6 @@ class DataManager {
         if (projectNames.size === 1) {
             this.projectName = projectNames.values().next().value;
         } else {
-            // console.error('Project names are not consistent across runs', projectNames);
 			createNotification(`Project names are not consistent across runs: ${projectNames}`, 'error');
         }
 	}
@@ -366,7 +365,6 @@ class DataManager {
         if (newManifest) {
             this.manifest = newManifest;
             dataUpdated = true;
-            console.log("Manifest updated");
             createNotification("Manifest file updated", "info");
         }
 
@@ -889,7 +887,6 @@ class PlotManager {
     getTraceIndex(plotId, runId) {
         const plotDiv = document.getElementById(plotId);
         const data = plotDiv.data;
-		console.log("getTraceIndex: plotDiv.data", data);
 		const index = data.findIndex(trace => trace.name === runId);
 		if (index < 0) {
 			console.error(`Trace for run ${runId} not found in plot ${plotId}`);
@@ -1129,21 +1126,25 @@ async function headerButtons() {
 	);
 }
 
-function createNotification(message, type = 'info') {
-    const log_str = `[${type}]: ${message}`;
+function createNotification(message, type = 'info', extra = null) {
+    const log_str = `[${type}]: ${message}\n${extra ? extra : ''}`;
     // print to console
     switch (type) {
         case 'info':
             console.log(log_str);
+			if (extra) { console.log(extra); };
             break;
         case 'warning':
             console.warn(log_str);
+			if (extra) { console.warn(extra); };
             break;
         case 'error':
             console.error(log_str);
+			if (extra) { console.error(extra); };
             break;
         default:
             console.log(log_str);
+			if (extra) { console.log(extra); };
     }
 
     // create notification div
@@ -1302,8 +1303,6 @@ function createColumnDefs(summaryManifest) {
                     params.setValue(checkbox.checked);
                     icon.setAttribute('data-feather', checkbox.checked ? 'eye' : 'eye-off');
                     feather.replace(); // Update the icon
-					console.log("params", params);
-					console.log("params.data.id.syllabic", params.data.id.syllabic);
                     PLOT_MANAGER.updateTraceVisibility(params.data.id.syllabic, checkbox.checked);
                 });
 
@@ -1537,7 +1536,6 @@ async function init() {
 		});
 	}
 	catch (e) {
-		console.error('Feather icons not found');
 		createNotification('Feather icons not found, keeping text fallback', 'error');
 	}
 	console.log('init complete');

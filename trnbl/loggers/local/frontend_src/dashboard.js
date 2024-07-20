@@ -1396,6 +1396,15 @@ function createColumnDefs(summaryManifest) {
                     headerName: 'Config',
                     // width: 50, // TODO: this width is broken
 					cellRenderer: fancyCellRenderer,
+					valueFormatter: params => {
+                        if (params.value === null || params.value === undefined) {
+                            return '';
+                        }
+                        if (typeof params.value === 'object') {
+                            return JSON.stringify(params.value);
+                        }
+                        return params.value.toString();
+                    },
                 },
             ],
 			marryChildren: true,

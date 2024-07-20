@@ -273,7 +273,6 @@ publish: gen-commit-log check build verify-git version gen-version-info
 clean:
 	@echo "cleaning up"
 	rm -rf .mypy_cache
-	rm -rf .ruff_cache
 	rm -rf .pytest_cache
 	rm -rf .coverage
 	rm -rf dist
@@ -282,6 +281,7 @@ clean:
 	rm -rf $(TESTS_TEMP_DIR)
 	$(PYTHON_BASE) -Bc "import pathlib; [p.unlink() for p in pathlib.Path('.').rglob('*.py[co]')]"
 	$(PYTHON_BASE) -Bc "import pathlib; [p.rmdir() for p in pathlib.Path('.').rglob('__pycache__')]"
+	$(PYTHON_BASE) -Bc "import shutil, pathlib; [shutil.rmtree(p) for p in pathlib.Path('.').rglob('.ruff_cache')]"
 
 
 # setting up smart help command

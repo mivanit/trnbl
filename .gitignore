@@ -6,6 +6,7 @@ data/mnist/**
 frontend-mnist/**
 tests/_temp/**
 node_modules/
+.ruff_cache/
 
 # default python .gitignore
 # ========================================

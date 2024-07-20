@@ -8,7 +8,7 @@
  ######   #######  ##    ##  ######     ##     ######
 */
 
-
+// APIs and global variables
 let LAYOUT_MANAGER = null;
 let PLOTLY_LAYOUTS = {};
 let GRID_API = null;
@@ -16,20 +16,32 @@ let GRID_API = null;
 const DEFAULT_XUNITS = 'samples';
 
 // settings
-const SETTINGS_WIDTH_PX = 100;
-const PLOT_BOTTOM_MARGIN_PX = 5;
-const SNAP_INTERVAL_DEFAULT = 50;
-const NOTIFICATION_COLORS = {
-    'info': 'lightgreen',
-    'warning': 'lightyellow',
-    'error': 'lightcoral',
-};
 
-const NOTIFICATION_BORDER_COLORS = {
-    'info': 'green',
-    'warning': 'orange',
-    'error': 'red',
-};
+const LAYOUT_CONFIG = {
+	"plot_cont_height": 300, 
+	"plotcont_frac": 0.4,
+	"elements_initial_offset_y": 200,
+	"minimum_dims": { width: 250, height: 150 },
+	"table_init_height": 800,
+	"plot_bottom_margin_px": 5,
+	"snap_interval_default": 50,
+	"settings_width_px": 100,
+}
+
+const NOTIFICATION_CONFIG = {
+	colors: {
+		'info': 'lightgreen',
+		'warning': 'lightyellow',
+		'error': 'lightcoral',
+	},
+	border_colors: {
+		'info': 'green',
+		'warning': 'orange',
+		'error': 'red',
+	},
+	timeout: 5000,
+}
+
 const DEFAULT_STYLE = {
 	border: '1px solid black',
 	backgroundColor: '#f0f0f0',
@@ -436,24 +448,20 @@ const DATA_MANAGER = new DataManager();
 */
 
 class LayoutManager {
-    constructor(
-			projectName, 
-			default_plot_cont_height = 300, 
-			plotcont_frac = 0.4,
-		) {
+    constructor(projectName) {
 		this.projectName = projectName;
 		this.layout = {};
 		this.do_snap = true;
-		this.snapInterval = SNAP_INTERVAL_DEFAULT;
+		this.snapInterval = LAYOUT_CONFIG.snap_interval_default;
 		this.plot_configs = {};
 		this.grid_state = null;
 		this.visibilityState = {};
 		// default layout stuff
-		this.init_y = this.round_to_snap_interval(130),
-		this.default_plot_cont_height = this.round_to_snap_interval(default_plot_cont_height);
+		this.init_y = this.round_to_snap_interval(LAYOUT_CONFIG.elements_initial_offset_y);
+		this.default_plot_cont_height = this.round_to_snap_interval(LAYOUT_CONFIG.plot_cont_height);
 		// calculate widths
 		const window_width = window.innerWidth;
-		this.default_plot_cont_width = this.round_to_snap_interval(window_width * plotcont_frac);
+		this.default_plot_cont_width = this.round_to_snap_interval(window_width * LAYOUT_CONFIG.plotcont_frac);
 		this.table_width = this.round_to_snap_interval(window_width - (this.default_plot_cont_width + this.snapInterval));
     }
 
@@ -485,9 +493,9 @@ class LayoutManager {
 	
 		// table
 		layout['runsManifest'] = {
-			x: this.default_plot_cont_width + SNAP_INTERVAL_DEFAULT,
+			x: this.default_plot_cont_width + LAYOUT_CONFIG.snap_interval_default,
 			y: this.init_y,
-			height: 800,
+			height: LAYOUT_CONFIG.table_init_height,
 			width: this.table_width,
 		};
 	
@@ -501,7 +509,7 @@ class LayoutManager {
 
 	async getDefaultPlotConfig() {
         return {
-            size: { width: this.default_plot_cont_width - SETTINGS_WIDTH_PX, height: this.default_plot_cont_height },
+            size: { width: this.default_plot_cont_width - LAYOUT_CONFIG.settings_width_px, height: this.default_plot_cont_height },
             axisScales: { x: 'linear', y: 'linear' },
 			smoothing_method: 'SMA',
             smoothing_span: null,
@@ -579,7 +587,7 @@ class LayoutManager {
                     range: Infinity,
                 }),
                 interact.modifiers.restrictSize({
-                    min: { width: 250, height: 150 }
+                    min: LAYOUT_CONFIG.minimum_dims,
                 }),
             ],
             inertia: true
@@ -598,7 +606,7 @@ class LayoutManager {
 				const plotDiv = target.querySelector('.plotDiv');
 
 				// Set plotSettings width and adjust plotDiv width
-				var plotDivWidth = event.rect.width - SETTINGS_WIDTH_PX;
+				var plotDivWidth = event.rect.width - LAYOUT_CONFIG.settings_width_px;
 				plotSettings.style.width = plotDivWidth;
 
 				// Update plotDiv and Plotly plot size
@@ -609,14 +617,14 @@ class LayoutManager {
 				const plotID = plotDiv.id;
 				Plotly.relayout(plotID, {
 					width: plotDivWidth, // New width for the plot
-					height: event.rect.height - PLOT_BOTTOM_MARGIN_PX, // New height for the plot
+					height: event.rect.height - LAYOUT_CONFIG.plot_bottom_margin_px, // New height for the plot
 				});
 
 				// save in plot configs
 				const metricName = plotID.split('-')[1];
 				this.plot_configs[metricName].size = { width: plotDivWidth, height: event.rect.height };
 				PLOTLY_LAYOUTS[metricName].width = plotDivWidth;
-				PLOTLY_LAYOUTS[metricName].height = event.rect.height - PLOT_BOTTOM_MARGIN_PX;
+				PLOTLY_LAYOUTS[metricName].height = event.rect.height - LAYOUT_CONFIG.plot_bottom_margin_px;
 			}
         });
     }
@@ -699,7 +707,7 @@ class LayoutManager {
 		}
 	}
 
-	async updateSnap(do_snap = true, snapInterval = SNAP_INTERVAL_DEFAULT) {
+	async updateSnap(do_snap = true, snapInterval = LAYOUT_CONFIG.snap_interval_default) {
 		this.do_snap = do_snap;
 		if (!do_snap) {
 			snapInterval = 1;
@@ -758,12 +766,12 @@ class PlotManager {
 				<div 
 					id="${plotDiv_id}"
 					class="plotDiv" 
-					style="width: ${layout.width - SETTINGS_WIDTH_PX}px; height: ${layout.height - PLOT_BOTTOM_MARGIN_PX}px;"
+					style="width: ${layout.width - LAYOUT_CONFIG.settings_width_px}px; height: ${layout.height - LAYOUT_CONFIG.plot_bottom_margin_px}px;"
 				></div>
 				<div 
 					id="${plotSettings_id}"
 					class="plotSettings" 
-					style="width: ${SETTINGS_WIDTH_PX}; flex-shrink: 0; flex-grow: 0;"
+					style="width: ${LAYOUT_CONFIG.settings_width_px}; flex-shrink: 0; flex-grow: 0;"
 				></div>
 			</div>
 		`;
@@ -793,8 +801,8 @@ class PlotManager {
 				showgrid: true,
 			},
 			margin: PLOTLY_LAYOUT_MARGIN,
-			width: layout.width - SETTINGS_WIDTH_PX,
-			height: layout.height - PLOT_BOTTOM_MARGIN_PX,
+			width: layout.width - LAYOUT_CONFIG.settings_width_px,
+			height: layout.height - LAYOUT_CONFIG.plot_bottom_margin_px,
 		};
 	
 		// Store layout
@@ -1167,8 +1175,8 @@ function createNotification(message, type = 'info', extra = null) {
         right: 10px;
         padding: 10px;
         border-radius: 5px;
-        background-color: ${NOTIFICATION_COLORS[type]};
-        border: 1px solid ${NOTIFICATION_BORDER_COLORS[type]};
+        background-color: ${NOTIFICATION_CONFIG.colors[type]};
+        border: 1px solid ${NOTIFICATION_CONFIG.border_colors[type]};
         box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         transition: transform 0.3s ease-out, opacity 0.3s ease-out;
         z-index: 1000;
@@ -1206,14 +1214,17 @@ function createNotification(message, type = 'info', extra = null) {
     setTimeout(updateNotificationPositions, 10);
 
     // Remove the notification after 3 seconds
-    setTimeout(() => {
-        notificationDiv.style.opacity = '0';
-        notificationDiv.style.transform += ' translateX(100%)';
-        setTimeout(() => {
-            notificationDiv.remove();
-            updateNotificationPositions();
-        }, 300); // Match this with the CSS transition time
-    }, 3000);
+    setTimeout(
+		() => {
+			notificationDiv.style.opacity = '0';
+			notificationDiv.style.transform += ' translateX(100%)';
+			setTimeout(() => {
+				notificationDiv.remove();
+				updateNotificationPositions();
+			}, 300); // Match this with the CSS transition time
+		},
+		NOTIFICATION_CONFIG.duration,
+	);
 }
 
 

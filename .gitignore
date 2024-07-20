@@ -5,6 +5,7 @@ trnbl-logs/**
 data/mnist/**
 frontend-mnist/**
 tests/_temp/**
+node_modules/
 
 # default python .gitignore
 # ========================================

@@ -1124,6 +1124,17 @@ async function headerButtons() {
 			createNotification('Column state reset', 'info');
 		}
 	);
+
+	// Toggle visibility of runs
+    document.getElementById('toggleVisibleRowsButton').addEventListener(
+        'click',
+        () => toggleRowsVisibility(true)
+    );
+
+    document.getElementById('toggleFilteredRowsButton').addEventListener(
+        'click',
+        () => toggleRowsVisibility(false)
+    );
 }
 
 function createNotification(message, type = 'info', extra = null) {
@@ -1284,9 +1295,7 @@ function createColumnDefs(summaryManifest) {
             width: 100,
             cellRenderer: params => {
                 const cellDiv = document.createElement('div');
-                cellDiv.style.display = 'flex';
-                cellDiv.style.alignItems = 'center';
-                cellDiv.style.justifyContent = 'center';
+				cellDiv.style.cssText = 'display: flex; align-items: center; justify-content: center;';
 
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
@@ -1308,22 +1317,6 @@ function createColumnDefs(summaryManifest) {
 
                 return cellDiv;
             },
-            // headerComponentParams: {
-            //     template: 
-            //         '<div class="ag-cell-label-container" role="presentation">' +
-            //         '  <span ref="eMenu" class="ag-header-icon ag-header-cell-menu-button"></span>' +
-            //         '  <div ref="eLabel" class="ag-header-cell-label" role="presentation">' +
-            //         '    <span ref="eText" class="ag-header-cell-text"></span>' +
-            //         '    <span ref="eFilter" class="ag-header-icon ag-filter-icon"></span>' +
-            //         '    <span ref="eSortOrder" class="ag-header-icon ag-sort-order"></span>' +
-            //         '    <span ref="eSortAsc" class="ag-header-icon ag-sort-ascending-icon"></span>' +
-            //         '    <span ref="eSortDesc" class="ag-header-icon ag-sort-descending-icon"></span>' +
-            //         '    <span ref="eSortNone" class="ag-header-icon ag-sort-none-icon"></span>' +
-            //         '    <input ref="eSelectAll" class="ag-input-field-input ag-checkbox-input" type="checkbox"/>' +
-            //         '  </div>' +
-            //         '</div>',
-            //     selectAllCheckbox: true
-            // },
         },
     ];
 
@@ -1417,7 +1410,34 @@ function adjustTableHeight(table) {
 	table.style.minHeight = `${tableMinHeight}px`;
 }
 
+function toggleRowsVisibility(affectVisible) {
+    const visibleRows = new Set(GRID_API.getRenderedNodes().map(node => node.data.id.syllabic));
+    let rowsToToggle = [];
+    let newVisibility;
 
+    GRID_API.forEachNode(node => {
+        const isVisible = visibleRows.has(node.data.id.syllabic);
+        if (affectVisible === isVisible) {
+            rowsToToggle.push(node);
+        }
+    });
+
+    if (rowsToToggle.length > 0) {
+        newVisibility = !rowsToToggle[0].data.visible;
+    }
+
+    rowsToToggle.forEach(node => {
+        node.setDataValue('visible', newVisibility);
+        LAYOUT_MANAGER.visibilityState[node.data.id.syllabic] = newVisibility;
+    });
+
+    // Update plots
+    DATA_MANAGER.metricNames.forEach(metricName => {
+        PLOT_MANAGER.updatePlot(metricName);
+    });
+
+    GRID_API.refreshCells({force: true, columns: ['visible']});
+}
 
 function createRunsManifestTable(summaryManifest) {
 	// create plot container
@@ -1462,15 +1482,6 @@ function createRunsManifestTable(summaryManifest) {
             adjustTableHeight(runsManifestTable);
         },
 		initialState: LAYOUT_MANAGER.grid_state,
-		// onHeaderCheckboxChanged: (event) => {
-        //     if (event.source !== 'header') return;
-        //     const isChecked = event.checked;
-        //     GRID_API.forEachNode(node => {
-        //         node.setDataValue('visible', isChecked);
-        //     });
-        //     GRID_API.refreshCells({force: true, columns: ['visible']});
-        //     PLOT_MANAGER.updateAllVisibility();
-        // },
     };
 
 	// create the ag-Grid table, api to global
@@ -1484,6 +1495,8 @@ function createRunsManifestTable(summaryManifest) {
 		node.setDataValue('visible', isVisible);
 	});
 	GRID_API.refreshCells({force: true, columns: ['visible']});
+	// set the checkbox state
+	GRID_API.onFilterChanged();
 }
 
 
@@ -1519,16 +1532,6 @@ async function init() {
 	
 	// populate table and get grid API
 	await createRunsManifestTable(DATA_MANAGER.summaryManifest);
-	
-	// Apply visibility state to the table
-	GRID_API.forEachNode(node => {
-		const runId = node.data['id.syllabic'];
-		if (!LAYOUT_MANAGER.visibilityState.hasOwnProperty(runId)) {
-			node.setDataValue('visible', true);
-		}
-		node.setDataValue('visible', LAYOUT_MANAGER.visibilityState[runId] !== false);
-	});
-	GRID_API.refreshCells({force: true, columns: ['visible']});
 	
 	// populate plots
 	await PLOT_MANAGER.populateAllPlots();

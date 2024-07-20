@@ -2,6 +2,7 @@
 * {
 	font-family: 'Roboto-mono', monospace;
 }
+
 /* same for any svg element */
 svg {
 	font-family: 'Roboto-mono', monospace;
@@ -9,25 +10,28 @@ svg {
 
 /* when hovering a draggable element */
 .draggable:hover {
-    z-index: 999;
+	z-index: 999;
 	border: 1px solid blue;
 	transition-delay: 0.5s;
 }
+
 .draggable {
-    transition: z-index 0.5s;
+	transition: z-index 0.5s;
 }
+
 .draggable:not(:hover) {
-    transition-delay: 0.5s;
+	transition-delay: 0.5s;
 }
 
 
 /* Make sure the font-family matches the one provided by ag-Grid */
 .ag-icon {
-    font-family: "agGridAlpine" !important; 
+	font-family: "agGridAlpine" !important;
 }
 
 option {
-    font-size: 2em !important; /* why isnt this working? */
+	font-size: 2em !important;
+	/* why isnt this working? */
 }
 
 .rootContainer {
@@ -58,12 +62,13 @@ option {
 }
 
 .headerButton {
-	height: 35px; /* Set the desired height for the buttons */
+	height: 35px;
+	/* Set the desired height for the buttons */
 	font-size: 16px;
 	line-height: 30px;
 	padding: 0 10px;
 	cursor: pointer;
-    display: inline-block;
+	display: inline-block;
 	color: #000000;
 	background-color: #d8d8d8;
 	border: 1px solid #3c3c3c;
@@ -72,20 +77,25 @@ option {
 	font-size: 16px;
 	transition: background-color 0.1s, border-color 0.1s, color 0.1s;
 }
-.headerButton:hover, .headerButton:focus {
+
+.headerButton:hover,
+.headerButton:focus {
 	background-color: #797979;
 	border-color: #213244;
 	color: #000000;
 }
+
 .headerButton svg {
 	/* vertically centered svg */
 	vertical-align: middle;
 }
 
 hr {
-	margin-top: 10px; /* Adjust the margin as needed */
+	margin-top: 10px;
+	/* Adjust the margin as needed */
 	border: none;
-	border-top: 1px solid #ccc; /* Set the desired color and style for the horizontal rule */
+	border-top: 1px solid #ccc;
+	/* Set the desired color and style for the horizontal rule */
 }
 
 
@@ -142,15 +152,15 @@ hr {
 	transition: .4s;
 }
 
-input:checked + .slider {
+input:checked+.slider {
 	background-color: #2196F3;
 }
 
-input:focus + .slider {
+input:focus+.slider {
 	box-shadow: 0 0 1px #2196F3;
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
 	-webkit-transform: translateX(1.5em);
 	-ms-transform: translateX(1.5em);
 	transform: translateX(1.5em);

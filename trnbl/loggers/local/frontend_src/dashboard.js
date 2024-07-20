@@ -18,7 +18,7 @@ const DEFAULT_XUNITS = 'samples';
 // settings
 
 const LAYOUT_CONFIG = {
-	"plot_cont_height": 300, 
+	"plot_cont_height": 300,
 	"plotcont_frac": 0.4,
 	"elements_initial_offset_y": 200,
 	"minimum_dims": { width: 250, height: 150 },
@@ -63,48 +63,48 @@ const PLOTLY_LAYOUT_MARGIN = { l: 40, r: 30, b: 40, t: 50, pad: 0 };
 
 class IOManager {
 	constructor() {
-        this.fileTimestamps = {};
-    }
+		this.fileTimestamps = {};
+	}
 
-    async fetchJson(path) {
-        try {
-            const response = await fetch(path);
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            return await response.json();
-        } catch (error) {
-			createNotification(`Fetch JSON error: ${error}`, 'error', error);
-            return null;
-        }
-    }
-
-    async fetchJsonLines(path) {
+	async fetchJson(path) {
 		try {
-		  const response = await fetch(path);
-		  if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-		  const text = await response.text();
-		  const lines = text.trim().split('\n');
-		  const validLines = lines.slice(0, -1).map(line => JSON.parse(line));
-	  
-		  // Try parsing the last line
-		  try {
-			const lastLine = JSON.parse(lines[lines.length - 1]);
-			validLines.push(lastLine);
-		  } catch (error) {
-			createNotification(`Invalid JSON in the last line of ${path}: ${error}`, 'error', error);
-		  }
-	  
-		  return validLines;
+			const response = await fetch(path);
+			if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+			return await response.json();
 		} catch (error) {
-		  createNotification(`Fetch JSON Lines error: ${error}`, 'error', error);
-		  return null;
+			createNotification(`Fetch JSON error: ${error}`, 'error', error);
+			return null;
 		}
-	  }
+	}
+
+	async fetchJsonLines(path) {
+		try {
+			const response = await fetch(path);
+			if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+			const text = await response.text();
+			const lines = text.trim().split('\n');
+			const validLines = lines.slice(0, -1).map(line => JSON.parse(line));
+
+			// Try parsing the last line
+			try {
+				const lastLine = JSON.parse(lines[lines.length - 1]);
+				validLines.push(lastLine);
+			} catch (error) {
+				createNotification(`Invalid JSON in the last line of ${path}: ${error}`, 'error', error);
+			}
+
+			return validLines;
+		} catch (error) {
+			createNotification(`Fetch JSON Lines error: ${error}`, 'error', error);
+			return null;
+		}
+	}
 
 	async saveJsonLocal(name, data) {
 		const data_json = JSON.stringify(data);
 		localStorage.setItem(name, btoa(data_json));
 	}
-	
+
 	async readJsonLocal(name) {
 		const data_encoded = localStorage.getItem(name);
 		if (data_encoded) {
@@ -120,43 +120,43 @@ class IOManager {
 	}
 
 	async getFileModificationTime(path) {
-        try {
-            const response = await fetch(path, { method: 'HEAD' });
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            return new Date(response.headers.get('Last-Modified'));
-        } catch (error) {
+		try {
+			const response = await fetch(path, { method: 'HEAD' });
+			if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+			return new Date(response.headers.get('Last-Modified'));
+		} catch (error) {
 			createNotification(`Error fetching file modification time: ${error}`, 'error', error);
-            return null;
-        }
-    }
+			return null;
+		}
+	}
 
-    async fetchJsonIfModified(path) {
-        const lastModified = await this.getFileModificationTime(path);
-        if (!lastModified) return null;
+	async fetchJsonIfModified(path) {
+		const lastModified = await this.getFileModificationTime(path);
+		if (!lastModified) return null;
 
-        if (!this.fileTimestamps[path] || lastModified > this.fileTimestamps[path]) {
-            const data = await this.fetchJson(path);
-            if (data !== null) {
-                this.fileTimestamps[path] = lastModified;
-            }
-            return data;
-        }
-        return null; // File not modified
-    }
+		if (!this.fileTimestamps[path] || lastModified > this.fileTimestamps[path]) {
+			const data = await this.fetchJson(path);
+			if (data !== null) {
+				this.fileTimestamps[path] = lastModified;
+			}
+			return data;
+		}
+		return null; // File not modified
+	}
 
-    async fetchJsonLinesIfModified(path) {
-        const lastModified = await this.getFileModificationTime(path);
-        if (!lastModified) return null;
+	async fetchJsonLinesIfModified(path) {
+		const lastModified = await this.getFileModificationTime(path);
+		if (!lastModified) return null;
 
-        if (!this.fileTimestamps[path] || lastModified > this.fileTimestamps[path]) {
-            const data = await this.fetchJsonLines(path);
-            if (data !== null) {
-                this.fileTimestamps[path] = lastModified;
-            }
-            return data;
-        }
-        return null; // File not modified
-    }
+		if (!this.fileTimestamps[path] || lastModified > this.fileTimestamps[path]) {
+			const data = await this.fetchJsonLines(path);
+			if (data !== null) {
+				this.fileTimestamps[path] = lastModified;
+			}
+			return data;
+		}
+		return null; // File not modified
+	}
 }
 
 const IO_MANAGER = new IOManager();
@@ -173,38 +173,38 @@ const IO_MANAGER = new IOManager();
 */
 
 class RunData {
-    constructor(path) {
-        this.path = path;
-        this.config = null;
-        this.meta = null;
-        this.metrics = null;
-        this.logs = null;
-        this.artifacts = null;
-    }
+	constructor(path) {
+		this.path = path;
+		this.config = null;
+		this.meta = null;
+		this.metrics = null;
+		this.logs = null;
+		this.artifacts = null;
+	}
 
-    async loadData() {
-        this.config = await IO_MANAGER.fetchJson(`${this.path}/config.json`);
-        this.meta = await IO_MANAGER.fetchJson(`${this.path}/meta.json`);
-        this.metrics = await IO_MANAGER.fetchJsonLines(`${this.path}/metrics.jsonl`);
-        this.logs = await IO_MANAGER.fetchJsonLines(`${this.path}/log.jsonl`);
-        this.artifacts = await IO_MANAGER.fetchJsonLines(`${this.path}/artifacts.jsonl`);
-    }
+	async loadData() {
+		this.config = await IO_MANAGER.fetchJson(`${this.path}/config.json`);
+		this.meta = await IO_MANAGER.fetchJson(`${this.path}/meta.json`);
+		this.metrics = await IO_MANAGER.fetchJsonLines(`${this.path}/metrics.jsonl`);
+		this.logs = await IO_MANAGER.fetchJsonLines(`${this.path}/log.jsonl`);
+		this.artifacts = await IO_MANAGER.fetchJsonLines(`${this.path}/artifacts.jsonl`);
+	}
 
-    pairMetrics(xKey, yKey) {
-        const xVals = [];
-        const yVals = [];
-        if (this.metrics) {
-            this.metrics.forEach(metric => {
-                const xv = metric[xKey];
+	pairMetrics(xKey, yKey) {
+		const xVals = [];
+		const yVals = [];
+		if (this.metrics) {
+			this.metrics.forEach(metric => {
+				const xv = metric[xKey];
 				const yv = metric[yKey];
-				if ( !isNaN(xv) && !isNaN(yv)) {
-                    xVals.push(xv);
-                    yVals.push(yv);
-                }
-            });
-        }
-        return [xVals, yVals];
-    }
+				if (!isNaN(xv) && !isNaN(yv)) {
+					xVals.push(xv);
+					yVals.push(yv);
+				}
+			});
+		}
+		return [xVals, yVals];
+	}
 
 	static smoothData(data, span = null, method = 'SMA') {
 		if (data.some(isNaN)) {
@@ -214,9 +214,9 @@ class RunData {
 		if (!span) {
 			return data;
 		}
-		
+
 		const smoothed = [];
-		switch(method) {
+		switch (method) {
 			case 'SMA':
 				for (let i = 0; i < data.length; i++) {
 					const start = Math.max(0, i - span + 1);
@@ -256,7 +256,7 @@ class RunData {
 				createNotification(`Invalid smoothing method: ${method}`, 'error');
 				return [];
 		}
-	
+
 		return smoothed;
 	}
 }
@@ -272,15 +272,15 @@ class RunData {
 */
 
 class DataManager {
-    constructor() {
-        this.manifest = null;
-        this.allRuns = {};
-        this.metricNames = new Set();
-        this.projectName = null;
-        this.summaryManifest = null;
-        this.lastRefreshTime = null;
+	constructor() {
+		this.manifest = null;
+		this.allRuns = {};
+		this.metricNames = new Set();
+		this.projectName = null;
+		this.summaryManifest = null;
+		this.lastRefreshTime = null;
 		this.updatedRuns = new Set();
-    }
+	}
 
 	async loadManifest() {
 		// load data
@@ -288,7 +288,7 @@ class DataManager {
 		if (!this.manifest) {
 			createNotification('Failed to load manifest', 'error');
 		}
-		
+
 		// get project name, metric names
 		const projectNames = new Set();
 		for (const run of this.manifest) {
@@ -299,11 +299,11 @@ class DataManager {
 			});
 		}
 		// project names should match
-        if (projectNames.size === 1) {
-            this.projectName = projectNames.values().next().value;
-        } else {
+		if (projectNames.size === 1) {
+			this.projectName = projectNames.values().next().value;
+		} else {
 			createNotification(`Project names are not consistent across runs: ${projectNames}`, 'error');
-        }
+		}
 	}
 
 	async loadRuns() {
@@ -311,19 +311,19 @@ class DataManager {
 		if (!this.manifest) {
 			this.loadManifest();
 		}
-		
+
 		// load each run
 		for (const run of this.manifest) {
 			const runData = new RunData(`runs/${run.run_id}`);
 			await runData.loadData();
 			this.allRuns[run.run_id] = runData;
 		}
-		
+
 		// update summary manifest (final metrics, timestamps, etc)
 		this.updateSummaryManifest();
 	}
 
-    updateSummaryManifest() {
+	updateSummaryManifest() {
 		// make sure there are runs
 		try {
 			if (Object.keys(this.allRuns).length === 0) {
@@ -334,12 +334,12 @@ class DataManager {
 		}
 
 		// create the summary manifest dictionary
-        this.summaryManifest = Object.values(this.allRuns).map(run => {
-            // final timestamp, from logs
+		this.summaryManifest = Object.values(this.allRuns).map(run => {
+			// final timestamp, from logs
 			const finalTimestamp = run.logs.length > 0 ? run.logs[run.logs.length - 1].timestamp : null;
 
 			// final values for each metric
-            let finalMetrics = {};
+			let finalMetrics = {};
 			// Iterate over the metrics array in reverse to find the last value for each metricName
 			for (let i = run.metrics.length - 1; i >= 0; i--) {
 				this.metricNames.forEach(metricName => {
@@ -349,9 +349,9 @@ class DataManager {
 					}
 				});
 			}
-			
+
 			// return the summary manifest object, for each run
-            return {
+			return {
 				id: {
 					syllabic: run.meta.syllabic_id,
 					run: run.meta.run_id,
@@ -363,73 +363,73 @@ class DataManager {
 				},
 				final_metrics: finalMetrics,
 				config: run.config,
-            };
-        });
-    }
+			};
+		});
+	}
 
 	async refreshData() {
-        console.log("Checking for updated data...");
-        let dataUpdated = false;
-        this.updatedRuns.clear(); // Clear the set at the start of each refresh
-        
-        // Refresh manifest
-        const newManifest = await IO_MANAGER.fetchJsonLinesIfModified('runs.jsonl');
-        if (newManifest) {
-            this.manifest = newManifest;
-            dataUpdated = true;
-            createNotification("Manifest file updated", "info");
-        }
+		console.log("Checking for updated data...");
+		let dataUpdated = false;
+		this.updatedRuns.clear(); // Clear the set at the start of each refresh
 
-        // Refresh run data
-        for (const run of this.manifest) {
-            const runPath = `runs/${run.run_id}`;
-            const newConfig = await IO_MANAGER.fetchJsonIfModified(`${runPath}/config.json`);
-            const newMeta = await IO_MANAGER.fetchJsonIfModified(`${runPath}/meta.json`);
-            const newMetrics = await IO_MANAGER.fetchJsonLinesIfModified(`${runPath}/metrics.jsonl`);
-            const newLogs = await IO_MANAGER.fetchJsonLinesIfModified(`${runPath}/log.jsonl`);
-            const newArtifacts = await IO_MANAGER.fetchJsonLinesIfModified(`${runPath}/artifacts.jsonl`);
+		// Refresh manifest
+		const newManifest = await IO_MANAGER.fetchJsonLinesIfModified('runs.jsonl');
+		if (newManifest) {
+			this.manifest = newManifest;
+			dataUpdated = true;
+			createNotification("Manifest file updated", "info");
+		}
 
-            if (newConfig || newMeta || newMetrics || newLogs || newArtifacts) {
-                const runData = this.allRuns[run.run_id] || new RunData(runPath);
-                if (newConfig) runData.config = newConfig;
-                if (newMeta) runData.meta = newMeta;
-                if (newMetrics) runData.metrics = newMetrics;
-                if (newLogs) runData.logs = newLogs;
-                if (newArtifacts) runData.artifacts = newArtifacts;
-                this.allRuns[run.run_id] = runData;
-                dataUpdated = true;
-                this.updatedRuns.add(run.run_id);
-                console.log(`Updated data for run ${run.run_id}`);
-            }
-        }
+		// Refresh run data
+		for (const run of this.manifest) {
+			const runPath = `runs/${run.run_id}`;
+			const newConfig = await IO_MANAGER.fetchJsonIfModified(`${runPath}/config.json`);
+			const newMeta = await IO_MANAGER.fetchJsonIfModified(`${runPath}/meta.json`);
+			const newMetrics = await IO_MANAGER.fetchJsonLinesIfModified(`${runPath}/metrics.jsonl`);
+			const newLogs = await IO_MANAGER.fetchJsonLinesIfModified(`${runPath}/log.jsonl`);
+			const newArtifacts = await IO_MANAGER.fetchJsonLinesIfModified(`${runPath}/artifacts.jsonl`);
 
-        if (dataUpdated) {
-            // Update metric names
-            this.metricNames.clear();
-            for (const run of this.manifest) {
-                run.metric_names.forEach(metricName => {
-                    this.metricNames.add(metricName);
-                });
-            }
+			if (newConfig || newMeta || newMetrics || newLogs || newArtifacts) {
+				const runData = this.allRuns[run.run_id] || new RunData(runPath);
+				if (newConfig) runData.config = newConfig;
+				if (newMeta) runData.meta = newMeta;
+				if (newMetrics) runData.metrics = newMetrics;
+				if (newLogs) runData.logs = newLogs;
+				if (newArtifacts) runData.artifacts = newArtifacts;
+				this.allRuns[run.run_id] = runData;
+				dataUpdated = true;
+				this.updatedRuns.add(run.run_id);
+				console.log(`Updated data for run ${run.run_id}`);
+			}
+		}
 
-            // Update summary manifest
-            this.updateSummaryManifest();
+		if (dataUpdated) {
+			// Update metric names
+			this.metricNames.clear();
+			for (const run of this.manifest) {
+				run.metric_names.forEach(metricName => {
+					this.metricNames.add(metricName);
+				});
+			}
 
-            this.lastRefreshTime = new Date();
-            console.log("Data refresh completed");
-        } else {
-            console.log("No updates found");
-        }
+			// Update summary manifest
+			this.updateSummaryManifest();
 
-        return dataUpdated;
-    }
+			this.lastRefreshTime = new Date();
+			console.log("Data refresh completed");
+		} else {
+			console.log("No updates found");
+		}
 
-    getUpdatedRunsInfo() {
-        return {
-            count: this.updatedRuns.size,
-            runs: Array.from(this.updatedRuns)
-        };
-    }
+		return dataUpdated;
+	}
+
+	getUpdatedRunsInfo() {
+		return {
+			count: this.updatedRuns.size,
+			runs: Array.from(this.updatedRuns)
+		};
+	}
 }
 
 const DATA_MANAGER = new DataManager();
@@ -448,7 +448,7 @@ const DATA_MANAGER = new DataManager();
 */
 
 class LayoutManager {
-    constructor(projectName) {
+	constructor(projectName) {
 		this.projectName = projectName;
 		this.layout = {};
 		this.do_snap = true;
@@ -463,23 +463,23 @@ class LayoutManager {
 		const window_width = window.innerWidth;
 		this.default_plot_cont_width = this.round_to_snap_interval(window_width * LAYOUT_CONFIG.plotcont_frac);
 		this.table_width = this.round_to_snap_interval(window_width - (this.default_plot_cont_width + this.snapInterval));
-    }
+	}
 
 	round_to_snap_interval(value) {
 		return Math.ceil(value / this.snapInterval) * this.snapInterval;
 	}
 
 	get_default_layout(
-		plot_names, 
+		plot_names,
 		update_to_default = true,
 	) {
 		// convert plot_names to list
 		const plot_names_arr = Array.from(plot_names);
-	
+
 		// init layout
 		var layout = {};
 		const plot_y_step = this.round_to_snap_interval(this.default_plot_cont_height * 1.1)
-	
+
 		// plot containers
 		for (let i = 0; i < plot_names_arr.length; i++) {
 			const metricName = plot_names_arr[i];
@@ -490,7 +490,7 @@ class LayoutManager {
 				width: this.default_plot_cont_width,
 			};
 		};
-	
+
 		// table
 		layout['runsManifest'] = {
 			x: this.default_plot_cont_width + LAYOUT_CONFIG.snap_interval_default,
@@ -498,7 +498,7 @@ class LayoutManager {
 			height: LAYOUT_CONFIG.table_init_height,
 			width: this.table_width,
 		};
-	
+
 		// write to global
 		if (update_to_default) {
 			this.layout = layout;
@@ -508,14 +508,14 @@ class LayoutManager {
 	}
 
 	async getDefaultPlotConfig() {
-        return {
-            size: { width: this.default_plot_cont_width - LAYOUT_CONFIG.settings_width_px, height: this.default_plot_cont_height },
-            axisScales: { x: 'linear', y: 'linear' },
+		return {
+			size: { width: this.default_plot_cont_width - LAYOUT_CONFIG.settings_width_px, height: this.default_plot_cont_height },
+			axisScales: { x: 'linear', y: 'linear' },
 			smoothing_method: 'SMA',
-            smoothing_span: null,
+			smoothing_span: null,
 			xUnits: DEFAULT_XUNITS,
-        };
-    }
+		};
+	}
 
 	async getPlotConfig(metricName) {
 		if (!(metricName in this.plot_configs)) {
@@ -524,10 +524,10 @@ class LayoutManager {
 		return this.plot_configs[metricName];
 	}
 
-    makeElementDraggable(element) {
+	makeElementDraggable(element) {
 		// get id and position
-        const id = element.id;
-        let position = this.getInitialPosition(element);
+		const id = element.id;
+		let position = this.getInitialPosition(element);
 
 		// add .draggable class if its not there
 		if (!element.classList.contains('draggable')) {
@@ -535,69 +535,69 @@ class LayoutManager {
 		}
 
 		// make draggable and resizable
-        this.initializeDragInteraction(element, position);
-        this.initializeResizeInteraction(element, position);
-		
+		this.initializeDragInteraction(element, position);
+		this.initializeResizeInteraction(element, position);
+
 		// update layout
-        this.updateElementLayout(element, position.x, position.y, true);
-    }
+		this.updateElementLayout(element, position.x, position.y, true);
+	}
 
-    getInitialPosition(element) {
-        const id = element.id;
-        if (this.layout[id]) {
-            return { x: this.layout[id].x, y: this.layout[id].y };
-        } else {
-            return {
-                x: parseFloat(element.getAttribute('data-x')) || 0,
-                y: parseFloat(element.getAttribute('data-y')) || 0,
-            };
-        }
-    }
+	getInitialPosition(element) {
+		const id = element.id;
+		if (this.layout[id]) {
+			return { x: this.layout[id].x, y: this.layout[id].y };
+		} else {
+			return {
+				x: parseFloat(element.getAttribute('data-x')) || 0,
+				y: parseFloat(element.getAttribute('data-y')) || 0,
+			};
+		}
+	}
 
-    initializeDragInteraction(element, position) {
-        interact(element).draggable({
-            ignoreFrom: '.draglayer, .ag-header, .ag-center-cols-container, .no-drag, .legend, .bg, .scrollbox',
-            modifiers: [
-                interact.modifiers.snap({
-                    targets: [interact.snappers.grid({ x: this.snapInterval, y: this.snapInterval })],
-                    range: Infinity,
-                    relativePoints: [{ x: 0, y: 0 }]
-                }),
-                interact.modifiers.restrict({
-                    restriction: 'parent',
-                    elementRect: { top: 0, left: 0, bottom: 1, right: 1 },
-                    endOnly: true
-                })
-            ],
-            inertia: true
-        }).on('dragmove', (event) => {
-            position.x += event.dx;
-            position.y += event.dy;
+	initializeDragInteraction(element, position) {
+		interact(element).draggable({
+			ignoreFrom: '.draglayer, .ag-header, .ag-center-cols-container, .no-drag, .legend, .bg, .scrollbox',
+			modifiers: [
+				interact.modifiers.snap({
+					targets: [interact.snappers.grid({ x: this.snapInterval, y: this.snapInterval })],
+					range: Infinity,
+					relativePoints: [{ x: 0, y: 0 }]
+				}),
+				interact.modifiers.restrict({
+					restriction: 'parent',
+					elementRect: { top: 0, left: 0, bottom: 1, right: 1 },
+					endOnly: true
+				})
+			],
+			inertia: true
+		}).on('dragmove', (event) => {
+			position.x += event.dx;
+			position.y += event.dy;
 
-            this.updateElementLayout(event.target, position.x, position.y, true);
-        });
-    }
+			this.updateElementLayout(event.target, position.x, position.y, true);
+		});
+	}
 
-    initializeResizeInteraction(element, position) {
-        interact(element).resizable({
-            edges: { left: true, right: true, bottom: true, top: true },
-            modifiers: [
-                interact.modifiers.snapSize({
-                    targets: [interact.snappers.grid({ width: this.snapInterval, height: this.snapInterval })],
-                    range: Infinity,
-                }),
-                interact.modifiers.restrictSize({
-                    min: LAYOUT_CONFIG.minimum_dims,
-                }),
-            ],
-            inertia: true
-        }).on('resizemove', (event) => {
-            const { width, height } = event.rect;
-            position.x += event.deltaRect.left;
-            position.y += event.deltaRect.top;
+	initializeResizeInteraction(element, position) {
+		interact(element).resizable({
+			edges: { left: true, right: true, bottom: true, top: true },
+			modifiers: [
+				interact.modifiers.snapSize({
+					targets: [interact.snappers.grid({ width: this.snapInterval, height: this.snapInterval })],
+					range: Infinity,
+				}),
+				interact.modifiers.restrictSize({
+					min: LAYOUT_CONFIG.minimum_dims,
+				}),
+			],
+			inertia: true
+		}).on('resizemove', (event) => {
+			const { width, height } = event.rect;
+			position.x += event.deltaRect.left;
+			position.y += event.deltaRect.top;
 
 			const target = event.target;
-            this.updateElementLayout(target, position.x, position.y, false, width, height);
+			this.updateElementLayout(target, position.x, position.y, false, width, height);
 
 			const isPlotContainer = target.classList.contains('plotContainer');
 			if (isPlotContainer) {
@@ -626,24 +626,24 @@ class LayoutManager {
 				PLOTLY_LAYOUTS[metricName].width = plotDivWidth;
 				PLOTLY_LAYOUTS[metricName].height = event.rect.height - LAYOUT_CONFIG.plot_bottom_margin_px;
 			}
-        });
-    }
+		});
+	}
 
-    updateElementLayout(element, x, y, updatePosition = true, width = null, height = null) {
+	updateElementLayout(element, x, y, updatePosition = true, width = null, height = null) {
 		// update position if provided
-        if (updatePosition) {
-            // element.style.transform = `translate(${x}px, ${y}px)`;
-            // element.setAttribute('data-x', x);
-            // element.setAttribute('data-y', y);
+		if (updatePosition) {
+			// element.style.transform = `translate(${x}px, ${y}px)`;
+			// element.setAttribute('data-x', x);
+			// element.setAttribute('data-y', y);
 			element.style.left = `${x}px`;
 			element.style.top = `${y}px`;
-        }
+		}
 
 		// update width and height if provided
-        if (width && height) {
-            element.style.width = `${width}px`;
-            element.style.height = `${height}px`;
-        }
+		if (width && height) {
+			element.style.width = `${width}px`;
+			element.style.height = `${height}px`;
+		}
 		else {
 			width = element.offsetWidth;
 			height = element.offsetHeight;
@@ -657,7 +657,7 @@ class LayoutManager {
 			height: height,
 		};
 		// console.log('Updated layout for:', element.id, this.layout[element.id]);
-    }
+	}
 
 	updateAllLayouts() {
 		for (const id in this.layout) {
@@ -673,10 +673,10 @@ class LayoutManager {
 		return `${this.projectName}_layout`;
 	}
 
-    async saveLayout() {
+	async saveLayout() {
 		this.updateGridState();
-        const layoutKey = this.get_local_storage_key();
-        IO_MANAGER.saveJsonLocal(layoutKey, this);
+		const layoutKey = this.get_local_storage_key();
+		IO_MANAGER.saveJsonLocal(layoutKey, this);
 		const layout_read = await IO_MANAGER.readJsonLocal(layoutKey);
 		if (layout_read && (JSON.stringify(layout_read) == JSON.stringify(this))) {
 			console.log('Layout saved:', layout_read);
@@ -685,7 +685,7 @@ class LayoutManager {
 			console.error('Layout not saved:', this, layout_read);
 			createNotification('Layout not saved', 'error');
 		}
-    }
+	}
 
 	async loadLayout(do_update = true) {
 		const layoutKey = this.get_local_storage_key();
@@ -743,20 +743,20 @@ class LayoutManager {
 */
 
 class PlotManager {
-    constructor() {
-        this.plots = {}; // Keyed by metricName, values are objects with Plotly plot div ID and settings
-    }
+	constructor() {
+		this.plots = {}; // Keyed by metricName, values are objects with Plotly plot div ID and settings
+	}
 
-    async createPlot(metricName) {
+	async createPlot(metricName) {
 		// get ids
 		const plotContainer_id = `plotContainer-${metricName}`;
 		const plotDiv_id = `plot-${metricName}`;
 		const plotSettings_id = `plotSettings-${metricName}`;
-		
+
 		// config and layout
 		const plotConfig = await LAYOUT_MANAGER.getPlotConfig(metricName);
 		const layout = LAYOUT_MANAGER.layout[plotContainer_id];
-	
+
 		const plotContainerHTML = `
 			<div
 				id="${plotContainer_id}"
@@ -775,17 +775,17 @@ class PlotManager {
 				></div>
 			</div>
 		`;
-	
+
 		// Add plot container to the root div
 		document.getElementById('rootContainerDiv').insertAdjacentHTML('beforeend', plotContainerHTML);
-	
+
 		// Store plot info for later reference
 		this.plots[metricName] = {
 			plotID: plotDiv_id,
 			containerID: plotContainer_id,
 			settingsID: plotSettings_id,
 		};
-	
+
 		// Specify plot layout and create empty plot
 		const plotly_layout = {
 			title: `${metricName} over ${plotConfig.xUnits}`,
@@ -804,17 +804,17 @@ class PlotManager {
 			width: layout.width - LAYOUT_CONFIG.settings_width_px,
 			height: layout.height - LAYOUT_CONFIG.plot_bottom_margin_px,
 		};
-	
+
 		// Store layout
 		PLOTLY_LAYOUTS[metricName] = plotly_layout;
-	
+
 		// To newPlot, pass copy, don't reference
 		Plotly.newPlot(plotDiv_id, [], JSON.parse(JSON.stringify(plotly_layout)));
-	
+
 		// Add settings menu items
 		this.createAxisToggles(metricName);
 		this.createSmoothingInput(metricName);
-	
+
 		// Make draggable
 		LAYOUT_MANAGER.makeElementDraggable(document.getElementById(plotContainer_id));
 	}
@@ -833,14 +833,14 @@ class PlotManager {
 		});
 	}
 
-    async updatePlot(metricName) {
+	async updatePlot(metricName) {
 		// get and set settings & config
-        const plotInfo = this.plots[metricName];
+		const plotInfo = this.plots[metricName];
 		const plotConfig = await LAYOUT_MANAGER.getPlotConfig(metricName);
-        if (!plotInfo) {
-            console.error(`Plot for metric ${metricName} not found.`);
-            return;
-        }
+		if (!plotInfo) {
+			console.error(`Plot for metric ${metricName} not found.`);
+			return;
+		}
 
 		// get data
 		// data manager will handle reloading the data, if necessary
@@ -850,10 +850,10 @@ class PlotManager {
 			const run_syllabic_id = run.meta.syllabic_id;
 
 			const [x_vals, y_vals] = run.pairMetrics(DEFAULT_XUNITS, metricName);
-			
+
 			// Apply smoothing based on the selected method and span
 			let smoothedYVals = RunData.smoothData(y_vals, plotConfig.smoothing_span, plotConfig.smoothing_method);
-			
+
 			const trace = {
 				x: x_vals,
 				y: smoothedYVals,
@@ -864,49 +864,49 @@ class PlotManager {
 			};
 			traces.push(trace);
 		}
-		
+
 		// Update the layout properties
 		PLOTLY_LAYOUTS[metricName].xaxis.type = plotConfig.axisScales.x;
 		PLOTLY_LAYOUTS[metricName].yaxis.type = plotConfig.axisScales.y;
 		PLOTLY_LAYOUTS[metricName].uirevision = metricName;
 
-        // Update Plotly plot
-        Plotly.react(
-			plotInfo.plotID, 
+		// Update Plotly plot
+		Plotly.react(
+			plotInfo.plotID,
 			traces,
 			JSON.parse(JSON.stringify(PLOTLY_LAYOUTS[metricName])),
 		);
-    }
+	}
 
 	updateTraceVisibility(runId, isVisible) {
-        LAYOUT_MANAGER.visibilityState[runId] = isVisible;
-        for (const metricName of DATA_MANAGER.metricNames) {
-            const plotInfo = this.plots[metricName];
-            if (plotInfo) {
-                Plotly.restyle(
+		LAYOUT_MANAGER.visibilityState[runId] = isVisible;
+		for (const metricName of DATA_MANAGER.metricNames) {
+			const plotInfo = this.plots[metricName];
+			if (plotInfo) {
+				Plotly.restyle(
 					plotInfo.plotID,
-					{visible: isVisible ? true : 'legendonly'},
+					{ visible: isVisible ? true : 'legendonly' },
 					[this.getTraceIndex(plotInfo.plotID, runId)],
 				);
-            }
-        }
-    }
+			}
+		}
+	}
 
-    getTraceIndex(plotId, runId) {
-        const plotDiv = document.getElementById(plotId);
-        const data = plotDiv.data;
+	getTraceIndex(plotId, runId) {
+		const plotDiv = document.getElementById(plotId);
+		const data = plotDiv.data;
 		const index = data.findIndex(trace => trace.name === runId);
 		if (index < 0) {
 			console.error(`Trace for run ${runId} not found in plot ${plotId}`);
 		}
 		return index;
-    }
+	}
 
-    updateAllVisibility() {
-        for (const metricName of DATA_MANAGER.metricNames) {
-            this.updatePlot(metricName);
-        }
-    }
+	updateAllVisibility() {
+		for (const metricName of DATA_MANAGER.metricNames) {
+			this.updatePlot(metricName);
+		}
+	}
 
 	async populateAllPlots() {
 		// for each metric
@@ -915,7 +915,7 @@ class PlotManager {
 		}
 	}
 
-    updateAxisScale(metricName, axis, scale) {
+	updateAxisScale(metricName, axis, scale) {
 		// get plot info
 		const plotInfo = this.plots[metricName];
 		if (!plotInfo) {
@@ -927,22 +927,22 @@ class PlotManager {
 		const plotConfig = LAYOUT_MANAGER.plot_configs[metricName];
 		plotConfig.axisScales[axis] = scale;
 
-        // Reflect change in Plotly plot
-        Plotly.relayout(
-			plotInfo.plotID, 
-			{ 
+		// Reflect change in Plotly plot
+		Plotly.relayout(
+			plotInfo.plotID,
+			{
 				[`${axis}axis`]: { type: scale },
 				uirevision: metricName,
-			},	
+			},
 		);
-    }
+	}
 
 
 	createAxisToggles(metricName) {
 		const plotSettingsId = this.plots[metricName].settingsID;
 		const plotDivId = this.plots[metricName].plotID;
 		const plotSettings = document.getElementById(plotSettingsId);
-		
+
 		['x', 'y'].forEach(axis => {
 			const toggleId = `${plotDivId}-${axis}Toggle`;
 			const toggleHtml = `
@@ -958,18 +958,18 @@ class PlotManager {
 					</div>
 				</div>
 			`;
-	
+
 			const toggleDiv = document.createElement('div');
 			toggleDiv.innerHTML = toggleHtml.trim();
-			plotSettings.appendChild(toggleDiv);			
-	
+			plotSettings.appendChild(toggleDiv);
+
 			const input = document.getElementById(toggleId);
 			input.checked = LAYOUT_MANAGER.plot_configs[metricName].axisScales[axis] === 'log';
 			input.onchange = () => {
 				const scale = input.checked ? 'log' : 'linear';
 				this.updateAxisScale(metricName, axis, scale);
 			};
-	
+
 		});
 	}
 
@@ -980,7 +980,7 @@ class PlotManager {
 
 		// Define the smoothing methods
 		const smoothingMethods = ['SMA', 'EMA', 'Gaussian'];
-		
+
 		// Create the HTML string for the smoothing input container
 		const smoothSettingHtml = `
 			<div class="smoothing-input-container no-drag" style="display: block; margin-top: 10px; border: 1px solid grey; border-radius: 3px;">
@@ -993,23 +993,23 @@ class PlotManager {
 				<input class="no-drag" type="number" min="0" max="1000" value="0" id="smoothingInput-${plotDivId}" style="width: 4.2em;">
 			</div>
 		`;
-	
+
 		// Create a container for the smoothing input
 		const smoothSettingContainer = document.createElement('div');
 		smoothSettingContainer.innerHTML = smoothSettingHtml.trim();
-	
+
 		// Append the input container to the plot settings
 		const plotSettings = document.getElementById(plotSettingsId);
 		plotSettings.appendChild(smoothSettingContainer);
-	
+
 		// Get references to the input elements
 		const spanInput = document.getElementById(`smoothingInput-${plotDivId}`);
 		const smoothingMethodSelect = document.getElementById(`smoothingMethodSelect-${plotDivId}`);
-	
+
 		// Set values to those from plot_configs
 		spanInput.value = LAYOUT_MANAGER.plot_configs[metricName].smoothing_span;
 		smoothingMethodSelect.value = LAYOUT_MANAGER.plot_configs[metricName].smoothing_method;
-	
+
 		// On change, modify the plot config and call updatePlot
 		spanInput.onchange = () => {
 			LAYOUT_MANAGER.plot_configs[metricName].smoothing_span = parseInt(spanInput.value);
@@ -1044,7 +1044,7 @@ async function headerButtons() {
 
 	// set up grid snap checkbox
 	gridSnapCheckbox.checked = LAYOUT_MANAGER.do_snap;
-	gridSnapCheckbox.addEventListener('change', function() {
+	gridSnapCheckbox.addEventListener('change', function () {
 		LAYOUT_MANAGER.updateSnap(gridSnapCheckbox.checked);
 	});
 
@@ -1086,7 +1086,7 @@ async function headerButtons() {
 			createNotification('Layout resetting...', 'info');
 		}
 	);
-	
+
 	// refresh data
 	document.getElementById('refreshButton').addEventListener(
 		'click',
@@ -1095,13 +1095,13 @@ async function headerButtons() {
 			const dataUpdated = await DATA_MANAGER.refreshData();
 			if (dataUpdated) {
 				const updatedRunsInfo = DATA_MANAGER.getUpdatedRunsInfo();
-				
+
 				// Update plots
 				await PLOT_MANAGER.populateAllPlots();
-				
+
 				// Update table
 				GRID_API.setRowData(DATA_MANAGER.summaryManifest);
-				
+
 				// Detailed notification
 				if (updatedRunsInfo.count > 0) {
 					if (updatedRunsInfo.count < 3) {
@@ -1110,7 +1110,7 @@ async function headerButtons() {
 					else {
 						createNotification(`Data refreshed successfully. ${updatedRunsInfo.count} run(s) updated.`, 'info');
 					}
-					
+
 					// Notify about each updated run
 					updatedRunsInfo.runs.forEach(runId => {
 						createNotification(`Run ${runId} was updated`, 'info');
@@ -1134,42 +1134,42 @@ async function headerButtons() {
 	);
 
 	// Toggle visibility of runs
-    document.getElementById('toggleVisibleRowsButton').addEventListener(
-        'click',
-        () => toggleRowsVisibility(true)
-    );
+	document.getElementById('toggleVisibleRowsButton').addEventListener(
+		'click',
+		() => toggleRowsVisibility(true)
+	);
 
-    document.getElementById('toggleFilteredRowsButton').addEventListener(
-        'click',
-        () => toggleRowsVisibility(false)
-    );
+	document.getElementById('toggleFilteredRowsButton').addEventListener(
+		'click',
+		() => toggleRowsVisibility(false)
+	);
 }
 
 function createNotification(message, type = 'info', extra = null) {
-    const log_str = `[${type}]: ${message}\n${extra ? extra : ''}`;
-    // print to console
-    switch (type) {
-        case 'info':
-            console.log(log_str);
+	const log_str = `[${type}]: ${message}\n${extra ? extra : ''}`;
+	// print to console
+	switch (type) {
+		case 'info':
+			console.log(log_str);
 			if (extra) { console.log(extra); };
-            break;
-        case 'warning':
-            console.warn(log_str);
+			break;
+		case 'warning':
+			console.warn(log_str);
 			if (extra) { console.warn(extra); };
-            break;
-        case 'error':
-            console.error(log_str);
+			break;
+		case 'error':
+			console.error(log_str);
 			if (extra) { console.error(extra); };
-            break;
-        default:
-            console.log(log_str);
+			break;
+		default:
+			console.log(log_str);
 			if (extra) { console.log(extra); };
-    }
+	}
 
-    // create notification div
-    const notificationDiv = document.createElement('div');
-    notificationDiv.textContent = message;
-    notificationDiv.style.cssText = `
+	// create notification div
+	const notificationDiv = document.createElement('div');
+	notificationDiv.textContent = message;
+	notificationDiv.style.cssText = `
         position: fixed;
         top: 10px;
         right: 10px;
@@ -1182,39 +1182,39 @@ function createNotification(message, type = 'info', extra = null) {
         z-index: 1000;
         opacity: 0;  // Start with 0 opacity for fade-in effect
     `;
-    
-    // Function to update positions of all notifications
-    function updateNotificationPositions() {
-        const notifications = document.querySelectorAll('.notification');
-        let currentTop = 10;
-        notifications.forEach((notification) => {
-            notification.style.transform = `translateY(${currentTop}px)`;
-            currentTop += notification.offsetHeight + 10; // 10px gap between notifications
-        });
-    }
 
-    // Add a class for easier selection
-    notificationDiv.classList.add('notification');
+	// Function to update positions of all notifications
+	function updateNotificationPositions() {
+		const notifications = document.querySelectorAll('.notification');
+		let currentTop = 10;
+		notifications.forEach((notification) => {
+			notification.style.transform = `translateY(${currentTop}px)`;
+			currentTop += notification.offsetHeight + 10; // 10px gap between notifications
+		});
+	}
 
-    // Insert the new notification at the top
-    const firstNotification = document.querySelector('.notification');
-    if (firstNotification) {
-        document.body.insertBefore(notificationDiv, firstNotification);
-    } else {
-        document.body.appendChild(notificationDiv);
-    }
+	// Add a class for easier selection
+	notificationDiv.classList.add('notification');
 
-    // Trigger reflow to ensure the initial state is applied before changing opacity
-    notificationDiv.offsetHeight;
+	// Insert the new notification at the top
+	const firstNotification = document.querySelector('.notification');
+	if (firstNotification) {
+		document.body.insertBefore(notificationDiv, firstNotification);
+	} else {
+		document.body.appendChild(notificationDiv);
+	}
 
-    // Fade in the notification
-    notificationDiv.style.opacity = '1';
+	// Trigger reflow to ensure the initial state is applied before changing opacity
+	notificationDiv.offsetHeight;
 
-    // Update positions after a short delay to allow for DOM update
-    setTimeout(updateNotificationPositions, 10);
+	// Fade in the notification
+	notificationDiv.style.opacity = '1';
 
-    // Remove the notification after 3 seconds
-    setTimeout(
+	// Update positions after a short delay to allow for DOM update
+	setTimeout(updateNotificationPositions, 10);
+
+	// Remove the notification after 3 seconds
+	setTimeout(
 		() => {
 			notificationDiv.style.opacity = '0';
 			notificationDiv.style.transform += ' translateX(100%)';
@@ -1240,9 +1240,9 @@ function createNotification(message, type = 'info', extra = null) {
 
 
 function isISODate(value) {
-    // This regex matches ISO 8601 date strings with optional fractional seconds and timezone information
-    const dateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(.\d+)?(Z|[+-]\d{2}:\d{2})?$/;
-    return dateRegex.test(value);
+	// This regex matches ISO 8601 date strings with optional fractional seconds and timezone information
+	const dateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(.\d+)?(Z|[+-]\d{2}:\d{2})?$/;
+	return dateRegex.test(value);
 }
 
 // fancy cell rendering -- hover/copy/open the data, make it emojis if its too long
@@ -1275,16 +1275,16 @@ function fancyCellRenderer(params) {
 	}
 
 	// Add click event listener to copy text to the clipboard
-	div.onclick = function() {
-		navigator.clipboard.writeText(value).then(function() {
+	div.onclick = function () {
+		navigator.clipboard.writeText(value).then(function () {
 			console.log('Successfully copied to clipboard');
-		}).catch(function(err) {
+		}).catch(function (err) {
 			console.error('Could not copy text to clipboard: ', err);
 		});
 	};
 
 	// on right click, open a new plain text tab whose contents are the cell's value
-	div.oncontextmenu = function() {
+	div.oncontextmenu = function () {
 		const newWindow = window.open('', '_blank');
 		// set the contents of the new window to the cell's value
 		newWindow.document.write('<pre>' + value + '</pre>');
@@ -1299,7 +1299,7 @@ function fancyCellRenderer(params) {
 
 
 function createColumnDefs(summaryManifest) {
-    var columnDefs = [
+	var columnDefs = [
 		{
 			headerName: 'View/Hide',
 			field: 'visible',
@@ -1310,43 +1310,43 @@ function createColumnDefs(summaryManifest) {
 				cellDiv.style.display = 'flex';
 				cellDiv.style.alignItems = 'center';
 				cellDiv.style.justifyContent = 'center';
-		
+
 				const checkbox = document.createElement('input');
 				checkbox.type = 'checkbox';
 				checkbox.checked = params.value !== false;
 				checkbox.style.marginRight = '5px';
-		
+
 				const iconDiv = document.createElement('div');
 				iconDiv.innerHTML = feather.icons[checkbox.checked ? 'eye' : 'eye-off'].toSvg();
 				iconDiv.style.pointerEvents = 'none'; // Make icon non-interactive
-		
+
 				cellDiv.appendChild(checkbox);
 				cellDiv.appendChild(iconDiv);
-		
+
 				const updateVisibility = (isVisible) => {
 					params.setValue(isVisible);
 					checkbox.checked = isVisible;
 					iconDiv.innerHTML = feather.icons[isVisible ? 'eye' : 'eye-off'].toSvg();
 					PLOT_MANAGER.updateTraceVisibility(params.data.id.syllabic, isVisible);
 				};
-		
+
 				checkbox.addEventListener('change', () => updateVisibility(checkbox.checked));
 				cellDiv.addEventListener('click', (event) => {
 					if (event.target !== checkbox) {
 						updateVisibility(!checkbox.checked);
 					}
 				});
-		
+
 				return cellDiv;
 			},
-		},		
-    ];
+		},
+	];
 
 	// date filter
 	const date_def = {
 		filter: 'agDateColumnFilter',
 		filterParams: {
-			comparator: function(filterValue, cellValue) {
+			comparator: function (filterValue, cellValue) {
 				// Assuming cellValue is an ISO date string
 				const cellDate = new Date(cellValue);
 				const filterDate = new Date(filterValue);
@@ -1365,71 +1365,71 @@ function createColumnDefs(summaryManifest) {
 	}
 
 
-    // Define column groups
-    const columnGroupDefs = [
-        {
-            headerName: 'Name',
-            children: [
-                { field: 'id.syllabic', headerName: 'Syllabic ID', columnGroupShow: null },
-                { field: 'id.run', headerName: 'Full Run ID', columnGroupShow: 'open' },
-            ],
+	// Define column groups
+	const columnGroupDefs = [
+		{
+			headerName: 'Name',
+			children: [
+				{ field: 'id.syllabic', headerName: 'Syllabic ID', columnGroupShow: null },
+				{ field: 'id.run', headerName: 'Full Run ID', columnGroupShow: 'open' },
+			],
 			marryChildren: true,
-        },
-        {
-            headerName: 'Timing',
-            children: [
-                { field: 'timing.start', headerName: 'Start', columnGroupShow: null, ...date_def },
-                { field: 'timing.final', headerName: 'End', columnGroupShow: 'open', ...date_def },
-                { field: 'timing.duration', headerName: 'Duration (ms)', columnGroupShow: 'open', },
-            ],
+		},
+		{
+			headerName: 'Timing',
+			children: [
+				{ field: 'timing.start', headerName: 'Start', columnGroupShow: null, ...date_def },
+				{ field: 'timing.final', headerName: 'End', columnGroupShow: 'open', ...date_def },
+				{ field: 'timing.duration', headerName: 'Duration (ms)', columnGroupShow: 'open', },
+			],
 			marryChildren: true,
-        },
-        {
-            headerName: 'Final Metrics',
-            children: [],
-        },
-        {
-            headerName: 'Config',
-            children: [
-                {
-                    field: 'config',
-                    headerName: 'Config',
-                    // width: 50, // TODO: this width is broken
+		},
+		{
+			headerName: 'Final Metrics',
+			children: [],
+		},
+		{
+			headerName: 'Config',
+			children: [
+				{
+					field: 'config',
+					headerName: 'Config',
+					// width: 50, // TODO: this width is broken
 					cellRenderer: fancyCellRenderer,
 					valueFormatter: params => {
-                        if (params.value === null || params.value === undefined) {
-                            return '';
-                        }
-                        if (typeof params.value === 'object') {
-                            return JSON.stringify(params.value);
-                        }
-                        return params.value.toString();
-                    },
-                },
-            ],
+						if (params.value === null || params.value === undefined) {
+							return '';
+						}
+						if (typeof params.value === 'object') {
+							return JSON.stringify(params.value);
+						}
+						return params.value.toString();
+					},
+				},
+			],
 			marryChildren: true,
-        },
-    ];
+		},
+	];
 
-    // Dynamically add final metric columns
-    const finalMetricKeys = new Set();
-    summaryManifest.forEach(item => {
-        Object.keys(item.final_metrics).forEach(key => finalMetricKeys.add(key));
-    });
+	// Dynamically add final metric columns
+	const finalMetricKeys = new Set();
+	summaryManifest.forEach(item => {
+		Object.keys(item.final_metrics).forEach(key => finalMetricKeys.add(key));
+	});
 	var final_metrics_counter = 0;
-    finalMetricKeys.forEach(key => {
-        columnGroupDefs[2].children.push({
-			field: `final_metrics.${key}`, 
+	finalMetricKeys.forEach(key => {
+		columnGroupDefs[2].children.push({
+			field: `final_metrics.${key}`,
 			headerName: key,
 			columnGroupShow: final_metrics_counter === 1 ? null : 'open',
 		});
 		final_metrics_counter += 1;
-    });
+	});
 
-    // Add column group definitions to the main column definitions
-    columnDefs = columnDefs.concat(columnGroupDefs);
+	// Add column group definitions to the main column definitions
+	columnDefs = columnDefs.concat(columnGroupDefs);
 
-    return columnDefs;
+	return columnDefs;
 }
 
 function adjustTableHeight(table) {
@@ -1442,36 +1442,36 @@ function adjustTableHeight(table) {
 }
 
 function toggleRowsVisibility(affectVisible) {
-    const visibleRows = new Set(GRID_API.getRenderedNodes().map(node => node.data.id.syllabic));
-    let rowsToToggle = [];
-    let newVisibility;
+	const visibleRows = new Set(GRID_API.getRenderedNodes().map(node => node.data.id.syllabic));
+	let rowsToToggle = [];
+	let newVisibility;
 
-    GRID_API.forEachNode(node => {
-        const isVisible = visibleRows.has(node.data.id.syllabic);
-        if (affectVisible === isVisible) {
-            rowsToToggle.push(node);
-        }
-    });
+	GRID_API.forEachNode(node => {
+		const isVisible = visibleRows.has(node.data.id.syllabic);
+		if (affectVisible === isVisible) {
+			rowsToToggle.push(node);
+		}
+	});
 
-    if (rowsToToggle.length > 0) {
-        newVisibility = !rowsToToggle[0].data.visible;
-    }
+	if (rowsToToggle.length > 0) {
+		newVisibility = !rowsToToggle[0].data.visible;
+	}
 
-    rowsToToggle.forEach(node => {
-        node.setDataValue('visible', newVisibility);
-        LAYOUT_MANAGER.visibilityState[node.data.id.syllabic] = newVisibility;
-    });
+	rowsToToggle.forEach(node => {
+		node.setDataValue('visible', newVisibility);
+		LAYOUT_MANAGER.visibilityState[node.data.id.syllabic] = newVisibility;
+	});
 
-    // Update plots
-    DATA_MANAGER.metricNames.forEach(metricName => {
-        PLOT_MANAGER.updatePlot(metricName);
-    });
+	// Update plots
+	DATA_MANAGER.metricNames.forEach(metricName => {
+		PLOT_MANAGER.updatePlot(metricName);
+	});
 
-    GRID_API.refreshCells({
-        force: true,
-        columns: ['visible'],
-        rowNodes: rowsToToggle
-    });
+	GRID_API.refreshCells({
+		force: true,
+		columns: ['visible'],
+		rowNodes: rowsToToggle
+	});
 }
 
 function createRunsManifestTable(summaryManifest) {
@@ -1491,9 +1491,9 @@ function createRunsManifestTable(summaryManifest) {
 
 	// create the grid options
 	const gridOptions = {
-        columnDefs: createColumnDefs(summaryManifest),
-        rowData: summaryManifest,
-        pagination: true,
+		columnDefs: createColumnDefs(summaryManifest),
+		rowData: summaryManifest,
+		pagination: true,
 		enableCellTextSelection: true,
 		enableBrowserTooltips: true,
 		rowSelection: 'multiple',
@@ -1510,14 +1510,14 @@ function createRunsManifestTable(summaryManifest) {
 			menuTabs: [],
 		},
 		domLayout: 'autoHeight',
-		onFirstDataRendered: function(params) {
-            adjustTableHeight(runsManifestTable);
-        },
-        onPaginationChanged: function(params) {
-            adjustTableHeight(runsManifestTable);
-        },
+		onFirstDataRendered: function (params) {
+			adjustTableHeight(runsManifestTable);
+		},
+		onPaginationChanged: function (params) {
+			adjustTableHeight(runsManifestTable);
+		},
 		initialState: LAYOUT_MANAGER.grid_state,
-    };
+	};
 
 	// create the ag-Grid table, api to global
 	// api is used in LayoutManager.updateGridState
@@ -1529,7 +1529,7 @@ function createRunsManifestTable(summaryManifest) {
 		const isVisible = LAYOUT_MANAGER.visibilityState[runId] !== false;
 		node.setDataValue('visible', isVisible);
 	});
-	GRID_API.refreshCells({force: true, columns: ['visible']});
+	GRID_API.refreshCells({ force: true, columns: ['visible'] });
 	// set the checkbox state
 	GRID_API.onFilterChanged();
 }
@@ -1551,23 +1551,23 @@ function createRunsManifestTable(summaryManifest) {
 async function init() {
 	// load basic data
 	await DATA_MANAGER.loadManifest();
-	
+
 	// layout stuff
 	LAYOUT_MANAGER = new LayoutManager(DATA_MANAGER.projectName);
-	await LAYOUT_MANAGER.loadLayout(do_update=false);
-	
+	await LAYOUT_MANAGER.loadLayout(do_update = false);
+
 	// set up header and buttons
 	await headerButtons();
-	
+
 	// create empty plots
 	await PLOT_MANAGER.createAllPlots();
-	
+
 	// load data
 	await DATA_MANAGER.loadRuns();
-	
+
 	// populate table and get grid API
 	await createRunsManifestTable(DATA_MANAGER.summaryManifest);
-	
+
 	// populate plots
 	await PLOT_MANAGER.populateAllPlots();
 

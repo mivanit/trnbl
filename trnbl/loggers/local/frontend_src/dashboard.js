@@ -449,6 +449,7 @@ class LayoutManager {
 		this.snapInterval = SNAP_INTERVAL_DEFAULT;
 		this.plot_configs = {};
 		this.grid_state = null;
+		this.visibilityState = {};
 		// default layout stuff
 		this.init_y = this.round_to_snap_interval(130),
 		this.default_plot_cont_height = this.round_to_snap_interval(default_plot_cont_height);
@@ -668,7 +669,6 @@ class LayoutManager {
 
     async saveLayout() {
 		this.updateGridState();
-        this.visibilityState = PLOT_MANAGER.visibilityState;
         const layoutKey = this.get_local_storage_key();
         IO_MANAGER.saveJsonLocal(layoutKey, this);
 		const layout_read = await IO_MANAGER.readJsonLocal(layoutKey);
@@ -691,8 +691,7 @@ class LayoutManager {
 			this.snapInterval = savedLayout.snapInterval;
 			this.plot_configs = savedLayout.plot_configs;
 			this.grid_state = savedLayout.grid_state;
-			this.visibilityState = savedLayout.visibilityState || {};
-            PLOT_MANAGER.visibilityState = this.visibilityState;
+			this.visibilityState = savedLayout.visibilityState;
 		} else {
 			this.layout = this.get_default_layout(DATA_MANAGER.metricNames);
 		}
@@ -740,7 +739,6 @@ class LayoutManager {
 class PlotManager {
     constructor() {
         this.plots = {}; // Keyed by metricName, values are objects with Plotly plot div ID and settings
-		this.visibilityState = {};
     }
 
     async createPlot(metricName) {
@@ -856,7 +854,7 @@ class PlotManager {
 				mode: 'lines',
 				line: plotConfig.smoothing_span ? { shape: 'spline' } : {},
 				name: run_syllabic_id,
-				visible: this.visibilityState[run_syllabic_id] !== false ? true : 'legendonly',
+				visible: LAYOUT_MANAGER.visibilityState[run_syllabic_id] !== false ? true : 'legendonly',
 			};
 			traces.push(trace);
 		}
@@ -875,13 +873,15 @@ class PlotManager {
     }
 
 	updateTraceVisibility(runId, isVisible) {
-        this.visibilityState[runId] = isVisible;
+        LAYOUT_MANAGER.visibilityState[runId] = isVisible;
         for (const metricName of DATA_MANAGER.metricNames) {
             const plotInfo = this.plots[metricName];
             if (plotInfo) {
-                Plotly.restyle(plotInfo.plotID, {
-                    visible: isVisible ? true : 'legendonly'
-                }, [this.getTraceIndex(plotInfo.plotID, runId)]);
+                Plotly.restyle(
+					plotInfo.plotID,
+					{visible: isVisible ? true : 'legendonly'},
+					[this.getTraceIndex(plotInfo.plotID, runId)],
+				);
             }
         }
     }
@@ -889,7 +889,12 @@ class PlotManager {
     getTraceIndex(plotId, runId) {
         const plotDiv = document.getElementById(plotId);
         const data = plotDiv.data;
-        return data.findIndex(trace => trace.name === runId);
+		console.log("getTraceIndex: plotDiv.data", data);
+		const index = data.findIndex(trace => trace.name === runId);
+		if (index < 0) {
+			console.error(`Trace for run ${runId} not found in plot ${plotId}`);
+		}
+		return index;
     }
 
     updateAllVisibility() {
@@ -1014,13 +1019,7 @@ class PlotManager {
 
 let PLOT_MANAGER = new PlotManager();
 
-function updatePlotVisibility(runId, isVisible) {
-    PLOT_MANAGER.updateTraceVisibility(runId, isVisible);
-}
 
-function updateAllPlotsVisibility() {
-    PLOT_MANAGER.updateAllVisibility();
-}
 
 /*
 ##     ## ########    ###    ########  ######## ########
@@ -1267,7 +1266,7 @@ function fancyCellRenderer(params) {
 		// set the contents of the new window to the cell's value
 		newWindow.document.write('<pre>' + value + '</pre>');
 		// set the title of the page to the rows "name.default_alias" and the column's header
-		newWindow.document.title = params.node.data['id.run'] + ' : ' + params.colDef.headerName; // TODO: page has "undefined" in title
+		newWindow.document.title = params.node.data.id.run + ' : ' + params.colDef.headerName; // TODO: page has "undefined" in title
 		newWindow.document.close();
 	};
 
@@ -1278,8 +1277,8 @@ function fancyCellRenderer(params) {
 
 function createColumnDefs(summaryManifest) {
     var columnDefs = [
-        {
-            headerName: 'View/Hide',
+		{
+        	headerName: 'View/Hide',
             field: 'visible',
             width: 80,
             cellRenderer: params => {
@@ -1303,39 +1302,29 @@ function createColumnDefs(summaryManifest) {
                     params.setValue(checkbox.checked);
                     icon.setAttribute('data-feather', checkbox.checked ? 'eye' : 'eye-off');
                     feather.replace(); // Update the icon
-                    updatePlotVisibility(params.data['id.syllabic'], checkbox.checked);
+					console.log("params", params);
+					console.log("params.data.id.syllabic", params.data.id.syllabic);
+                    PLOT_MANAGER.updateTraceVisibility(params.data.id.syllabic, checkbox.checked);
                 });
 
                 return cellDiv;
             },
-            headerComponent: params => {
-                const headerDiv = document.createElement('div');
-                headerDiv.style.display = 'flex';
-                headerDiv.style.alignItems = 'center';
-                headerDiv.style.justifyContent = 'center';
-
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.checked = true;
-                checkbox.style.marginRight = '5px';
-
-                const icon = document.createElement('i');
-                icon.setAttribute('data-feather', 'eye');
-
-                headerDiv.appendChild(checkbox);
-                headerDiv.appendChild(icon);
-
-                checkbox.addEventListener('change', () => {
-                    const api = params.api;
-                    api.forEachNode(node => {
-                        node.setDataValue('visible', checkbox.checked);
-                    });
-                    api.refreshCells({force: true, columns: ['visible']});
-                    updateAllPlotsVisibility();
-                });
-
-                return headerDiv;
-            },
+            headerComponentParams: {
+                template: 
+                    '<div class="ag-cell-label-container" role="presentation">' +
+                    '  <span ref="eMenu" class="ag-header-icon ag-header-cell-menu-button"></span>' +
+                    '  <div ref="eLabel" class="ag-header-cell-label" role="presentation">' +
+                    '    <span ref="eText" class="ag-header-cell-text"></span>' +
+                    '    <span ref="eFilter" class="ag-header-icon ag-filter-icon"></span>' +
+                    '    <span ref="eSortOrder" class="ag-header-icon ag-sort-order"></span>' +
+                    '    <span ref="eSortAsc" class="ag-header-icon ag-sort-ascending-icon"></span>' +
+                    '    <span ref="eSortDesc" class="ag-header-icon ag-sort-descending-icon"></span>' +
+                    '    <span ref="eSortNone" class="ag-header-icon ag-sort-none-icon"></span>' +
+                    '    <input ref="eSelectAll" class="ag-input-field-input ag-checkbox-input" type="checkbox"/>' +
+                    '  </div>' +
+                    '</div>',
+                selectAllCheckbox: true
+            }
         },
     ];
 
@@ -1473,6 +1462,15 @@ function createRunsManifestTable(summaryManifest) {
             adjustTableHeight(runsManifestTable);
         },
 		initialState: LAYOUT_MANAGER.grid_state,
+		// onHeaderCheckboxChanged: (event) => {
+        //     if (event.source !== 'header') return;
+        //     const isChecked = event.checked;
+        //     GRID_API.forEachNode(node => {
+        //         node.setDataValue('visible', isChecked);
+        //     });
+        //     GRID_API.refreshCells({force: true, columns: ['visible']});
+        //     PLOT_MANAGER.updateAllVisibility();
+        // },
     };
 
 	// create the ag-Grid table, api to global
@@ -1518,6 +1516,9 @@ async function init() {
 	// Apply visibility state to the table
 	GRID_API.forEachNode(node => {
 		const runId = node.data['id.syllabic'];
+		if (!LAYOUT_MANAGER.visibilityState.hasOwnProperty(runId)) {
+			node.setDataValue('visible', true);
+		}
 		node.setDataValue('visible', LAYOUT_MANAGER.visibilityState[runId] !== false);
 	});
 	GRID_API.refreshCells({force: true, columns: ['visible']});

@@ -71,26 +71,42 @@ def build_dist(
 	soup: BeautifulSoup = BeautifulSoup(original_html_text, features="html.parser")
 
 	# Find link tags. example: <link rel="stylesheet" href="css/somestyle.css">
+	# also handles favicon
 	for tag in soup.find_all("link", href=True):
 		if tag.has_attr("href"):
-			file_text: str | None = get_remote(
-				tag["href"], download_remote=download_remote
+			file_content: str | bytes | None = get_remote(
+				tag["href"],
+				download_remote=download_remote,
+				get_bytes=tag.get("rel") == ["icon"], # assume text if not icon
 			)
 
-			if file_text is not None:
+			if file_content is not None:
 				# remove the tag from soup
 				tag.extract()
 
-				# insert style element
-				new_style: Tag = soup.new_tag("style")
-				new_style.string = file_text
-				soup.html.head.append(new_style)
+				if tag.get("rel") == ["stylesheet"]:
+					# insert style element for CSS
+					new_style: Tag = soup.new_tag("style")
+					new_style.string = file_content
+					soup.html.head.append(new_style)
+				elif tag.get("rel") == ["icon"]:
+					# handle favicon
+					mime_type = "image/x-icon"  # default mime type for favicon
+					if tag["href"].lower().endswith(".png"):
+						mime_type = "image/png"
+					elif tag["href"].lower().endswith(".ico"):
+						mime_type = "image/x-icon"
+
+					base64_content = base64.b64encode(file_content).decode("ascii")
+					new_link: Tag = soup.new_tag("link", rel="icon", href=f"data:{mime_type};base64,{base64_content}")
+					soup.html.head.append(new_link)
 
 	# Find script tags. example: <script src="js/somescript.js"></script>
 	for tag in soup.find_all("script", src=True):
 		if tag.has_attr("src"):
 			file_text: str | None = get_remote(
-				tag["src"], download_remote=download_remote
+				tag["src"],
+				download_remote=download_remote,
 			)
 
 			if file_text is not None:

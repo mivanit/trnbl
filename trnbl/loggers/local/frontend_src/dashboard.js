@@ -1100,7 +1100,8 @@ async function headerButtons() {
 				await PLOT_MANAGER.populateAllPlots();
 
 				// Update table
-				GRID_API.setRowData(DATA_MANAGER.summaryManifest);
+				GRID_API.setGridOption('rowData', DATA_MANAGER.summaryManifest);
+				GRID_API.refreshCells({force: true});
 
 				// Detailed notification
 				if (updatedRunsInfo.count > 0) {
@@ -1223,7 +1224,7 @@ function createNotification(message, type = 'info', extra = null) {
 				updateNotificationPositions();
 			}, 300); // Match this with the CSS transition time
 		},
-		NOTIFICATION_CONFIG.duration,
+		NOTIFICATION_CONFIG.timeout,
 	);
 }
 

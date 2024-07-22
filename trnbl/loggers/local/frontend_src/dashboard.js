@@ -43,7 +43,7 @@ const NOTIFICATION_CONFIG = {
 }
 
 const AUTO_REFRESH_CONFIG = {
-	interval: 10,
+	interval: -1,
 	select_options: [
 		{ value: -1, label: 'Off' },
 		{ value: 1, label: '1' },
@@ -93,7 +93,7 @@ class IOManager {
 		}
 	}
 
-	async fetchJsonLines(path) {
+	async fetchJsonLines(path, notify_last_line_error = false) {
 		try {
 			const response = await fetch(path);
 			if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -106,7 +106,9 @@ class IOManager {
 				const lastLine = JSON.parse(lines[lines.length - 1]);
 				validLines.push(lastLine);
 			} catch (error) {
-				createNotification(`Invalid JSON in the last line of ${path}: ${error}`, 'error', error);
+				if (notify_last_line_error) {
+					createNotification(`Invalid JSON in the last line of ${path}: ${error}`, 'error', error);
+				}
 			}
 
 			return validLines;

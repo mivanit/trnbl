@@ -42,6 +42,22 @@ const NOTIFICATION_CONFIG = {
 	timeout: 5000,
 }
 
+const AUTO_REFRESH_CONFIG = {
+	interval: 10,
+	select_options: [
+		{ value: -1, label: 'Off' },
+		{ value: 1, label: '1' },
+		{ value: 5, label: '5' },
+		{ value: 10, label: '10' },
+		{ value: 30, label: '30' },
+		{ value: 60, label: '60' },
+		{ value: 100, label: '100' },
+		{ value: 1000, label: '1000' }
+	],
+}
+
+const DEFAULT_AUTO_REFRESH = 10;
+
 const DEFAULT_STYLE = {
 	border: '1px solid black',
 	backgroundColor: '#f0f0f0',
@@ -367,8 +383,12 @@ class DataManager {
 		});
 	}
 
-	async refreshData() {
-		console.log("Checking for updated data...");
+	async refreshData(verbose = true) {
+		
+		if (verbose) {
+			createNotification('Checking for data updates...', 'info');
+		}
+
 		let dataUpdated = false;
 		this.updatedRuns.clear(); // Clear the set at the start of each refresh
 
@@ -416,13 +436,84 @@ class DataManager {
 			this.updateSummaryManifest();
 
 			this.lastRefreshTime = new Date();
-			console.log("Data refresh completed");
+			
+			const updatedRunsInfo = DATA_MANAGER.getUpdatedRunsInfo();
+
+			// Update plots
+			await PLOT_MANAGER.populateAllPlots();
+
+			// Update table
+			GRID_API.setGridOption('rowData', DATA_MANAGER.summaryManifest);
+			GRID_API.refreshCells({force: true});
+
+			// Detailed notification
+			if (updatedRunsInfo.count > 0) {
+				createNotification(
+					(
+						`Data refreshed successfully. ${updatedRunsInfo.count} run(s) updated`
+						// use ternary operator to add the list of updated runs if there are less than 3
+						+ (updatedRunsInfo.count < 3 ? `: ${updatedRunsInfo.runs.join(', ')}` : '')
+					),
+					'info',
+					updatedRunsInfo,
+					verbose,
+				);
+			} else {
+				createNotification(
+					'Manifest updated, but no individual runs were changed',
+					'info',
+					updatedRunsInfo, verbose,
+				);
+			}
+
 		} else {
-			console.log("No updates found");
+			createNotification(
+				'No new data updates found', 'info',
+				null, verbose,
+			);
 		}
 
 		return dataUpdated;
-	}
+	}	
+
+    initAutoRefresh() {
+        const autoRefreshSelect = document.getElementById('autoRefreshSelect');
+        
+        // Populate the select element with options
+        AUTO_REFRESH_CONFIG.select_options.forEach(option => {
+            const optionElement = document.createElement('option');
+            optionElement.value = option.value;
+            optionElement.textContent = option.label;
+            if (option.value === AUTO_REFRESH_CONFIG.interval) {
+                optionElement.selected = true;
+            }
+            autoRefreshSelect.appendChild(optionElement);
+        });
+
+        autoRefreshSelect.addEventListener('change', () => {
+            this.setAutoRefresh(parseFloat(autoRefreshSelect.value));
+        });
+
+        // Initialize auto-refresh with default value
+        this.setAutoRefresh(AUTO_REFRESH_CONFIG.interval);
+    }
+
+    setAutoRefresh(seconds) {
+        // Clear existing interval if any
+        if (this.autoRefreshInterval) {
+            clearInterval(this.autoRefreshInterval);
+        }
+
+        // If seconds is greater than 0, set new interval
+        if (seconds > 0) {
+            this.autoRefreshInterval = setInterval(() => {
+                this.refreshData(false);
+            }, seconds * 1000);
+            createNotification(`Auto refresh set to ${seconds} seconds`, 'info');
+        } else {
+            createNotification('Auto refresh turned off', 'info');
+        }
+    }
 
 	getUpdatedRunsInfo() {
 		return {
@@ -1087,43 +1178,17 @@ async function headerButtons() {
 		}
 	);
 
-	// refresh data
-	document.getElementById('refreshButton').addEventListener(
-		'click',
-		async () => {
-			createNotification('Checking for data updates...', 'info');
-			const dataUpdated = await DATA_MANAGER.refreshData();
-			if (dataUpdated) {
-				const updatedRunsInfo = DATA_MANAGER.getUpdatedRunsInfo();
+    // Set up manual refresh button
+    document.getElementById('refreshButton').addEventListener(
+        'click',
+        async () => {
+            await DATA_MANAGER.refreshData();
+        }
+    );
 
-				// Update plots
-				await PLOT_MANAGER.populateAllPlots();
+	// Set up auto-refresh
+    DATA_MANAGER.initAutoRefresh();
 
-				// Update table
-				GRID_API.setGridOption('rowData', DATA_MANAGER.summaryManifest);
-				GRID_API.refreshCells({force: true});
-
-				// Detailed notification
-				if (updatedRunsInfo.count > 0) {
-					if (updatedRunsInfo.count < 3) {
-						createNotification(`Data refreshed successfully. ${updatedRunsInfo.count} run(s) updated: ${updatedRunsInfo.runs.join(', ')}`, 'info');
-					}
-					else {
-						createNotification(`Data refreshed successfully. ${updatedRunsInfo.count} run(s) updated.`, 'info');
-					}
-
-					// Notify about each updated run
-					updatedRunsInfo.runs.forEach(runId => {
-						createNotification(`Run ${runId} was updated`, 'info');
-					});
-				} else {
-					createNotification('Manifest updated, but no individual runs were changed', 'info');
-				}
-			} else {
-				createNotification('No new data updates found', 'info');
-			}
-		}
-	);
 
 	// reset colum state of table
 	document.getElementById('resetColumnStateButton').addEventListener(
@@ -1146,7 +1211,7 @@ async function headerButtons() {
 	);
 }
 
-function createNotification(message, type = 'info', extra = null) {
+function createNotification(message, type = 'info', extra = null, show = true) {
 	const log_str = `[${type}]: ${message}\n${extra ? extra : ''}`;
 	// print to console
 	switch (type) {
@@ -1167,65 +1232,68 @@ function createNotification(message, type = 'info', extra = null) {
 			if (extra) { console.log(extra); };
 	}
 
-	// create notification div
-	const notificationDiv = document.createElement('div');
-	notificationDiv.textContent = message;
-	notificationDiv.style.cssText = `
-        position: fixed;
-        top: 10px;
-        right: 10px;
-        padding: 10px;
-        border-radius: 5px;
-        background-color: ${NOTIFICATION_CONFIG.colors[type]};
-        border: 1px solid ${NOTIFICATION_CONFIG.border_colors[type]};
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        transition: transform 0.3s ease-out, opacity 0.3s ease-out;
-        z-index: 1000;
-        opacity: 0;  // Start with 0 opacity for fade-in effect
-    `;
+	if (show) {
+		
+		// create notification div
+		const notificationDiv = document.createElement('div');
+		notificationDiv.textContent = message;
+		notificationDiv.style.cssText = `
+			position: fixed;
+			top: 10px;
+			right: 10px;
+			padding: 10px;
+			border-radius: 5px;
+			background-color: ${NOTIFICATION_CONFIG.colors[type]};
+			border: 1px solid ${NOTIFICATION_CONFIG.border_colors[type]};
+			box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+			transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+			z-index: 1000;
+			opacity: 0;  // Start with 0 opacity for fade-in effect
+		`;
 
-	// Function to update positions of all notifications
-	function updateNotificationPositions() {
-		const notifications = document.querySelectorAll('.notification');
-		let currentTop = 10;
-		notifications.forEach((notification) => {
-			notification.style.transform = `translateY(${currentTop}px)`;
-			currentTop += notification.offsetHeight + 10; // 10px gap between notifications
-		});
+		// Function to update positions of all notifications
+		function updateNotificationPositions() {
+			const notifications = document.querySelectorAll('.notification');
+			let currentTop = 10;
+			notifications.forEach((notification) => {
+				notification.style.transform = `translateY(${currentTop}px)`;
+				currentTop += notification.offsetHeight + 10; // 10px gap between notifications
+			});
+		}
+
+		// Add a class for easier selection
+		notificationDiv.classList.add('notification');
+
+		// Insert the new notification at the top
+		const firstNotification = document.querySelector('.notification');
+		if (firstNotification) {
+			document.body.insertBefore(notificationDiv, firstNotification);
+		} else {
+			document.body.appendChild(notificationDiv);
+		}
+
+		// Trigger reflow to ensure the initial state is applied before changing opacity
+		notificationDiv.offsetHeight;
+
+		// Fade in the notification
+		notificationDiv.style.opacity = '1';
+
+		// Update positions after a short delay to allow for DOM update
+		setTimeout(updateNotificationPositions, 10);
+
+		// Remove the notification after 3 seconds
+		setTimeout(
+			() => {
+				notificationDiv.style.opacity = '0';
+				notificationDiv.style.transform += ' translateX(100%)';
+				setTimeout(() => {
+					notificationDiv.remove();
+					updateNotificationPositions();
+				}, 300); // Match this with the CSS transition time
+			},
+			NOTIFICATION_CONFIG.timeout,
+		);
 	}
-
-	// Add a class for easier selection
-	notificationDiv.classList.add('notification');
-
-	// Insert the new notification at the top
-	const firstNotification = document.querySelector('.notification');
-	if (firstNotification) {
-		document.body.insertBefore(notificationDiv, firstNotification);
-	} else {
-		document.body.appendChild(notificationDiv);
-	}
-
-	// Trigger reflow to ensure the initial state is applied before changing opacity
-	notificationDiv.offsetHeight;
-
-	// Fade in the notification
-	notificationDiv.style.opacity = '1';
-
-	// Update positions after a short delay to allow for DOM update
-	setTimeout(updateNotificationPositions, 10);
-
-	// Remove the notification after 3 seconds
-	setTimeout(
-		() => {
-			notificationDiv.style.opacity = '0';
-			notificationDiv.style.transform += ' translateX(100%)';
-			setTimeout(() => {
-				notificationDiv.remove();
-				updateNotificationPositions();
-			}, 300); // Match this with the CSS transition time
-		},
-		NOTIFICATION_CONFIG.timeout,
-	);
 }
 
 

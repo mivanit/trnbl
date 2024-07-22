@@ -508,9 +508,15 @@ class DataManager {
 
         // If seconds is greater than 0, set new interval
         if (seconds > 0) {
-            this.autoRefreshInterval = setInterval(() => {
-                this.refreshData(false);
-            }, seconds * 1000);
+            this.autoRefreshInterval = setInterval(
+				() => {
+					this.refreshData(false).then(() => {
+						// Blink the refresh button after each refresh
+						blinkElement('autoRefreshButton');
+					});
+				},
+				seconds * 1000,
+			);
             createNotification(`Auto refresh set to ${seconds} seconds`, 'info');
         } else {
             createNotification('Auto refresh turned off', 'info');
@@ -1213,6 +1219,25 @@ async function headerButtons() {
 	);
 }
 
+/*
+##    ##  #######  ######## #### ########
+###   ## ##     ##    ##     ##  ##
+####  ## ##     ##    ##     ##  ##
+## ## ## ##     ##    ##     ##  ######
+##  #### ##     ##    ##     ##  ##
+##   ### ##     ##    ##     ##  ##
+##    ##  #######     ##    #### ##
+*/
+
+
+function blinkElement(elementId, color, duration) {
+    const element = document.getElementById(elementId);
+    element.classList.add('blink-border');
+    setTimeout(() => {
+        element.classList.remove('blink-border');
+    }, 1000); // Remove class after animation completes
+}
+
 function createNotification(message, type = 'info', extra = null, show = true) {
 	const log_str = `[${type}]: ${message}\n${extra ? extra : ''}`;
 	// print to console
@@ -1658,4 +1683,6 @@ async function init() {
 	console.log('init complete');
 
 	feather.replace();
+
+	await DATA_MANAGER.refreshData()
 }

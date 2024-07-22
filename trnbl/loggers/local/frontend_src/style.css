@@ -174,3 +174,13 @@ input:checked+.slider:before {
 .slider.round:before {
 	border-radius: 50%;
 }
+
+@keyframes blinkButton {
+    0% { background-color: #d8d8d8; }
+    50% { background-color: #b5d8c9; }
+    100% { background-color: #d8d8d8; }
+}
+
+.blink-border {
+    animation: blinkButton 0.5s ease-in-out;
+}

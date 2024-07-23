@@ -1,4 +1,3 @@
-import json
 
 
 def get_html_frontend() -> str:

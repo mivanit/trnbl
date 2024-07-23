@@ -289,7 +289,7 @@ class TrainingInterval:
 	@classmethod
 	def process_to_batches(
 		cls,
-		interval: 'CastableToTrainingInterval',
+		interval: "CastableToTrainingInterval",
 		batchsize: int,
 		batches_per_epoch: int,
 		epochs: int | None = None,
@@ -304,8 +304,9 @@ class TrainingInterval:
 			epochs=epochs,
 		)
 
+
 CastableToTrainingInterval = Union[
-	str, # parse as string "quantity unit"
-	tuple[Union[int,float,str], str], # parse as tuple (quantity, unit)
-	TrainingInterval, # already a TrainingInterval
+	str,  # parse as string "quantity unit"
+	tuple[Union[int, float, str], str],  # parse as tuple (quantity, unit)
+	TrainingInterval,  # already a TrainingInterval
 ]

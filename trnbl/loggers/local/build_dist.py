@@ -77,7 +77,7 @@ def build_dist(
 			file_content: str | bytes | None = get_remote(
 				tag["href"],
 				download_remote=download_remote,
-				get_bytes=tag.get("rel") == ["icon"], # assume text if not icon
+				get_bytes=tag.get("rel") == ["icon"],  # assume text if not icon
 			)
 
 			if file_content is not None:
@@ -98,7 +98,11 @@ def build_dist(
 						mime_type = "image/x-icon"
 
 					base64_content = base64.b64encode(file_content).decode("ascii")
-					new_link: Tag = soup.new_tag("link", rel="icon", href=f"data:{mime_type};base64,{base64_content}")
+					new_link: Tag = soup.new_tag(
+						"link",
+						rel="icon",
+						href=f"data:{mime_type};base64,{base64_content}",
+					)
 					soup.html.head.append(new_link)
 
 	# Find script tags. example: <script src="js/somescript.js"></script>
@@ -110,7 +114,6 @@ def build_dist(
 			)
 
 			if file_text is not None:
-
 				# remove the tag from soup
 				tag.extract()
 

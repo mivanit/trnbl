@@ -115,7 +115,9 @@ def test_training_manager_checkpoint_saving():
 @pytest.fixture
 def training_manager() -> TrainingManager:
 	logger: LocalLogger = LocalLogger(**logger_config)
-	return TrainingManager(model=model, dataloader=dataloader, logger=logger, epochs_total=1)
+	return TrainingManager(
+		model=model, dataloader=dataloader, logger=logger, epochs_total=1
+	)
 
 
 def test_training_manager_initialization_comprehensive(
@@ -289,13 +291,17 @@ def test_training_manager_full_training_loop() -> None:
 def test_training_manager_zero_epochs() -> None:
 	logger: LocalLogger = LocalLogger(**logger_config)
 	with pytest.warns(IntervalValueError):
-		TrainingManager(model=model, dataloader=dataloader, logger=logger, epochs_total=0)
+		TrainingManager(
+			model=model, dataloader=dataloader, logger=logger, epochs_total=0
+		)
 
 
 def test_training_manager_negative_epochs() -> None:
 	logger: LocalLogger = LocalLogger(**logger_config)
 	with pytest.warns(IntervalValueError):
-		TrainingManager(model=model, dataloader=dataloader, logger=logger, epochs_total=-1)
+		TrainingManager(
+			model=model, dataloader=dataloader, logger=logger, epochs_total=-1
+		)
 
 
 def test_training_manager_custom_save_model() -> None:

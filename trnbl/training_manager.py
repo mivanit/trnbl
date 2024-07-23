@@ -1,9 +1,8 @@
 import time
 from types import TracebackType
-from typing import Any, Callable, Iterable, Type, Generic, TypeVar, Generator
+from typing import Any, Callable, Iterable, Type, TypeVar, Generator
 from pathlib import Path
 import warnings
-import functools
 
 import tqdm
 
@@ -20,21 +19,23 @@ from trnbl.training_interval import TrainingInterval, CastableToTrainingInterval
 # evaluation function should take a model and return some metrics
 EvalFunction = Callable[["torch.nn.Module"], dict]
 
+
 class TrainingManagerInitError(Exception):
 	pass
 
-T = TypeVar('T')
+
+T = TypeVar("T")
+
 
 def wrapped_iterable(
-		iterable: Iterable[T],
-		manager: 'TrainingManager',
-		is_epoch: bool = False,
-		use_tqdm: bool|None = None,
-		tqdm_kwargs: dict[str, Any]|None = None,
-	) -> Generator[T, None, None]:
-	
+	iterable: Iterable[T],
+	manager: "TrainingManager",
+	is_epoch: bool = False,
+	use_tqdm: bool | None = None,
+	tqdm_kwargs: dict[str, Any] | None = None,
+) -> Generator[T, None, None]:
 	length: int = len(iterable)
-	
+
 	# update the manager if it's not fully initialized
 	# ------------------------------------------------------------
 	if not manager.init_complete:
@@ -51,29 +52,32 @@ def wrapped_iterable(
 				raise TrainingManagerInitError(
 					"could not get the batch size or dataset size from the dataloader passed to `TrainingManager().batch_loop()`. ",
 					"pass either a `torch.utils.data.DataLoader` ",
-					"or an iterable with a `batch_size: int` attribute and a `dataset: Iterable` attribute."
+					"or an iterable with a `batch_size: int` attribute and a `dataset: Iterable` attribute.",
 				) from e
 
 		# try to compute counters and finish init of TrainingManager
 		manager.try_compute_counters()
-	
+
 	# set up progress bar with tqdm
 	# ------------------------------------------------------------
 	use_tqdm = (
-		use_tqdm if use_tqdm is not None # do what the user says
-		else is_epoch # otherwise, use tqdm if we are the epoch loop
+		use_tqdm
+		if use_tqdm is not None  # do what the user says
+		else is_epoch  # otherwise, use tqdm if we are the epoch loop
 	)
 
 	if use_tqdm:
 		# tqdm kwargs with defaults
 		_tqdm_kwargs: dict[str, Any] = dict(
-			desc="training run" if is_epoch else f"epoch {manager.epochs+1}/{manager.epochs_total}",
+			desc="training run"
+			if is_epoch
+			else f"epoch {manager.epochs+1}/{manager.epochs_total}",
 			unit=" epochs" if is_epoch else " batches",
 			total=length,
 		)
 		if tqdm_kwargs is not None:
 			_tqdm_kwargs.update(tqdm_kwargs)
-		
+
 		# wrap with tqdm
 		iterable = tqdm.tqdm(iterable, **_tqdm_kwargs)
 
@@ -84,6 +88,7 @@ def wrapped_iterable(
 		if is_epoch:
 			manager.epoch_update()
 		# no need to call batch_update, since the user has to call batch_update to log metrics
+
 
 class TrainingManager:
 	"""context manager for training a model, with logging, evals, and checkpoints
@@ -162,12 +167,14 @@ class TrainingManager:
 		logger: TrainingLoggerBase,
 		# required if you don't wrap the loops
 		dataloader: "torch.utils.data.DataLoader|None" = None,
-		epochs_total: int|None = None,
+		epochs_total: int | None = None,
 		save_model: Callable[["torch.nn.Module", Path], None] = torch.save,
 		# everything with intervals
 		evals: Iterable[tuple[CastableToTrainingInterval, EvalFunction]] | None = None,
 		checkpoint_interval: CastableToTrainingInterval = TrainingInterval(1, "epochs"),
-		print_metrics_interval: CastableToTrainingInterval = TrainingInterval(0.1, "runs"),
+		print_metrics_interval: CastableToTrainingInterval = TrainingInterval(
+			0.1, "runs"
+		),
 		# everything with paths
 		model_save_path: str = "{run_path}/checkpoints/model.checkpoint-{latest_checkpoint}.pt",
 		model_save_path_special: str = "{run_path}/model.{alias}.pt",
@@ -194,12 +201,16 @@ class TrainingManager:
 				(TrainingInterval.from_any(interval), eval_fn)
 				for interval, eval_fn in evals
 			]
-		self._checkpoint_interval: TrainingInterval = TrainingInterval.from_any(checkpoint_interval)
-		self._print_metrics_interval: TrainingInterval = TrainingInterval.from_any(print_metrics_interval)
+		self._checkpoint_interval: TrainingInterval = TrainingInterval.from_any(
+			checkpoint_interval
+		)
+		self._print_metrics_interval: TrainingInterval = TrainingInterval.from_any(
+			print_metrics_interval
+		)
 
-		self.evals: list[tuple[int, EvalFunction]]|None = None
-		self.checkpoint_interval: int|None = None
-		self.print_metrics_interval: int|None = None
+		self.evals: list[tuple[int, EvalFunction]] | None = None
+		self.checkpoint_interval: int | None = None
+		self.print_metrics_interval: int | None = None
 
 		# counters for epochs, batches, samples, and checkpoints
 		self.epochs: int = 0
@@ -209,14 +220,14 @@ class TrainingManager:
 
 		# total numbers of epochs, batches, and samples
 		# pass via init kwarg or wrapped epochs loop
-		self.epochs_total: int|None = epochs_total
+		self.epochs_total: int | None = epochs_total
 		# from dataloader or dataloader in wrapped loop
-		self.batches_per_epoch: int|None = None
-		self.batch_size: int|None = None
-		self.samples_per_epoch: int|None = None
+		self.batches_per_epoch: int | None = None
+		self.batch_size: int | None = None
+		self.samples_per_epoch: int | None = None
 		# computed dynamically from the above
-		self.batches_total: int|None = None
-		self.samples_total: int|None = None
+		self.batches_total: int | None = None
+		self.samples_total: int | None = None
 
 		# whether the init is finished
 		self.init_complete: bool = False
@@ -229,16 +240,19 @@ class TrainingManager:
 
 		self.try_compute_counters()
 
-
 	def try_compute_counters(self) -> None:
 		# we depend on either the TrainingManager init or the wrapped loops
 		# getting the epochs_total and dataloader
 		# everything else is computed dynamically
 
 		if any(
-			x is None 
-			for x in
-			[self.epochs_total, self.batches_per_epoch, self.batch_size, self.samples_per_epoch]
+			x is None
+			for x in [
+				self.epochs_total,
+				self.batches_per_epoch,
+				self.batch_size,
+				self.samples_per_epoch,
+			]
 		):
 			# if we don't have all the info we need, return early
 			return
@@ -300,7 +314,6 @@ class TrainingManager:
 			model_save_path_special=self.model_save_path_special,
 			**self.training_status(),
 		)
-		
 
 	def __enter__(self):
 		return self
@@ -342,7 +355,7 @@ class TrainingManager:
 			use_tqdm=use_tqdm,
 			tqdm_kwargs=tqdm_kwargs,
 		)
-	
+
 	def batch_loop(
 		self,
 		batches: Iterable[int],
@@ -356,7 +369,7 @@ class TrainingManager:
 			use_tqdm=use_tqdm,
 			tqdm_kwargs=tqdm_kwargs,
 		)
-	
+
 	def check_is_initialized(self):
 		if not self.init_complete:
 			raise TrainingManagerInitError(
@@ -432,7 +445,6 @@ class TrainingManager:
 		self.logger.metrics({**kwargs, **metrics, **self.training_status()})
 
 		# print metrics if needed
-
 
 		# save checkpoint if needed
 		if self.batches % self.checkpoint_interval == 0:

@@ -130,10 +130,12 @@ class LocalLogger(TrainingLoggerBase):
 		# write the index.html and start_server.py files
 		# ----------------------------------------
 		from trnbl.loggers.local.html_frontend import get_html_frontend
+
 		with open(self.project_path / FilePaths.HTML_INDEX, "w") as f:
 			f.write(get_html_frontend())
-		
+
 		import trnbl.loggers.local.start_server as start_server_module
+
 		with open(self.project_path / FilePaths.START_SERVER, "w") as f:
 			f.write(inspect.getsource(start_server_module))
 
@@ -143,7 +145,7 @@ class LocalLogger(TrainingLoggerBase):
 		# logger metadata
 		with open(self.run_path / FilePaths.LOGGER_META, "w") as f:
 			json.dump(self.logger_meta, f, indent="\t")
-		
+
 		with open(self.run_path / FilePaths.LOGGER_META_YML, "w") as f:
 			yaml.dump(self.logger_meta, f)
 
@@ -169,7 +171,7 @@ class LocalLogger(TrainingLoggerBase):
 
 	def get_timestamp(self) -> str:
 		return datetime.datetime.now().isoformat()
-	
+
 	def _log(self, message: str, **kwargs) -> None:
 		"""(internal) log a progress message"""
 		# TODO: also log messages via regular logger to stdout
@@ -187,13 +189,12 @@ class LocalLogger(TrainingLoggerBase):
 	def debug(self, message: str, **kwargs) -> None:
 		"""log a debug message"""
 		self._log(message, __dbg__=True, **kwargs)
-	
+
 	def message(self, message: str, **kwargs) -> None:
 		"""log a progress message"""
 		# TODO: also log messages via regular logger to stdout
 		self._log(message, **kwargs)
 		print(self.console_msg_prefix + message)
-
 
 	def warning(self, message: str, **kwargs) -> None:
 		"""log a warning message"""
@@ -211,7 +212,7 @@ class LocalLogger(TrainingLoggerBase):
 			**kwargs,
 		)
 		with open(self.run_path / FilePaths.ERROR_FILE, "a") as f:
-			f.write("="*80 + "\n")
+			f.write("=" * 80 + "\n")
 			f.write("exception at " + self.get_timestamp() + "\n")
 			f.write(message)
 			f.write("\n")

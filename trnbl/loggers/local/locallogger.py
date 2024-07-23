@@ -7,7 +7,7 @@ import io
 import random
 import inspect
 
-import yaml
+import yaml  # type: ignore[import-untyped]
 from trnbl.loggers.base import TrainingLoggerBase
 
 

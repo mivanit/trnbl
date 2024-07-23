@@ -1,4 +1,4 @@
-from typing import Any, Iterable, Literal, Callable, Union
+from typing import Any, Literal, Callable, Union, Sequence
 from dataclasses import dataclass
 
 from muutils.misc import str_to_numeric
@@ -192,7 +192,7 @@ class TrainingInterval:
 			batchsize=batchsize,
 			epochs=epochs,
 		)
-		unit: str = "batches"
+		unit: TrainingIntervalUnit = "batches"
 		return self.__class__(quantity, unit)
 
 	@classmethod
@@ -216,7 +216,7 @@ class TrainingInterval:
 			raw = raw.removeprefix("TrainingInterval(").removesuffix(")")
 
 			# process quantity
-			raw_split: str
+			raw_split: list[str]
 			quantity_str: str
 			if "," in raw:
 				raw_split = raw.split(",")
@@ -233,7 +233,7 @@ class TrainingInterval:
 
 			# unit should be one of the allowed units
 			unit_dealised: str | None
-			if unit.lower() in TrainingIntervalUnit.__args__:
+			if unit.lower() in TrainingIntervalUnit.__args__:  # type: ignore[attr-defined]
 				unit_dealised = unit.lower()
 			else:
 				unit_dealised = _TRAINING_INTERVAL_UNIT_ALIASES.get(unit.lower(), None)
@@ -242,11 +242,11 @@ class TrainingInterval:
 			else:
 				raise ValueError(f"invalid unit {unit}")
 
-			assert unit in TrainingIntervalUnit.__args__
+			assert unit in TrainingIntervalUnit.__args__  # type: ignore[attr-defined]
 		except Exception as e:
 			raise ValueError(f"Error parsing {raw} as a TrainingInterval\n{e}") from e
 
-		return cls(quantity, unit)
+		return cls(quantity, unit)  # type: ignore[arg-type]
 
 	@classmethod
 	def from_any(cls, *args, **kwargs) -> "TrainingInterval":
@@ -272,7 +272,7 @@ class TrainingInterval:
 				return data
 			elif isinstance(data, str):
 				return cls.from_str(data)
-			elif isinstance(data, Iterable):
+			elif isinstance(data, Sequence):
 				assert (
 					len(data) == 2
 				), f"invalid length {len(data)} for TrainingInterval: {data}"

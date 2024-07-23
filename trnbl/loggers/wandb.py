@@ -34,13 +34,15 @@ class WandbLogger(TrainingLoggerBase):
 			datefmt=logging_datefmt,
 		)
 
-		run: Run
+		run: Run  # type: ignore[return-value]
 		run = wandb.init(
 			config=config,
 			project=project,
 			job_type=job_type,
 			**(wandb_kwargs if wandb_kwargs else {}),
 		)
+
+		assert run is not None, f"wandb.init returned None: {wandb_kwargs}"
 
 		logger: WandbLogger = WandbLogger(run)
 		logger.progress(f"{config =}")
@@ -66,7 +68,7 @@ class WandbLogger(TrainingLoggerBase):
 		aliases: list[str] | None = None,
 		metadata: dict | None = None,
 	) -> None:
-		artifact: Artifact = wandb.Artifact(name=wandb.run.id, type=type)
+		artifact: Artifact = wandb.Artifact(name=self._run.id, type=type)
 		artifact.add_file(str(path))
 		if metadata:
 			artifact.description = json.dumps(
@@ -83,6 +85,10 @@ class WandbLogger(TrainingLoggerBase):
 	@property
 	def url(self) -> str:
 		return self._run.get_url()
+
+	@property
+	def run_path(self) -> str:
+		return self._run._get_path()
 
 	def flush(self) -> None:
 		return super().flush()

@@ -1,9 +1,9 @@
 from pathlib import Path
 import base64
-import requests
+import requests  # type: ignore[import-untyped]
 import json
 
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup, Tag  # type: ignore[import-untyped]
 
 
 def get_remote(
@@ -96,7 +96,7 @@ def build_dist(
 					elif tag["href"].lower().endswith(".ico"):
 						mime_type = "image/x-icon"
 
-					base64_content = base64.b64encode(file_content).decode("ascii")
+					base64_content = base64.b64encode(file_content).decode("ascii")  # type: ignore[arg-type]
 					new_link: Tag = soup.new_tag(
 						"link",
 						rel="icon",
@@ -107,7 +107,7 @@ def build_dist(
 	# Find script tags. example: <script src="js/somescript.js"></script>
 	for tag in soup.find_all("script", src=True):
 		if tag.has_attr("src"):
-			file_text: str | None = get_remote(
+			file_text: str | bytes | None = get_remote(
 				tag["src"],
 				download_remote=download_remote,
 			)
@@ -124,15 +124,15 @@ def build_dist(
 	# Find image tags. example: <img src="images/img1.png">
 	for tag in soup.find_all("img", src=True):
 		if tag.has_attr("src"):
-			file_content: bytes | None = get_remote(
+			img_content: bytes | None = get_remote(
 				tag["src"], download_remote=download_remote, get_bytes=True
 			)
 
-			if file_content is not None:
+			if img_content is not None:
 				# replace filename with base64 of the content of the file
-				base64_file_content: bytes = base64.b64encode(file_content)
+				base64_img_content: bytes = base64.b64encode(img_content)  # type: ignore[arg-type]
 				tag["src"] = "data:image/png;base64, {}".format(
-					base64_file_content.decode("ascii")
+					base64_img_content.decode("ascii")
 				)
 
 	out_html: str = str(soup)

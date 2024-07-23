@@ -1,10 +1,10 @@
 import time
 from types import TracebackType
-from typing import Any, Callable, Iterable, Type, TypeVar, Generator
+from typing import Any, Callable, Iterable, Type, TypeVar, Generator, Sequence
 from pathlib import Path
 import warnings
 
-import tqdm
+import tqdm  # type: ignore[import-untyped]
 
 # torch
 try:
@@ -28,13 +28,13 @@ T = TypeVar("T")
 
 
 def wrapped_iterable(
-	iterable: Iterable[T],
+	sequence: Sequence[T],
 	manager: "TrainingManager",
 	is_epoch: bool = False,
 	use_tqdm: bool | None = None,
 	tqdm_kwargs: dict[str, Any] | None = None,
 ) -> Generator[T, None, None]:
-	length: int = len(iterable)
+	length: int = len(sequence)
 
 	# update the manager if it's not fully initialized
 	# ------------------------------------------------------------
@@ -46,8 +46,8 @@ def wrapped_iterable(
 			# if batch loop, set other things
 			manager.batches_per_epoch = length
 			try:
-				manager.batch_size = iterable.batch_size
-				manager.samples_per_epoch = len(iterable.dataset)
+				manager.batch_size = sequence.batch_size  # type: ignore[attr-defined]
+				manager.samples_per_epoch = len(sequence.dataset)  # type: ignore[attr-defined]
 			except AttributeError as e:
 				raise TrainingManagerInitError(
 					"could not get the batch size or dataset size from the dataloader passed to `TrainingManager().batch_loop()`. ",
@@ -79,11 +79,11 @@ def wrapped_iterable(
 			_tqdm_kwargs.update(tqdm_kwargs)
 
 		# wrap with tqdm
-		iterable = tqdm.tqdm(iterable, **_tqdm_kwargs)
+		sequence = tqdm.tqdm(sequence, **_tqdm_kwargs)
 
 	# yield the items, and update the manager
 	# ------------------------------------------------------------
-	for item in iterable:
+	for item in sequence:
 		yield item
 		if is_epoch:
 			manager.epoch_update()
@@ -236,7 +236,7 @@ class TrainingManager:
 		if dataloader is not None:
 			self.batches_per_epoch = len(dataloader)
 			self.batch_size = dataloader.batch_size
-			self.samples_per_epoch = len(dataloader.dataset)
+			self.samples_per_epoch = len(dataloader.dataset)  # type: ignore[arg-type]
 
 		self.try_compute_counters()
 
@@ -257,8 +257,8 @@ class TrainingManager:
 			# if we don't have all the info we need, return early
 			return
 
-		self.batches_total: int = self.batches_per_epoch * self.epochs_total
-		self.samples_total: int = self.samples_per_epoch * self.epochs_total
+		self.batches_total = self.batches_per_epoch * self.epochs_total
+		self.samples_total = self.samples_per_epoch * self.epochs_total
 
 		# check if the dataloader has a finite nonzero length
 		if self.samples_per_epoch == 0:
@@ -277,20 +277,22 @@ class TrainingManager:
 			)
 
 		# normalize intervals for checkpoints, metrics printing, and evals
-		_batch_info_kwargs: dict[str, int] = dict(
+		_batch_info_kwargs: dict[str, int | None] = dict(
 			batches_per_epoch=self.batches_per_epoch,
 			batchsize=self.batch_size,
 			epochs=self.epochs_total,
 		)
-		self.checkpoint_interval: int = TrainingInterval.process_to_batches(
+		self.checkpoint_interval = TrainingInterval.process_to_batches(
 			interval=self._checkpoint_interval,
 			**_batch_info_kwargs,
 		)
-		self.print_metrics_interval: int = TrainingInterval.process_to_batches(
+		self.print_metrics_interval = TrainingInterval.process_to_batches(
 			interval=self._print_metrics_interval,
 			**_batch_info_kwargs,
 		)
-		self.evals: list[tuple[int, EvalFunction]] = [
+
+		# list[tuple[int, EvalFunction]]
+		self.evals = [
 			(
 				TrainingInterval.process_to_batches(interval, **_batch_info_kwargs),
 				eval_fn,
@@ -349,7 +351,7 @@ class TrainingManager:
 		**tqdm_kwargs,
 	) -> Generator[int, None, None]:
 		return wrapped_iterable(
-			iterable=epochs,
+			sequence=epochs,
 			manager=self,
 			is_epoch=True,
 			use_tqdm=use_tqdm,
@@ -363,7 +365,7 @@ class TrainingManager:
 		**tqdm_kwargs,
 	) -> Generator[int, None, None]:
 		return wrapped_iterable(
-			iterable=batches,
+			sequence=batches,
 			manager=self,
 			is_epoch=False,
 			use_tqdm=use_tqdm,
@@ -447,7 +449,7 @@ class TrainingManager:
 		# print metrics if needed
 
 		# save checkpoint if needed
-		if self.batches % self.checkpoint_interval == 0:
+		if self.batches % self.checkpoint_interval == 0:  # type: ignore[operator]
 			self._save_checkpoint()
 
 	def epoch_update(self):

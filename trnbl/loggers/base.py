@@ -6,7 +6,7 @@ import warnings
 # gpu utils
 GPU_UTILS_AVAILABLE: bool
 try:
-	import GPUtil
+	import GPUtil  # type: ignore[import-untyped]
 
 	GPU_UTILS_AVAILABLE = True
 except ImportError as e:
@@ -16,7 +16,7 @@ except ImportError as e:
 # psutil
 PSUTIL_AVAILABLE: bool
 try:
-	import psutil
+	import psutil  # type: ignore[import-untyped]
 
 	PSUTIL_AVAILABLE = True
 except ImportError as e:
@@ -63,7 +63,7 @@ class TrainingLoggerBase(ABC):
 
 	@property
 	@abstractmethod
-	def url(self) -> str:
+	def url(self) -> str | list[str]:
 		"""Get the URL for the current logging run"""
 		pass
 

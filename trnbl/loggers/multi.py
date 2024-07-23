@@ -39,6 +39,7 @@ class MultiLogger(TrainingLoggerBase):
 	@property
 	def url(self) -> list[str]:
 		"""Get the URL for the current logging run"""
+		# TODO: flatten if recursive
 		return [logger.url for logger in self.loggers]
 
 	@property

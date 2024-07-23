@@ -1,31 +1,6 @@
-# TODO:
-```mermaid
-graph TD
-    A[User Code] -->|Initializes| B(TrainingManager)
-    B -->|Uses| C{Logger}
-    C -->|LocalLogger| D[Local Filesystem]
-    C -->|WandbLogger| E[Weights & Biases]
-    C -->|TensorBoardLogger| F[TensorBoard]
-    B -->|Manages| G(Model Training Loop)
-    G -->|Calls| H(batch_update)
-    H -->|Logs| C
-    H -->|Runs| I(Evaluations)
-    H -->|Saves| J(Checkpoints)
-    B -->|Manages| K(TrainingInterval)
-    K -->|Determines| L(Evaluation Frequency)
-    K -->|Determines| M(Checkpoint Frequency)
-    B -->|Calls| N(epoch_update)
-    N -->|Logs| C
-```
+# TODOs:
 
-## Frontend:
-
-- table:
-	- [x] checkboxes on table, to mass enable/disable certain runs from being plotted
-		- [x] also a "select all" checkbox to combine this with filtering
-		- [x] save this with the layout?
-	- [ ] box to add aliases to runs
-	- [x] full config as json, copy on click
+- [ ] box to add aliases to runs
 
 
 - layout:

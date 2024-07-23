@@ -63,7 +63,7 @@ class LocalLogger(TrainingLoggerBase):
 		self,
 		project: str,
 		metric_names: list[str],
-		name: str = "main",
+		group: str = "",
 		train_config: dict | None = None,
 		base_path: str | Path = Path("trnbl-logs"),
 		memusage_as_metrics: bool = True,
@@ -77,7 +77,7 @@ class LocalLogger(TrainingLoggerBase):
 		# copy kwargs
 		self.train_config: dict = train_config
 		self.project: str = project
-		self.name: str = name
+		self.group: str = group + ("-" if group and group[-1] != "-" else "")
 		self.base_path: Path = Path(base_path)
 		self.console_msg_prefix: str = console_msg_prefix
 
@@ -116,6 +116,7 @@ class LocalLogger(TrainingLoggerBase):
 			run_id=self.run_id,
 			run_path=self.run_path.as_posix(),
 			syllabic_id=self.syllabic_id,
+			group=self.group,
 			project=self.project,
 			run_init_timestamp=str(self.run_init_timestamp.isoformat()),
 			metric_names=metric_names,
@@ -167,7 +168,7 @@ class LocalLogger(TrainingLoggerBase):
 		return self._syllabic_id
 
 	def _get_run_id(self) -> str:
-		return f"{self.name}-h{self._run_hash[:5]}-{self.run_init_timestamp.strftime('%y%m%d_%H%M')}-{self.syllabic_id}"
+		return f"{self.group}h{self._run_hash[:5]}-{self.run_init_timestamp.strftime('%y%m%d_%H%M')}-{self.syllabic_id}"
 
 	def get_timestamp(self) -> str:
 		return datetime.datetime.now().isoformat()

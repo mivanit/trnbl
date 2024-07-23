@@ -215,7 +215,7 @@ build-frontend:
 	cd $(PACKAGE_NAME)/loggers/local/frontend_src/; \
 	echo "def get_html_frontend() -> str:" > $(HTML_FRONTEND_FILE); \
 	echo "    return (" >> $(HTML_FRONTEND_FILE); \
-	$(PYTHON) -m trnbl.loggers.local.build_dist --pkg-info ../../../../$(PYPROJECT) --json index_src.html >> $(HTML_FRONTEND_FILE); \
+	$(PYTHON) -m trnbl.loggers.local.build_dist --no-minify --pkg-info ../../../../$(PYPROJECT) --json index_src.html >> $(HTML_FRONTEND_FILE); \
 	echo ")" >> $(HTML_FRONTEND_FILE); \
 	echo "if __name__ == '__main__':" >> $(HTML_FRONTEND_FILE); \
 	echo "    print(get_html_frontend())" >> $(HTML_FRONTEND_FILE); \

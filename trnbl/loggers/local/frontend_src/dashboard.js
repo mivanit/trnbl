@@ -408,6 +408,7 @@ class DataManager {
 				id: {
 					syllabic: run.meta.syllabic_id,
 					run: run.meta.run_id,
+					group: run.meta.group,
 				},
 				timing: {
 					start: run.meta.run_init_timestamp,
@@ -417,6 +418,7 @@ class DataManager {
 				final_metrics: finalMetrics,
 				final_state: finalState,
 				config: run.config,
+				meta: run.meta,
 			};
 		});
 	}
@@ -1505,6 +1507,7 @@ function createColumnDefs(summaryManifest) {
 			children: [
 				{ field: 'id.syllabic', headerName: 'Syllabic ID', columnGroupShow: null },
 				{ field: 'id.run', headerName: 'Full Run ID', columnGroupShow: 'open' },
+				{ field: 'id.group', headerName: 'Group', columnGroupShow: 'open' },
 			],
 			marryChildren: true,
 		},
@@ -1549,6 +1552,21 @@ function createColumnDefs(summaryManifest) {
 						return params.value.toString();
 					},
 				},
+				{
+					field: 'meta',
+					headerName: 'Metadata',
+					columnGroupShow: null,
+					cellRenderer: fancyCellRenderer,
+					valueFormatter: params => {
+						if (params.value === null || params.value === undefined) {
+							return '';
+						}
+						if (typeof params.value === 'object') {
+							return JSON.stringify(params.value);
+						}
+						return params.value.toString();
+					},
+				}
 			],
 			marryChildren: true,
 		},

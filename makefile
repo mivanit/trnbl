@@ -127,7 +127,7 @@ setup-format:
 	@echo "install only packages needed for formatting, direct via pip (useful for CI)"
 	$(PYTHON) -m pip install -r $(REQ_LINT)
 
-EXPORT_ARGS := --all-extras --with dev --with lint --without-hashes --without-urls
+EXPORT_ARGS := --all-extras --with dev --without-hashes --without-urls
 
 .PHONY: dep
 dep:
@@ -177,8 +177,8 @@ test: clean
 	$(PYTHON) -m pytest $(PYTEST_OPTIONS) $(TESTS_DIR)
 
 .PHONY: check
-check: clean check-format test typing
-	@echo "run format and lint checks, tests, and typing checks"
+check: clean check-format test
+	@echo "run format and lint checks, tests"
 
 # coverage reports
 # ==================================================

@@ -21,24 +21,24 @@ graph TD
 ## Frontend:
 
 - table:
-	- [ ] checkboxes on table, to mass enable/disable certain runs from being plotted
-		- [ ] also a "select all" checkbox to combine this with filtering
-		- [ ] save this with the layout?
+	- [x] checkboxes on table, to mass enable/disable certain runs from being plotted
+		- [x] also a "select all" checkbox to combine this with filtering
+		- [x] save this with the layout?
 	- [ ] box to add aliases to runs
 	- [x] full config as json, copy on click
 
 
 - layout:
-	- [ ] fix layout saving issue -- they all get bigger when loading a saved layout
+	- [x] fix layout saving issue -- they all get bigger when loading a saved layout
 	- [ ] customizable grid snap size? 
 	- [ ] display the grid on the background?
 
 - deployment:
 	- [ ] demo website
-	- [ ] hosting of js/css files somewhere, or copy them when creating a new project?
-	- [ ] tests
+	- [x] hosting of js/css files somewhere, or copy them when creating a new project?
+	- [x] tests
 	- [ ] CI/CD for website, minification, tests, etc
-	- [ ] minify the js/css:
+	- [x] minify the js/css:
 		- https://github.com/ndparker/rcssmin
 		- https://github.com/ndparker/rjsmin
 

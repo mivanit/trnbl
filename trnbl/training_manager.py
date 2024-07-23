@@ -215,9 +215,9 @@ class TrainingManager:
 
 		# if we have a dataloader, we can compute some of the above
 		if dataloader is not None:
-			self.batches_per_epoch = len(self.dataloader)
-			self.batch_size = self.dataloader.batch_size
-			self.samples_per_epoch = len(self.dataloader.dataset)
+			self.batches_per_epoch = len(dataloader)
+			self.batch_size = dataloader.batch_size
+			self.samples_per_epoch = len(dataloader.dataset)
 
 		self.try_compute_counters()
 

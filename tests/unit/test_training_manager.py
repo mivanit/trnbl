@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader, TensorDataset
 import pytest
 
 from trnbl.training_interval import IntervalValueError
-from trnbl.training_manager import TrainingManager
+from trnbl.training_manager import TrainingManager, TrainingManagerInitError
 from trnbl.loggers.local import LocalLogger
 from trnbl.loggers.base import TrainingLoggerBase
 
@@ -53,10 +53,9 @@ optimizer: optim.Optimizer = optim.SGD(model.parameters(), lr=0.001)
 def test_training_manager_initialization():
 	logger = LocalLogger(**logger_config)
 	training_manager = TrainingManager(
-		model=model, dataloader=dataloader, logger=logger, epochs=10
+		model=model, dataloader=dataloader, logger=logger, epochs_total=10
 	)
 	assert training_manager.model == model
-	assert training_manager.dataloader == dataloader
 	assert training_manager.logger == logger
 	assert training_manager.epochs_total == 10
 	training_manager.logger.finish()
@@ -65,7 +64,7 @@ def test_training_manager_initialization():
 def test_training_manager_batch_update():
 	logger = LocalLogger(**logger_config)
 	training_manager = TrainingManager(
-		model=model, dataloader=dataloader, logger=logger, epochs=1
+		model=model, dataloader=dataloader, logger=logger, epochs_total=1
 	)
 	training_manager._save_checkpoint = MagicMock()
 
@@ -89,7 +88,7 @@ def test_training_manager_batch_update():
 def test_training_manager_epoch_update():
 	logger = LocalLogger(**logger_config)
 	training_manager = TrainingManager(
-		model=model, dataloader=dataloader, logger=logger, epochs=1
+		model=model, dataloader=dataloader, logger=logger, epochs_total=1
 	)
 
 	# Simulate an epoch update
@@ -103,7 +102,7 @@ def test_training_manager_epoch_update():
 def test_training_manager_checkpoint_saving():
 	logger = LocalLogger(**logger_config)
 	training_manager = TrainingManager(
-		model=model, dataloader=dataloader, logger=logger, epochs=1
+		model=model, dataloader=dataloader, logger=logger, epochs_total=1
 	)
 	training_manager._save_checkpoint(alias="test_checkpoint")
 
@@ -116,14 +115,13 @@ def test_training_manager_checkpoint_saving():
 @pytest.fixture
 def training_manager() -> TrainingManager:
 	logger: LocalLogger = LocalLogger(**logger_config)
-	return TrainingManager(model=model, dataloader=dataloader, logger=logger, epochs=1)
+	return TrainingManager(model=model, dataloader=dataloader, logger=logger, epochs_total=1)
 
 
 def test_training_manager_initialization_comprehensive(
 	training_manager: TrainingManager,
 ) -> None:
 	assert isinstance(training_manager.model, nn.Module)
-	assert isinstance(training_manager.dataloader, DataLoader)
 	assert isinstance(training_manager.logger, TrainingLoggerBase)
 	assert training_manager.epochs_total == 1
 	assert training_manager.epochs == 0
@@ -255,7 +253,7 @@ def test_training_manager_full_training_loop() -> None:
 		model=model,
 		dataloader=dataloader,
 		logger=logger,
-		epochs=2,
+		epochs_total=2,
 		checkpoint_interval="1 epochs",
 		evals=[
 			("1 epochs", lambda m: {"eval_loss": criterion(m(inputs), targets).item()})
@@ -291,13 +289,13 @@ def test_training_manager_full_training_loop() -> None:
 def test_training_manager_zero_epochs() -> None:
 	logger: LocalLogger = LocalLogger(**logger_config)
 	with pytest.warns(IntervalValueError):
-		TrainingManager(model=model, dataloader=dataloader, logger=logger, epochs=0)
+		TrainingManager(model=model, dataloader=dataloader, logger=logger, epochs_total=0)
 
 
 def test_training_manager_negative_epochs() -> None:
 	logger: LocalLogger = LocalLogger(**logger_config)
 	with pytest.warns(IntervalValueError):
-		TrainingManager(model=model, dataloader=dataloader, logger=logger, epochs=-1)
+		TrainingManager(model=model, dataloader=dataloader, logger=logger, epochs_total=-1)
 
 
 def test_training_manager_custom_save_model() -> None:
@@ -307,7 +305,7 @@ def test_training_manager_custom_save_model() -> None:
 		model=model,
 		dataloader=dataloader,
 		logger=logger,
-		epochs=1,
+		epochs_total=1,
 		save_model=custom_save_model,
 	)
 	training_manager._save_checkpoint()
@@ -320,7 +318,7 @@ def test_training_manager_custom_intervals() -> None:
 		model=model,
 		dataloader=dataloader,
 		logger=logger,
-		epochs=1,
+		epochs_total=1,
 		checkpoint_interval="0.5 epochs",
 		print_metrics_interval="0.25 epochs",
 		evals=[("0.1 epochs", lambda m: {"eval_loss": 0.5})],
@@ -338,7 +336,7 @@ def test_training_manager_custom_model_save_paths() -> None:
 		model=model,
 		dataloader=dataloader,
 		logger=logger,
-		epochs=1,
+		epochs_total=1,
 		model_save_path=custom_path,
 		model_save_path_special=custom_special_path,
 	)
@@ -349,7 +347,7 @@ def test_training_manager_custom_model_save_paths() -> None:
 def test_training_manager_batch_update_no_samples() -> None:
 	logger: LocalLogger = LocalLogger(**logger_config)
 	training_manager: TrainingManager = TrainingManager(
-		model=model, dataloader=dataloader, logger=logger, epochs=1
+		model=model, dataloader=dataloader, logger=logger, epochs_total=1
 	)
 	initial_samples: int = training_manager.samples
 	training_manager.batch_update(samples=None, loss=0.5)
@@ -364,7 +362,7 @@ def test_training_manager_multiple_evals() -> None:
 		model=model,
 		dataloader=dataloader,
 		logger=logger,
-		epochs=1,
+		epochs_total=1,
 		evals=[("1 batch", eval1), ("2 batches", eval2)],
 	)
 	training_manager.batch_update(samples=10, loss=0.3)
@@ -390,7 +388,7 @@ def test_training_manager_interval_processing(interval: str, expected: int) -> N
 		model=model,
 		dataloader=dataloader,
 		logger=logger,
-		epochs=1,
+		epochs_total=1,
 		checkpoint_interval=interval,
 	)
 	assert training_manager.checkpoint_interval == expected
@@ -401,9 +399,9 @@ def test_training_manager_empty_dataloader() -> None:
 		TensorDataset(torch.Tensor([]), torch.Tensor([])), batch_size=1
 	)
 	logger: LocalLogger = LocalLogger(**logger_config)
-	with pytest.raises(ValueError):
+	with pytest.raises(TrainingManagerInitError):
 		TrainingManager(
-			model=model, dataloader=empty_dataloader, logger=logger, epochs=1
+			model=model, dataloader=empty_dataloader, logger=logger, epochs_total=1
 		)
 
 
@@ -414,5 +412,5 @@ def test_training_manager_0_batchsize() -> None:
 		)
 		logger: LocalLogger = LocalLogger(**logger_config)
 		TrainingManager(
-			model=model, dataloader=empty_dataloader, logger=logger, epochs=1
+			model=model, dataloader=empty_dataloader, logger=logger, epochs_total=1
 		)

@@ -1,4 +1,4 @@
-test/_temp/
+test/_temp/**
 tensorboard/
 old/**
 trnbl-logs/**

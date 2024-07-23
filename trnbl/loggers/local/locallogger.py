@@ -7,20 +7,33 @@ import io
 import random
 import inspect
 
+import yaml
 from trnbl.loggers.base import TrainingLoggerBase
 
 
 class FilePaths:
+	# configs and metadata
 	TRAIN_CONFIG: Path = Path("config.json")
 	LOGGER_META: Path = Path("meta.json")
+	# configs and metadata in yaml format for easier human readability
+	TRAIN_CONFIG_YML: Path = Path("config.yml")
+	LOGGER_META_YML: Path = Path("meta.yml")
+
+	# logs, metrics, and artifacts
 	ARTIFACTS: Path = Path("artifacts.jsonl")
 	METRICS: Path = Path("metrics.jsonl")
 	LOG: Path = Path("log.jsonl")
-	RUNS_MANIFEST: Path = Path(
-		"runs.jsonl"
-	)  # relative to project path instead of run path
-	RUNS_DIR: Path = Path("runs")  # relative to project path instead of run path
+	# keeps error message if an error occurs
 	ERROR_FILE: Path = Path("ERROR.txt")
+
+	# manifest is shared between all runs in a project
+	# relative to project path instead of run path
+	RUNS_MANIFEST: Path = Path("runs.jsonl")
+	# directory in project path for runs
+	# relative to project path instead of run path
+	RUNS_DIR: Path = Path("runs")
+
+	# frontend files
 	HTML_INDEX: Path = Path("index.html")
 	START_SERVER: Path = Path("start_server.py")
 
@@ -54,6 +67,7 @@ class LocalLogger(TrainingLoggerBase):
 		train_config: dict | None = None,
 		base_path: str | Path = Path("trnbl-logs"),
 		memusage_as_metrics: bool = True,
+		console_msg_prefix: str = "# ",
 	):
 		# set up lists
 		self.log_list: list[dict] = list()
@@ -65,6 +79,7 @@ class LocalLogger(TrainingLoggerBase):
 		self.project: str = project
 		self.name: str = name
 		self.base_path: Path = Path(base_path)
+		self.console_msg_prefix: str = console_msg_prefix
 
 		# set up id
 		self._syllabic_id: str = rand_syllabic_string()
@@ -128,12 +143,18 @@ class LocalLogger(TrainingLoggerBase):
 		# logger metadata
 		with open(self.run_path / FilePaths.LOGGER_META, "w") as f:
 			json.dump(self.logger_meta, f, indent="\t")
+		
+		with open(self.run_path / FilePaths.LOGGER_META_YML, "w") as f:
+			yaml.dump(self.logger_meta, f)
 
 		# training/model/dataset config
 		with open(self.run_path / FilePaths.TRAIN_CONFIG, "w") as f:
 			json.dump(train_config, f, indent="\t")
 
-		self.message("starting logger")
+		with open(self.run_path / FilePaths.TRAIN_CONFIG_YML, "w") as f:
+			yaml.dump(train_config, f)
+
+		self.message(f"starting logger with id {self.run_id}")
 
 	@property
 	def _run_hash(self) -> str:
@@ -144,7 +165,7 @@ class LocalLogger(TrainingLoggerBase):
 		return self._syllabic_id
 
 	def _get_run_id(self) -> str:
-		return f"run-{self.name}-{self._run_hash[:5]}-{self.run_init_timestamp.strftime('%y%m%d_%H%M')}-{self.syllabic_id}"
+		return f"{self.name}-h{self._run_hash[:5]}-{self.run_init_timestamp.strftime('%y%m%d_%H%M')}-{self.syllabic_id}"
 
 	def get_timestamp(self) -> str:
 		return datetime.datetime.now().isoformat()
@@ -170,17 +191,27 @@ class LocalLogger(TrainingLoggerBase):
 		"""log a progress message"""
 		# TODO: also log messages via regular logger to stdout
 		self._log(message, **kwargs)
-		print(message)
+		print(self.console_msg_prefix + message)
 
 
 	def warning(self, message: str, **kwargs) -> None:
 		"""log a warning message"""
-		self.message(f"WARNING: {message}", __warning__=True, **kwargs)
+		self.message(
+			f"WARNING: {message}",
+			__warning__=True,
+			**kwargs,
+		)
 
 	def error(self, message: str, **kwargs) -> None:
 		"""log an error message"""
-		self.message(f"ERROR: {message}", __error__=True, **kwargs)
-		with open(self.run_path / FilePaths.ERROR_FILE, "w") as f:
+		self.message(
+			f"ERROR: {message}",
+			__error__=True,
+			**kwargs,
+		)
+		with open(self.run_path / FilePaths.ERROR_FILE, "a") as f:
+			f.write("="*80 + "\n")
+			f.write("exception at " + self.get_timestamp() + "\n")
 			f.write(message)
 
 	def metrics(self, data: dict[str, Any]) -> None:

@@ -42,10 +42,18 @@ class WrappedIterable(Generic[T]):
 			use_tqdm if use_tqdm is not None # do what the user says
 			else is_epoch # otherwise, use tqdm if we are the epoch loop
 		)
+
+		# tqdm kwargs with defaults
+		_tqdm_kwargs: dict[str, Any] = dict(
+			unit="epoch" if is_epoch else "batch",
+			total=self.length,
+		)
+		if tqdm_kwargs is not None:
+			_tqdm_kwargs.update(tqdm_kwargs)
 		
 		# wrap with tqdm
 		if use_tqdm:
-			self.iterable = tqdm.tqdm(self.iterable, **(tqdm_kwargs or {}))
+			self.iterable = tqdm.tqdm(self.iterable, **_tqdm_kwargs)
 
 		# update the manager if it's not fully initialized
 		if not manager.init_complete:
@@ -65,9 +73,8 @@ class WrappedIterable(Generic[T]):
 						"or an iterable with a `batch_size: int` attribute and a `dataset: Iterable` attribute."
 					) from e
 
-		# try to compute counters and finish init of TrainingManager
-		print("WrappedIterable init computing counters")
-		self.manager.try_compute_counters()
+			# try to compute counters and finish init of TrainingManager
+			self.manager.try_compute_counters()
 
 
 	def __iter__(self):
@@ -403,13 +410,14 @@ class TrainingManager:
 
 		# print metrics if needed
 
+
 		# save checkpoint if needed
 		if self.batches % self.checkpoint_interval == 0:
 			self._save_checkpoint()
 
 	def epoch_update(self):
 		"""call this at the end of every epoch. This function will log the completion of the epoch and update the epoch counter"""
-		self.logger.message(f"completed epoch {self.epochs+1}/{self.epochs_total}")
+		self.logger.debug(f"completed epoch {self.epochs+1}/{self.epochs_total}")
 		self.epochs += 1
 
 	def _save_checkpoint(self, alias: str | None = None):

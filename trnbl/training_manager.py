@@ -1,6 +1,6 @@
 import time
 from types import TracebackType
-from typing import Any, Callable, Iterable, Type, Generic, TypeVar
+from typing import Any, Callable, Iterable, Type, Generic, TypeVar, Generator
 from pathlib import Path
 import warnings
 import functools
@@ -25,64 +25,65 @@ class TrainingManagerInitError(Exception):
 
 T = TypeVar('T')
 
-class WrappedIterable(Generic[T]):
-	def __init__(
-			self,
-			iterable: Iterable[T],
-			manager: 'TrainingManager',
-			is_epoch: bool = False,
-			use_tqdm: bool|None = None,
-			tqdm_kwargs: dict[str, Any]|None = None,
-		):
-		self.iterable: Iterable[T] = iterable
-		self.manager: 'TrainingManager' = manager
-		self.is_epoch: bool = is_epoch
-		self.length: int = len(iterable)
-		self.use_tqdm: bool = (
-			use_tqdm if use_tqdm is not None # do what the user says
-			else is_epoch # otherwise, use tqdm if we are the epoch loop
-		)
+def wrapped_iterable(
+		iterable: Iterable[T],
+		manager: 'TrainingManager',
+		is_epoch: bool = False,
+		use_tqdm: bool|None = None,
+		tqdm_kwargs: dict[str, Any]|None = None,
+	) -> Generator[T, None, None]:
+	
+	length: int = len(iterable)
+	
+	# update the manager if it's not fully initialized
+	# ------------------------------------------------------------
+	if not manager.init_complete:
+		if is_epoch:
+			# if epoch loop, set the total epochs
+			manager.epochs_total = length
+		else:
+			# if batch loop, set other things
+			manager.batches_per_epoch = length
+			try:
+				manager.batch_size = iterable.batch_size
+				manager.samples_per_epoch = len(iterable.dataset)
+			except AttributeError as e:
+				raise TrainingManagerInitError(
+					"could not get the batch size or dataset size from the dataloader passed to `TrainingManager().batch_loop()`. ",
+					"pass either a `torch.utils.data.DataLoader` ",
+					"or an iterable with a `batch_size: int` attribute and a `dataset: Iterable` attribute."
+				) from e
 
+		# try to compute counters and finish init of TrainingManager
+		manager.try_compute_counters()
+	
+	# set up progress bar with tqdm
+	# ------------------------------------------------------------
+	use_tqdm = (
+		use_tqdm if use_tqdm is not None # do what the user says
+		else is_epoch # otherwise, use tqdm if we are the epoch loop
+	)
+
+	if use_tqdm:
 		# tqdm kwargs with defaults
 		_tqdm_kwargs: dict[str, Any] = dict(
-			unit="epoch" if is_epoch else "batch",
-			total=self.length,
+			desc="training run" if is_epoch else f"epoch {manager.epochs+1}/{manager.epochs_total}",
+			unit=" epochs" if is_epoch else " batches",
+			total=length,
 		)
 		if tqdm_kwargs is not None:
 			_tqdm_kwargs.update(tqdm_kwargs)
 		
 		# wrap with tqdm
-		if use_tqdm:
-			self.iterable = tqdm.tqdm(self.iterable, **_tqdm_kwargs)
+		iterable = tqdm.tqdm(iterable, **_tqdm_kwargs)
 
-		# update the manager if it's not fully initialized
-		if not manager.init_complete:
-			if is_epoch:
-				# if epoch loop, set the total epochs
-				self.manager.epochs_total = self.length
-			else:
-				# if batch loop, set other things
-				self.manager.batches_per_epoch = self.length
-				try:
-					self.manager.batch_size = self.iterable.batch_size
-					self.manager.samples_per_epoch = len(self.iterable.dataset)
-				except AttributeError as e:
-					raise TrainingManagerInitError(
-						"could not get the batch size or dataset size from the dataloader passed to `TrainingManager().batch_loop()`. ",
-						"pass either a `torch.utils.data.DataLoader` ",
-						"or an iterable with a `batch_size: int` attribute and a `dataset: Iterable` attribute."
-					) from e
-
-			# try to compute counters and finish init of TrainingManager
-			self.manager.try_compute_counters()
-
-
-	def __iter__(self):
-		for item in self.iterable:
-			yield item
-			if self.is_epoch:
-				self.manager.epoch_update()
-			# no need to call batch_update, since the user has to call batch_update to log metrics
+	# yield the items, and update the manager
+	# ------------------------------------------------------------
+	for item in iterable:
+		yield item
+		if is_epoch:
+			manager.epoch_update()
+		# no need to call batch_update, since the user has to call batch_update to log metrics
 
 class TrainingManager:
 	"""context manager for training a model, with logging, evals, and checkpoints
@@ -328,11 +329,33 @@ class TrainingManager:
 			self._save_checkpoint(alias="final")
 			self.logger.finish()
 
-	def epoch_loop(self, epochs: Iterable[int]) -> WrappedIterable[int]:
-		return WrappedIterable(epochs, self, is_epoch=True)
+	def epoch_loop(
+		self,
+		epochs: Iterable[int],
+		use_tqdm: bool = True,
+		**tqdm_kwargs,
+	) -> Generator[int, None, None]:
+		return wrapped_iterable(
+			iterable=epochs,
+			manager=self,
+			is_epoch=True,
+			use_tqdm=use_tqdm,
+			tqdm_kwargs=tqdm_kwargs,
+		)
 	
-	def batch_loop(self, batches: Iterable[int]) -> WrappedIterable[int]:
-		return WrappedIterable(batches, self, is_epoch=False)
+	def batch_loop(
+		self,
+		batches: Iterable[int],
+		use_tqdm: bool = False,
+		**tqdm_kwargs,
+	) -> Generator[int, None, None]:
+		return wrapped_iterable(
+			iterable=batches,
+			manager=self,
+			is_epoch=False,
+			use_tqdm=use_tqdm,
+			tqdm_kwargs=tqdm_kwargs,
+		)
 	
 	def check_is_initialized(self):
 		if not self.init_complete:

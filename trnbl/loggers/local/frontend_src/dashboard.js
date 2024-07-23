@@ -1177,7 +1177,7 @@ let PLOT_MANAGER = new PlotManager();
 async function headerButtons() {
 	// get the project name, set the header
 	const projectH1 = document.getElementById('projectH1');
-	projectH1.textContent = DATA_MANAGER.projectName + ' trnbl Dashboard';
+	projectH1.innerHTML = `${DATA_MANAGER.projectName} <a href="https://github.com/mivanit/trnbl">trnbl</a> Dashboard`;
 	const gridSnapCheckbox = document.getElementById('gridSnapCheckbox');
 
 	// set up grid snap checkbox

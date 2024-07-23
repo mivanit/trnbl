@@ -21,10 +21,11 @@ class WandbLogger(TrainingLoggerBase):
 	def create(
 		cls,
 		config: dict,
-		project: str,
-		job_type: str,
+		project: str | None = None,
+		job_type: str | None = None,
 		logging_fmt: str = "%(asctime)s %(levelname)s %(message)s",
 		logging_datefmt: str = "%Y-%m-%d %H:%M:%S",
+		wandb_kwargs: dict | None = None,
 	) -> "WandbLogger":
 		logging.basicConfig(
 			stream=sys.stdout,
@@ -38,6 +39,7 @@ class WandbLogger(TrainingLoggerBase):
 			config=config,
 			project=project,
 			job_type=job_type,
+			**(wandb_kwargs if wandb_kwargs else {}),
 		)
 
 		logger: WandbLogger = WandbLogger(run)

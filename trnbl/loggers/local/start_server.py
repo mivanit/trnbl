@@ -14,8 +14,7 @@ def start_server(path: str, port: int = 8000) -> None:
 if __name__ == "__main__":
 	import sys
 	if len(sys.argv) == 1:
-		print(__doc__)
-		sys.exit(1)
+		start_server('.')
 	elif len(sys.argv) == 2:
 		start_server(sys.argv[1])
 	elif len(sys.argv) == 3:

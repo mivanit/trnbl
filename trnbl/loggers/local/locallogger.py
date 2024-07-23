@@ -182,6 +182,7 @@ class LocalLogger(TrainingLoggerBase):
 
 		self.log_list.append(msg_dict)
 		self.log_file.write(json.dumps(msg_dict) + "\n")
+		self.log_file.flush()
 
 	def debug(self, message: str, **kwargs) -> None:
 		"""log a debug message"""
@@ -213,6 +214,8 @@ class LocalLogger(TrainingLoggerBase):
 			f.write("="*80 + "\n")
 			f.write("exception at " + self.get_timestamp() + "\n")
 			f.write(message)
+			f.write("\n")
+			f.flush()
 
 	def metrics(self, data: dict[str, Any]) -> None:
 		"""log a dictionary of metrics"""

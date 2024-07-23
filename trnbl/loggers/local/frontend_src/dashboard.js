@@ -368,6 +368,12 @@ class DataManager {
 				});
 			}
 
+			// final state of the run
+			let finalState = {};
+			for (let key of ['samples', 'batches', 'epochs', 'latest_checkpoint']) {
+				finalState[key] = run.metrics[run.metrics.length - 1][key];
+			}
+
 			// return the summary manifest object, for each run
 			return {
 				id: {
@@ -380,6 +386,7 @@ class DataManager {
 					duration: new Date(finalTimestamp) - new Date(run.meta.run_init_timestamp),
 				},
 				final_metrics: finalMetrics,
+				final_state: finalState,
 				config: run.config,
 			};
 		});
@@ -398,6 +405,7 @@ class DataManager {
 		const newManifest = await IO_MANAGER.fetchJsonLinesIfModified('runs.jsonl');
 		if (newManifest) {
 			this.manifest = newManifest;
+			console.log(this.manifest);
 			dataUpdated = true;
 			createNotification("Manifest file updated", "info");
 		}
@@ -1485,11 +1493,21 @@ function createColumnDefs(summaryManifest) {
 			children: [],
 		},
 		{
+			headerName: 'Final State',
+			children: [
+				{ field: 'final_state.samples', headerName: 'Samples', columnGroupShow: null },
+				{ field: 'final_state.batches', headerName: 'Batches', columnGroupShow: 'open' },
+				{ field: 'final_state.epochs', headerName: 'Epochs', columnGroupShow: 'open' },
+				{ field: 'final_state.latest_checkpoint', headerName: 'Checkpoints', columnGroupShow: 'open' },
+			],
+		},
+		{
 			headerName: 'Config',
 			children: [
 				{
 					field: 'config',
 					headerName: 'Config',
+					columnGroupShow: null,
 					// width: 50, // TODO: this width is broken
 					cellRenderer: fancyCellRenderer,
 					valueFormatter: params => {

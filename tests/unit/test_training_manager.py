@@ -179,7 +179,7 @@ def test_training_manager_training_status(training_manager: TrainingManager) -> 
 			"elapsed_time",
 			"samples",
 			"batches",
-			"latest_epoch",
+			"epochs",
 			"latest_checkpoint",
 		]
 	)
@@ -195,7 +195,7 @@ def test_training_manager_get_format_kwargs(training_manager: TrainingManager) -
 			"elapsed_time",
 			"samples",
 			"batches",
-			"latest_epoch",
+			"epochs",
 			"latest_checkpoint",
 		]
 	)

@@ -378,7 +378,7 @@ class TrainingManager:
 			elapsed_time=self.get_elapsed_time(),
 			samples=self.samples,
 			batches=self.batches,
-			latest_epoch=self.epochs,
+			epochs=self.epochs,
 			latest_checkpoint=self.checkpoints,
 		)
 
@@ -390,7 +390,7 @@ class TrainingManager:
 		- `elapsed_time : float` - the elapsed time in seconds since the start of training
 		- `samples : int` - samples seen so far
 		- `batches : int` - batches seen so far
-		- `latest_epoch : int` - the latest epoch number
+		- `epochs : int` - the latest epoch number
 		- `latest_checkpoint : int` - the latest checkpoint number
 
 		"""

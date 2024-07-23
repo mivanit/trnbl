@@ -19,10 +19,10 @@ Firstly, a universal interface to [`wandb`](https://github.com/wandb/wandb), [`t
 Secondly, a `TrainingManager` class is provided which handles logging, artifacts, checkpointing, evaluations, exceptions, and more, with flexibly customizable intervals.
 
 - Rather than having to specify all intervals in batches and then change everything manually when you change the batch size, dataset size, or number of epochs, you specify an interval in samples, batches, epochs, or runs. This is computed into the correct number of batches or epochs based on the current dataset and batch size.
-    - `"1/10 runs"` -- 10 times a run
-    - `"2.5 epochs"` -- every 2 & 1/2 epochs
-    - `(100, "batches")` -- every 100 batches
-    - `"10k samples"` -- every 10,000 samples
+	- `"1/10 runs"` -- 10 times a run
+	- `"2.5 epochs"` -- every 2 & 1/2 epochs
+	- `(100, "batches")` -- every 100 batches
+	- `"10k samples"` -- every 10,000 samples
 
 - an evaluation function is passed in a tuple with an interval, takes the model as an argument, and returns the metrics as a dictionary
 
@@ -56,45 +56,45 @@ optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
 # set up a logger -- swap seamlessly between wandb, tensorboard, and local logging
 logger: LocalLogger = LocalLogger(
-    project="iris-demo",
-    metric_names=["train/loss", "train/acc", "val/loss", "val/acc"],
-    train_config=dict(
+	project="iris-demo",
+	metric_names=["train/loss", "train/acc", "val/loss", "val/acc"],
+	train_config=dict(
 		model=str(model), optimizer=str(optimizer), criterion=str(criterion)
 	),
 )
 
 with TrainingManager(
 	# pass your model and logger
-    model=model,
-    logger=logger,
-    evals={
+	model=model,
+	logger=logger,
+	evals={
 		# pass evaluation functions which take a model, and return a dict of metrics
-        "1k samples": my_evaluation_function,
-        "0.5 epochs": lambda model: logger.get_mem_usage(),
+		"1k samples": my_evaluation_function,
+		"0.5 epochs": lambda model: logger.get_mem_usage(),
 		"100 batches": my_other_eval_function,
-    }.items(),
-    checkpoint_interval="1/10 run", # will save a checkpoint 10 times per run
+	}.items(),
+	checkpoint_interval="1/10 run", # will save a checkpoint 10 times per run
 ) as tr:
 
 	# wrap the loops, and length will be automatically calculated
 	# and used to figure out when to run evals, checkpoint, etc
-    for epoch in tr.epoch_loop(range(120)):
-        for inputs, targets in tr.batch_loop(TRAIN_LOADER):
+	for epoch in tr.epoch_loop(range(120)):
+		for inputs, targets in tr.batch_loop(TRAIN_LOADER):
 			# your normal training code
-            optimizer.zero_grad()
-            outputs = model(inputs)
-            loss = criterion(outputs, targets)
-            loss.backward()
-            optimizer.step()
+			optimizer.zero_grad()
+			outputs = model(inputs)
+			loss = criterion(outputs, targets)
+			loss.backward()
+			optimizer.step()
 
 			# compute whatever you want every batch
-            accuracy = torch.sum(torch.argmax(outputs, dim=1) == targets).item() / len(targets)
-            
+			accuracy = torch.sum(torch.argmax(outputs, dim=1) == targets).item() / len(targets)
+			
 			# log the metrics
-            tr.batch_update(
-                samples=len(targets),
-                **{"train/loss": loss.item(), "train/acc": accuracy},
-            )
+			tr.batch_update(
+				samples=len(targets),
+				**{"train/loss": loss.item(), "train/acc": accuracy},
+			)
 
 	# a `model.final.pt` checkpoint will be saved at the end of the run,
 	# or a `model.exception.pt` if something crashes inside the context

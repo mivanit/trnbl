@@ -1,4 +1,4 @@
-demos/**
+demos/local/**
 test/_temp/**
 tensorboard/
 old/**

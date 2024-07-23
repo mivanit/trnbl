@@ -10,7 +10,7 @@
 
 If you train a lot of models, you might often find yourself being annoyed at swapping between different loggers and fiddling with a bunch of `if batch_idx % some_number == 0` statements. This package aims to fix that problem.
 
-Firstly, a universal interface to [`wandb`](https://github.com/wandb/wandb), [`tensorboard`](https://github.com/tensorflow/tensorboard), and a minimal local logging solution (more on that below) is provided. 
+Firstly, a universal interface to [`wandb`](https://github.com/wandb/wandb), [`tensorboard`](https://github.com/tensorflow/tensorboard), and a minimal local logging solution ([live demo](https://miv.name/trnbl/iris-demo/index.html)) is provided. 
 
 - This interface handles logging, error messages, metrics, and artifacts.
 - Swapping from one logger to another requires no modifications except initializing the new logger you want, and passing that instead. 
@@ -111,7 +111,9 @@ Intended as a minimal logging solution for local runs, when you're too lazy to s
 - smooth the data and change axes scales
 - move and resize all plots and tables
 
-![](docs/assets/trnbl-dashboard.png)
+[You can view a live demo of the web interface here.](https://miv.name/trnbl/iris-demo/index.html)
+
+[![](docs/assets/trnbl-dashboard.png)](https://miv.name/trnbl/iris-demo/index.html)
 
 
 # TODOs:

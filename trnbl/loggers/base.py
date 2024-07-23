@@ -28,12 +28,17 @@ class TrainingLoggerBase(ABC):
 	"""Base class for training loggers"""
 
 	@abstractmethod
+	def debug(self, message: str, **kwargs) -> None:
+		"""log a debug message which will be saved, but not printed"""
+		pass
+
+	@abstractmethod
 	def message(self, message: str, **kwargs) -> None:
-		"""log a progress message"""
+		"""log a progress message, which will be printed to stdout"""
 		pass
 
 	def warning(self, message: str, **kwargs) -> None:
-		"""log a warning message"""
+		"""log a warning message, which will be printed to stderr"""
 		self.message(f"WARNING: {message}", __warning__=True, **kwargs)
 
 	def error(self, message: str, **kwargs) -> None:

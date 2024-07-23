@@ -148,9 +148,9 @@ class LocalLogger(TrainingLoggerBase):
 
 	def get_timestamp(self) -> str:
 		return datetime.datetime.now().isoformat()
-
-	def message(self, message: str, **kwargs) -> None:
-		"""log a progress message"""
+	
+	def _log(self, message: str, **kwargs) -> None:
+		"""(internal) log a progress message"""
 		# TODO: also log messages via regular logger to stdout
 		msg_dict: dict = dict(
 			message=message,
@@ -161,7 +161,17 @@ class LocalLogger(TrainingLoggerBase):
 
 		self.log_list.append(msg_dict)
 		self.log_file.write(json.dumps(msg_dict) + "\n")
+
+	def debug(self, message: str, **kwargs) -> None:
+		"""log a debug message"""
+		self._log(message, __dbg__=True, **kwargs)
+	
+	def message(self, message: str, **kwargs) -> None:
+		"""log a progress message"""
+		# TODO: also log messages via regular logger to stdout
+		self._log(message, **kwargs)
 		print(message)
+
 
 	def warning(self, message: str, **kwargs) -> None:
 		"""log a warning message"""

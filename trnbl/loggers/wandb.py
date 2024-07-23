@@ -44,6 +44,11 @@ class WandbLogger(TrainingLoggerBase):
 		logger.progress(f"{config =}")
 		return logger
 
+	def debug(self, message: str, **kwargs) -> None:
+		if kwargs:
+			message += f" {kwargs =}"
+		logging.debug(message)
+
 	def message(self, message: str, **kwargs) -> None:
 		if kwargs:
 			message += f" {kwargs =}"

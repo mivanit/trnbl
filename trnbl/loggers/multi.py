@@ -10,6 +10,11 @@ class MultiLogger(TrainingLoggerBase):
 	def __init__(self, loggers: list[TrainingLoggerBase]) -> None:
 		self.loggers: list[TrainingLoggerBase] = loggers
 
+	def debug(self, message: str, **kwargs) -> None:
+		"""log a debug message which will be saved, but not printed"""
+		for logger in self.loggers:
+			logger.debug(message, **kwargs)
+
 	def message(self, message: str, **kwargs) -> None:
 		"""log a progress message"""
 		for logger in self.loggers:

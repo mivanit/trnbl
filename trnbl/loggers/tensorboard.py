@@ -22,13 +22,18 @@ class TensorBoardLogger(TrainingLoggerBase):
 		# Initialize the global step counter
 		self._global_step: int = 0
 
-	def message(self, message: str, **kwargs) -> None:
-		# Log a message using add_text in TensorBoard
+	def _self_writer_add_text(self, tag: str, message: str, **kwargs) -> None:
 		self._writer.add_text(
-			"message",
+			tag,
 			message + ("" if not kwargs else "\n" + json.dumps(kwargs, indent=4)),
 			global_step=self._global_step,
 		)
+
+	def debug(self, message: str, **kwargs) -> None:
+		self._self_writer_add_text("debug", message, **kwargs)
+
+	def message(self, message: str, **kwargs) -> None:
+		self._self_writer_add_text("message", message, **kwargs)
 
 		# Also print the message
 		print(message)

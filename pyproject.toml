@@ -2,6 +2,8 @@
 name = "trnbl"
 version = "0.0.1"
 description = ""
+homepage = "https://github.com/mivanit/trnbl"
+repository = "https://github.com/mivanit/trnbl"
 authors = ["mivanit <mivanits@umich.edu>"]
 readme = "README.md"
 packages = [{include = "trnbl"}]

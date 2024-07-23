@@ -61,7 +61,6 @@ def build_dist(
 	path: Path,
 	minify: bool = True,
 	download_remote: bool = True,
-	as_json: bool = False,
 ) -> str:
 	"""Build a single file html from a folder
 
@@ -143,9 +142,6 @@ def build_dist(
 
 		out_html = minify_html.minify(out_html, minify_css=True, minify_js=True)
 
-	if as_json:
-		out_html = json.dumps(out_html)
-
 	return out_html
 
 
@@ -168,6 +164,11 @@ def main():
 		help="Disable downloading remote resources",
 	)
 	parser.add_argument("--json", "-j", action="store_true", help="Output as JSON")
+	parser.add_argument(
+		"--pkg-info", "-p",
+		type=str,
+		help="Add a comment with info from the given `pyproject.toml` file",
+	)
 
 	args: argparse.Namespace = parser.parse_args()
 
@@ -175,17 +176,33 @@ def main():
 	if not input_path.exists():
 		raise FileNotFoundError(f"Path {input_path} does not exist")
 
-	output_path = args.output or None
 
 	# build page
 	result: str = build_dist(
 		path=input_path,
 		minify=not args.no_minify,
 		download_remote=args.download,
-		as_json=args.json,
 	)
 
+	# add package info
+	if args.pkg_info:
+		import tomllib
+		# read pyproject.toml
+		with open(args.pkg_info, "rb") as f:
+			pkg_info = tomllib.load(f)
+		# get package name and version
+		pkg_name: str = pkg_info["tool"]["poetry"].get("name", "")
+		pkg_version: str = pkg_info["tool"]["poetry"].get("version", "")
+		pkg_homepage: str = pkg_info["tool"]["poetry"].get("homepage", "")
+		# add comment
+		result = f"<!-- {pkg_name} v{pkg_version} {pkg_homepage} -->\n" + result
+
+	# output as JSON
+	if args.json:
+		result = json.dumps(result)
+
 	# print or save
+	output_path = args.output or None
 	if output_path is None:
 		print(result)
 	else:

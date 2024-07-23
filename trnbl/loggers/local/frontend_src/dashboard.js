@@ -84,15 +84,15 @@ class IOManager {
 
 	async fetchWithNoCache(path) {
 		const headers = new Headers({
-		  'Cache-Control': 'no-cache, no-store, must-revalidate',
-		  'Pragma': 'no-cache',
-		  'Expires': '0'
+			'Cache-Control': 'no-cache, no-store, must-revalidate',
+			'Pragma': 'no-cache',
+			'Expires': '0'
 		});
-	
+
 		return fetch(path, {
-		  method: 'GET',
-		  headers: headers,
-		  credentials: 'same-origin'
+			method: 'GET',
+			headers: headers,
+			credentials: 'same-origin'
 		});
 	}
 
@@ -422,7 +422,7 @@ class DataManager {
 	}
 
 	async refreshData(verbose = true) {
-		
+
 		if (verbose) {
 			createNotification('Checking for data updates...', 'info');
 		}
@@ -475,7 +475,7 @@ class DataManager {
 			this.updateSummaryManifest();
 
 			this.lastRefreshTime = new Date();
-			
+
 			const updatedRunsInfo = DATA_MANAGER.getUpdatedRunsInfo();
 
 			// Update plots
@@ -483,7 +483,7 @@ class DataManager {
 
 			// Update table
 			GRID_API.setGridOption('rowData', DATA_MANAGER.summaryManifest);
-			GRID_API.refreshCells({force: true});
+			GRID_API.refreshCells({ force: true });
 
 			// Detailed notification
 			if (updatedRunsInfo.count > 0) {
@@ -513,39 +513,39 @@ class DataManager {
 		}
 
 		return dataUpdated;
-	}	
+	}
 
-    initAutoRefresh() {
-        const autoRefreshSelect = document.getElementById('autoRefreshSelect');
-        
-        // Populate the select element with options
-        AUTO_REFRESH_CONFIG.select_options.forEach(option => {
-            const optionElement = document.createElement('option');
-            optionElement.value = option.value;
-            optionElement.textContent = option.label;
-            if (option.value === AUTO_REFRESH_CONFIG.interval) {
-                optionElement.selected = true;
-            }
-            autoRefreshSelect.appendChild(optionElement);
-        });
+	initAutoRefresh() {
+		const autoRefreshSelect = document.getElementById('autoRefreshSelect');
 
-        autoRefreshSelect.addEventListener('change', () => {
-            this.setAutoRefresh(parseFloat(autoRefreshSelect.value));
-        });
+		// Populate the select element with options
+		AUTO_REFRESH_CONFIG.select_options.forEach(option => {
+			const optionElement = document.createElement('option');
+			optionElement.value = option.value;
+			optionElement.textContent = option.label;
+			if (option.value === AUTO_REFRESH_CONFIG.interval) {
+				optionElement.selected = true;
+			}
+			autoRefreshSelect.appendChild(optionElement);
+		});
 
-        // Initialize auto-refresh with default value
-        this.setAutoRefresh(AUTO_REFRESH_CONFIG.interval);
-    }
+		autoRefreshSelect.addEventListener('change', () => {
+			this.setAutoRefresh(parseFloat(autoRefreshSelect.value));
+		});
 
-    setAutoRefresh(seconds) {
-        // Clear existing interval if any
-        if (this.autoRefreshInterval) {
-            clearInterval(this.autoRefreshInterval);
-        }
+		// Initialize auto-refresh with default value
+		this.setAutoRefresh(AUTO_REFRESH_CONFIG.interval);
+	}
 
-        // If seconds is greater than 0, set new interval
-        if (seconds > 0) {
-            this.autoRefreshInterval = setInterval(
+	setAutoRefresh(seconds) {
+		// Clear existing interval if any
+		if (this.autoRefreshInterval) {
+			clearInterval(this.autoRefreshInterval);
+		}
+
+		// If seconds is greater than 0, set new interval
+		if (seconds > 0) {
+			this.autoRefreshInterval = setInterval(
 				() => {
 					this.refreshData(false).then(() => {
 						// Blink the refresh button after each refresh
@@ -554,11 +554,11 @@ class DataManager {
 				},
 				seconds * 1000,
 			);
-            createNotification(`Auto refresh set to ${seconds} seconds`, 'info');
-        } else {
-            createNotification('Auto refresh turned off', 'info');
-        }
-    }
+			createNotification(`Auto refresh set to ${seconds} seconds`, 'info');
+		} else {
+			createNotification('Auto refresh turned off', 'info');
+		}
+	}
 
 	getUpdatedRunsInfo() {
 		return {
@@ -1223,16 +1223,16 @@ async function headerButtons() {
 		}
 	);
 
-    // Set up manual refresh button
-    document.getElementById('refreshButton').addEventListener(
-        'click',
-        async () => {
-            await DATA_MANAGER.refreshData();
-        }
-    );
+	// Set up manual refresh button
+	document.getElementById('refreshButton').addEventListener(
+		'click',
+		async () => {
+			await DATA_MANAGER.refreshData();
+		}
+	);
 
 	// Set up auto-refresh
-    DATA_MANAGER.initAutoRefresh();
+	DATA_MANAGER.initAutoRefresh();
 
 
 	// reset colum state of table
@@ -1268,11 +1268,11 @@ async function headerButtons() {
 
 
 function blinkElement(elementId, color, duration) {
-    const element = document.getElementById(elementId);
-    element.classList.add('blink-border');
-    setTimeout(() => {
-        element.classList.remove('blink-border');
-    }, 1000); // Remove class after animation completes
+	const element = document.getElementById(elementId);
+	element.classList.add('blink-border');
+	setTimeout(() => {
+		element.classList.remove('blink-border');
+	}, 1000); // Remove class after animation completes
 }
 
 function createNotification(message, type = 'info', extra = null, show = true) {
@@ -1297,7 +1297,7 @@ function createNotification(message, type = 'info', extra = null, show = true) {
 	}
 
 	if (show) {
-		
+
 		// create notification div
 		const notificationDiv = document.createElement('div');
 		notificationDiv.textContent = message;

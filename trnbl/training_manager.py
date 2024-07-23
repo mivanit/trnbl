@@ -1,8 +1,11 @@
 import time
 from types import TracebackType
-from typing import Callable, Iterable, Type
+from typing import Any, Callable, Iterable, Type, Generic, TypeVar
 from pathlib import Path
 import warnings
+import functools
+
+import tqdm
 
 # torch
 try:
@@ -12,11 +15,67 @@ except ImportError:
 
 # trnbl
 from trnbl.loggers.base import TrainingLoggerBase
-from trnbl.training_interval import TrainingInterval
+from trnbl.training_interval import TrainingInterval, CastableToTrainingInterval
 
 # evaluation function should take a model and return some metrics
 EvalFunction = Callable[["torch.nn.Module"], dict]
 
+class TrainingManagerInitError(Exception):
+	pass
+
+T = TypeVar('T')
+
+class WrappedIterable(Generic[T]):
+	def __init__(
+			self,
+			iterable: Iterable[T],
+			manager: 'TrainingManager',
+			is_epoch: bool = False,
+			use_tqdm: bool|None = None,
+			tqdm_kwargs: dict[str, Any]|None = None,
+		):
+		self.iterable: Iterable[T] = iterable
+		self.manager: 'TrainingManager' = manager
+		self.is_epoch: bool = is_epoch
+		self.length: int = len(iterable)
+		self.use_tqdm: bool = (
+			use_tqdm if use_tqdm is not None # do what the user says
+			else is_epoch # otherwise, use tqdm if we are the epoch loop
+		)
+		
+		# wrap with tqdm
+		if use_tqdm:
+			self.iterable = tqdm.tqdm(self.iterable, **(tqdm_kwargs or {}))
+
+		# update the manager if it's not fully initialized
+		if not manager.init_complete:
+			if is_epoch:
+				# if epoch loop, set the total epochs
+				self.manager.epochs_total = self.length
+			else:
+				# if batch loop, set other things
+				self.manager.batches_per_epoch = self.length
+				try:
+					self.manager.batch_size = self.iterable.batch_size
+					self.manager.samples_per_epoch = len(self.iterable.dataset)
+				except AttributeError as e:
+					raise TrainingManagerInitError(
+						"could not get the batch size or dataset size from the dataloader passed to `TrainingManager().batch_loop()`. ",
+						"pass either a `torch.utils.data.DataLoader` ",
+						"or an iterable with a `batch_size: int` attribute and a `dataset: Iterable` attribute."
+					) from e
+
+		# try to compute counters and finish init of TrainingManager
+		print("WrappedIterable init computing counters")
+		self.manager.try_compute_counters()
+
+
+	def __iter__(self):
+		for item in self.iterable:
+			yield item
+			if self.is_epoch:
+				self.manager.epoch_update()
+			# no need to call batch_update, since the user has to call batch_update to log metrics
 
 class TrainingManager:
 	"""context manager for training a model, with logging, evals, and checkpoints
@@ -92,14 +151,15 @@ class TrainingManager:
 	def __init__(
 		self,
 		model: "torch.nn.Module",
-		dataloader: "torch.utils.data.DataLoader",
 		logger: TrainingLoggerBase,
-		epochs: int = 1,
+		# required if you don't wrap the loops
+		dataloader: "torch.utils.data.DataLoader|None" = None,
+		epochs_total: int|None = None,
 		save_model: Callable[["torch.nn.Module", Path], None] = torch.save,
 		# everything with intervals
-		evals: Iterable[tuple[TrainingInterval | str, EvalFunction]] | None = None,
-		checkpoint_interval: TrainingInterval | str = TrainingInterval(1, "epochs"),
-		print_metrics_interval: TrainingInterval | str = TrainingInterval(0.1, "runs"),
+		evals: Iterable[tuple[CastableToTrainingInterval, EvalFunction]] | None = None,
+		checkpoint_interval: CastableToTrainingInterval = TrainingInterval(1, "epochs"),
+		print_metrics_interval: CastableToTrainingInterval = TrainingInterval(0.1, "runs"),
 		# everything with paths
 		model_save_path: str = "{run_path}/checkpoints/model.checkpoint-{latest_checkpoint}.pt",
 		model_save_path_special: str = "{run_path}/model.{alias}.pt",
@@ -108,71 +168,120 @@ class TrainingManager:
 		self.start_time: float = time.time()
 		# non path and non-interval args get copied over directly
 		self.model: "torch.nn.Module" = model
-		self.dataloader: "torch.utils.data.DataLoader" = dataloader
 		self.logger: TrainingLoggerBase = logger
 		self.save_model: Callable[["torch.nn.Module", Path], None] = save_model
 
-		# number of epochs, batches, and samples
-		self.epochs_total: int = epochs
+		self.logger.message("starting training manager initialization")
+
+		# model save paths
+		self.model_save_path: str = model_save_path
+		self.model_save_path_special: str = model_save_path_special
+
+		# temp intervals for processing later in `try_compute_counters`
+		self._evals: Iterable[tuple[TrainingInterval, EvalFunction]]
+		if evals is None:
+			self._evals = []
+		else:
+			self._evals = [
+				(TrainingInterval.from_any(interval), eval_fn)
+				for interval, eval_fn in evals
+			]
+		self._checkpoint_interval: TrainingInterval = TrainingInterval.from_any(checkpoint_interval)
+		self._print_metrics_interval: TrainingInterval = TrainingInterval.from_any(print_metrics_interval)
+
+		self.evals: list[tuple[int, EvalFunction]]|None = None
+		self.checkpoint_interval: int|None = None
+		self.print_metrics_interval: int|None = None
+
+		# counters for epochs, batches, samples, and checkpoints
 		self.epochs: int = 0
-		self.batches_per_epoch: int = len(dataloader)
-		self.batch_size: int = dataloader.batch_size
-		self.batches_total: int = self.batches_per_epoch * epochs
 		self.batches: int = 0
-		self.samples_per_epoch: int = len(dataloader.dataset)
-		self.samples_total: int = self.samples_per_epoch * epochs
 		self.samples: int = 0
 		self.checkpoints: int = 0
 
+		# total numbers of epochs, batches, and samples
+		# pass via init kwarg or wrapped epochs loop
+		self.epochs_total: int|None = epochs_total
+		# from dataloader or dataloader in wrapped loop
+		self.batches_per_epoch: int|None = None
+		self.batch_size: int|None = None
+		self.samples_per_epoch: int|None = None
+		# computed dynamically from the above
+		self.batches_total: int|None = None
+		self.samples_total: int|None = None
+
+		# whether the init is finished
+		self.init_complete: bool = False
+
+		# if we have a dataloader, we can compute some of the above
+		if dataloader is not None:
+			self.batches_per_epoch = len(self.dataloader)
+			self.batch_size = self.dataloader.batch_size
+			self.samples_per_epoch = len(self.dataloader.dataset)
+
+		self.try_compute_counters()
+
+
+	def try_compute_counters(self) -> None:
+		# we depend on either the TrainingManager init or the wrapped loops
+		# getting the epochs_total and dataloader
+		# everything else is computed dynamically
+
+		if any(
+			x is None 
+			for x in
+			[self.epochs_total, self.batches_per_epoch, self.batch_size, self.samples_per_epoch]
+		):
+			# if we don't have all the info we need, return early
+			return
+
+		self.batches_total: int = self.batches_per_epoch * self.epochs_total
+		self.samples_total: int = self.samples_per_epoch * self.epochs_total
+
 		# check if the dataloader has a finite nonzero length
 		if self.samples_per_epoch == 0:
-			raise ValueError(
-				"Dataloader has no samples. Please provide a dataloader with a non-zero length."
+			raise TrainingManagerInitError(
+				f"Dataloader has no samples. Please provide a dataloader with a non-zero length. {self.samples_per_epoch = }"
 			)
 
 		if self.batches_per_epoch == 0:
-			raise ValueError(
-				"Dataloader has no batches. Please provide a dataloader with a non-zero length."
+			raise TrainingManagerInitError(
+				f"Dataloader has no batches. Please provide a dataloader with a non-zero length. {self.batches_per_epoch = }"
 			)
 
 		if self.batch_size == 0:
-			raise ValueError(
-				"Dataloader has a batch size of 0. Please provide a dataloader with a non-zero batch size."
+			raise TrainingManagerInitError(
+				f"Dataloader has a batch size of 0. Please provide a dataloader with a non-zero batch size. {self.batch_size = }"
 			)
 
-		# normalize intervals
+		# normalize intervals for checkpoints, metrics printing, and evals
 		_batch_info_kwargs: dict[str, int] = dict(
 			batches_per_epoch=self.batches_per_epoch,
 			batchsize=self.batch_size,
 			epochs=self.epochs_total,
 		)
 		self.checkpoint_interval: int = TrainingInterval.process_to_batches(
-			interval=checkpoint_interval,
+			interval=self._checkpoint_interval,
 			**_batch_info_kwargs,
 		)
 		self.print_metrics_interval: int = TrainingInterval.process_to_batches(
-			interval=print_metrics_interval,
+			interval=self._print_metrics_interval,
 			**_batch_info_kwargs,
 		)
-		if evals is None:
-			evals = []
 		self.evals: list[tuple[int, EvalFunction]] = [
 			(
 				TrainingInterval.process_to_batches(interval, **_batch_info_kwargs),
 				eval_fn,
 			)
-			for interval, eval_fn in evals
+			for interval, eval_fn in self._evals
 		]
 
-		# model save paths
-		self.model_save_path: str = model_save_path
-		self.model_save_path_special: str = model_save_path_special
-
 		# log this info
-		logger.message(
+		self.init_complete = True
+		self.logger.message(
 			"initialized training manager",
 			__training_manager_init__=True,
-			epochs_total=epochs,
+			epochs_total=self.epochs_total,
 			batches_per_epoch=self.batches_per_epoch,
 			batch_size=self.batch_size,
 			samples_per_epoch=self.samples_per_epoch,
@@ -183,6 +292,7 @@ class TrainingManager:
 			model_save_path_special=self.model_save_path_special,
 			**self.training_status(),
 		)
+		
 
 	def __enter__(self):
 		return self
@@ -210,6 +320,22 @@ class TrainingManager:
 			)
 			self._save_checkpoint(alias="final")
 			self.logger.finish()
+
+	def epoch_loop(self, epochs: Iterable[int]) -> WrappedIterable[int]:
+		return WrappedIterable(epochs, self, is_epoch=True)
+	
+	def batch_loop(self, batches: Iterable[int]) -> WrappedIterable[int]:
+		return WrappedIterable(batches, self, is_epoch=False)
+	
+	def check_is_initialized(self):
+		if not self.init_complete:
+			raise TrainingManagerInitError(
+				"TrainingManager not correctly initialized. ",
+				"This is likely due to failing to specify the epoch count, or failing to specify batch size/count. "
+				"you must either wrap your epoch loop with `TrainingManager.epoch_loop` or specify `epochs_total`",
+				"AND you must either wrap your batch loop with `TrainingManager.batch_loop` or pass a `torch.utils.data.DataLoader` to the TrainingManager constructor.",
+				"please note, if not wrapping the epoch loop, you must also call `TrainingManager.epoch_update` at the end of each epoch.",
+			)
 
 	def get_elapsed_time(self) -> float:
 		"""return the elapsed time in seconds since the start of training"""
@@ -254,14 +380,17 @@ class TrainingManager:
 
 
 		"""
+		# check init is finished
+		if not self.init_complete:
+			self.try_compute_counters()
+			self.check_is_initialized()
+
 		# update counters
 		self.batches += 1
 		if samples is not None:
 			self.samples += samples
 		else:
 			self.samples += self.batch_size
-
-		# TODO: update progress bar
 
 		# run evals if needed
 		metrics: dict = dict()
@@ -272,7 +401,7 @@ class TrainingManager:
 		# log metrics & training status
 		self.logger.metrics({**kwargs, **metrics, **self.training_status()})
 
-		# TODO: print metrics if needed
+		# print metrics if needed
 
 		# save checkpoint if needed
 		if self.batches % self.checkpoint_interval == 0:

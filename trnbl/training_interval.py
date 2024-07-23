@@ -1,4 +1,4 @@
-from typing import Any, Iterable, Literal, Callable
+from typing import Any, Iterable, Literal, Callable, Union
 from dataclasses import dataclass
 
 from muutils.misc import str_to_numeric
@@ -289,7 +289,7 @@ class TrainingInterval:
 	@classmethod
 	def process_to_batches(
 		cls,
-		interval: "str|tuple|TrainingInterval",
+		interval: 'CastableToTrainingInterval',
 		batchsize: int,
 		batches_per_epoch: int,
 		epochs: int | None = None,
@@ -303,3 +303,9 @@ class TrainingInterval:
 			batchsize=batchsize,
 			epochs=epochs,
 		)
+
+CastableToTrainingInterval = Union[
+	str, # parse as string "quantity unit"
+	tuple[Union[int,float,str], str], # parse as tuple (quantity, unit)
+	TrainingInterval, # already a TrainingInterval
+]

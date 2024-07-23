@@ -165,7 +165,8 @@ def main():
 	)
 	parser.add_argument("--json", "-j", action="store_true", help="Output as JSON")
 	parser.add_argument(
-		"--pkg-info", "-p",
+		"--pkg-info",
+		"-p",
 		type=str,
 		help="Add a comment with info from the given `pyproject.toml` file",
 	)
@@ -175,7 +176,6 @@ def main():
 	input_path: Path = Path(args.path)
 	if not input_path.exists():
 		raise FileNotFoundError(f"Path {input_path} does not exist")
-
 
 	# build page
 	result: str = build_dist(
@@ -187,6 +187,7 @@ def main():
 	# add package info
 	if args.pkg_info:
 		import tomllib
+
 		# read pyproject.toml
 		with open(args.pkg_info, "rb") as f:
 			pkg_info = tomllib.load(f)

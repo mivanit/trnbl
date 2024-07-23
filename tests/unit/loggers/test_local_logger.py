@@ -18,7 +18,7 @@ def test_logger_initialization():
 	logger = LocalLogger(
 		project="test_project",
 		metric_names=["accuracy", "loss"],
-		name="test_run",
+		group="test_run",
 		train_config=train_config,
 		base_path=TEMP_PATH,
 	)
@@ -32,7 +32,7 @@ def test_logger_message():
 	logger = LocalLogger(
 		project="test_project",
 		metric_names=["accuracy", "loss"],
-		name="test_run",
+		group="test_run",
 		train_config=train_config,
 		base_path=TEMP_PATH,
 	)
@@ -46,7 +46,7 @@ def test_logger_metrics():
 	logger = LocalLogger(
 		project="test_project",
 		metric_names=["accuracy", "loss"],
-		name="test_run",
+		group="test_run",
 		train_config=train_config,
 		base_path=TEMP_PATH,
 	)
@@ -61,7 +61,7 @@ def test_logger_artifact():
 	logger = LocalLogger(
 		project="test_project",
 		metric_names=["accuracy", "loss"],
-		name="test_run",
+		group="test_run",
 		train_config=train_config,
 		base_path=TEMP_PATH,
 	)
@@ -84,7 +84,7 @@ def test_logger_files():
 	logger = LocalLogger(
 		project="test_project",
 		metric_names=["accuracy", "loss"],
-		name="test_run",
+		group="test_run",
 		train_config=train_config,
 		base_path=test_run_path,
 	)

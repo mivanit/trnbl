@@ -39,7 +39,7 @@ dataloader: DataLoader = DataLoader(dataset, batch_size=10)
 logger_config: Dict[str, Any] = {
 	"project": "test_project",
 	"metric_names": ["loss"],
-	"name": "test_run",
+	"group": "test_run",
 	"train_config": {"batch_size": 10, "learning_rate": 0.001, "epochs": 10},
 	"base_path": TEMP_PATH,
 }

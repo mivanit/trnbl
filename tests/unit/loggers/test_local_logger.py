@@ -65,7 +65,7 @@ def test_logger_artifact():
 		train_config=train_config,
 		base_path=TEMP_PATH,
 	)
-	artifact_path = Path("/tests/_temp/test_artifact.txt")
+	artifact_path = Path("tests/_temp/test_artifact.txt")
 	artifact_path.parent.mkdir(parents=True, exist_ok=True)
 	artifact_path.write_text("This is a test artifact.")
 	logger.artifact(artifact_path, type="text")

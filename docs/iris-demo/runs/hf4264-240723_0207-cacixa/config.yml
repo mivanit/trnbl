@@ -1,0 +1,9 @@
+criterion: CrossEntropyLoss()
+dataset: iris
+model: "DNN(\n  (net): Sequential(\n    (0): Linear(in_features=4, out_features=10,\
+  \ bias=True)\n    (1): ReLU()\n    (2): Linear(in_features=10, out_features=3, bias=True)\n\
+  \    (3): Softmax(dim=1)\n  )\n)"
+optimizer: "Adam (\nParameter Group 0\n    amsgrad: False\n    betas: (0.9, 0.999)\n\
+  \    capturable: False\n    differentiable: False\n    eps: 1e-08\n    foreach:\
+  \ None\n    fused: None\n    lr: 0.001\n    maximize: False\n    weight_decay: 0\n\
+  )"

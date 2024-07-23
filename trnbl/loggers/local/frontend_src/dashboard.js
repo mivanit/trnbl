@@ -82,9 +82,29 @@ class IOManager {
 		this.fileTimestamps = {};
 	}
 
-	async fetchJson(path) {
+	async fetchWithNoCache(path) {
+		const headers = new Headers({
+		  'Cache-Control': 'no-cache, no-store, must-revalidate',
+		  'Pragma': 'no-cache',
+		  'Expires': '0'
+		});
+	
+		return fetch(path, {
+		  method: 'GET',
+		  headers: headers,
+		  credentials: 'same-origin'
+		});
+	}
+
+	async fetchJson(path, force_no_cache = false) {
 		try {
-			const response = await fetch(path);
+			let response = null;
+			if (force_no_cache) {
+				response = await this.fetchWithNoCache(path);
+			}
+			else {
+				response = await fetch(path);
+			}
 			if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 			return await response.json();
 		} catch (error) {
@@ -93,10 +113,19 @@ class IOManager {
 		}
 	}
 
-	async fetchJsonLines(path, notify_last_line_error = false) {
+	async fetchJsonLines(path, force_no_cache = false, notify_last_line_error = false) {
 		try {
-			const response = await fetch(path);
-			if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+			let response = null;
+			if (force_no_cache) {
+				response = await this.fetchWithNoCache(path);
+			}
+			else {
+				response = await fetch(path);
+			}
+			if (!response.ok) {
+				let response_status = response ? response.status : 'unknown';
+				throw new Error(`HTTP error! status: ${response_status}`);
+			}
 			const text = await response.text();
 			const lines = text.trim().split('\n');
 			const validLines = lines.slice(0, -1).map(line => JSON.parse(line));
@@ -139,7 +168,7 @@ class IOManager {
 
 	async getFileModificationTime(path) {
 		try {
-			const response = await fetch(path, { method: 'HEAD' });
+			const response = await fetch(path + '?t=' + new Date().getTime(), { method: 'HEAD' });
 			if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 			return new Date(response.headers.get('Last-Modified'));
 		} catch (error) {
@@ -302,7 +331,7 @@ class DataManager {
 
 	async loadManifest() {
 		// load data
-		this.manifest = await IO_MANAGER.fetchJsonLines('runs.jsonl');
+		this.manifest = await IO_MANAGER.fetchJsonLines('runs.jsonl', true); // force_no_cache=true
 		if (!this.manifest) {
 			createNotification('Failed to load manifest', 'error');
 		}
@@ -402,8 +431,8 @@ class DataManager {
 		this.updatedRuns.clear(); // Clear the set at the start of each refresh
 
 		// Refresh manifest
-		const newManifest = await IO_MANAGER.fetchJsonLinesIfModified('runs.jsonl');
-		if (newManifest) {
+		const newManifest = await IO_MANAGER.fetchJsonLines('runs.jsonl', true); // force_no_cache=true
+		if (JSON.stringify(newManifest) !== JSON.stringify(this.manifest)) {
 			this.manifest = newManifest;
 			console.log(this.manifest);
 			dataUpdated = true;

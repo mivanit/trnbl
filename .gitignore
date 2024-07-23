@@ -1,3 +1,4 @@
+demos/**
 test/_temp/**
 tensorboard/
 old/**

@@ -398,9 +398,14 @@ class DataManager {
 			}
 
 			// final state of the run
-			let finalState = {};
+			const finalState_all = run.metrics[run.metrics.length - 1];
+			let finalState_filtered = {};
 			for (let key of ['samples', 'batches', 'epochs', 'latest_checkpoint']) {
-				finalState[key] = run.metrics[run.metrics.length - 1][key];
+				if (finalState_all) {
+					finalState_filtered[key] = finalState_all[key];
+				} else {
+					finalState_filtered[key] = null;
+				}				
 			}
 
 			// return the summary manifest object, for each run
@@ -416,7 +421,7 @@ class DataManager {
 					duration: new Date(finalTimestamp) - new Date(run.meta.run_init_timestamp),
 				},
 				final_metrics: finalMetrics,
-				final_state: finalState,
+				final_state: finalState_filtered,
 				config: run.config,
 				meta: run.meta,
 			};

@@ -18,7 +18,7 @@ classifiers=[
 
 [tool.poetry.dependencies]
 python = "^3.10"
-muutils = "^0.6.3"
+muutils = "^0.6.7"
 tqdm = "^4.66.4"
 pyyaml = "^6.0.1 "
 # optional

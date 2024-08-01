@@ -2,6 +2,9 @@ from abc import ABC, abstractmethod
 from typing import Any
 from pathlib import Path
 import warnings
+import time
+
+from muutils.spinner import Spinner
 
 # gpu utils
 GPU_UTILS_AVAILABLE: bool
@@ -23,6 +26,35 @@ except ImportError as e:
 	warnings.warn(f"psutil not available: {e}")
 	PSUTIL_AVAILABLE = False
 
+
+class LoggerSpinner(Spinner):
+	"see `Spinner` for parameters. catches `update_value` and passes it to the `LocalLogger`"
+
+	def __init__(
+			self,
+			*args,
+			logger: "TrainingLoggerBase",
+			**kwargs,
+		):
+		super().__init__(*args, **kwargs)
+		self.logger: "TrainingLoggerBase" = logger
+
+	def update_value(self, value: Any) -> None:
+		"""update the value of the spinner and log it"""
+		self.logger.message(
+			message=self.message,
+			spinner_value=value,
+			spinner_elapsed_time=time.time() - self.start_time,
+		)
+		super().update_value(value)
+		# the above should just be calling `self.current_value = value`
+
+	def __enter__(self) -> "LoggerSpinner":
+		self.start()
+		return self
+
+	def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+		self.stop()
 
 class TrainingLoggerBase(ABC):
 	"""Base class for training loggers"""
@@ -109,3 +141,12 @@ class TrainingLoggerBase(ABC):
 			self.warning(f"Error getting memory usage: {e}")
 
 		return mem_usage
+
+
+	def spinner_task(self, **kwargs) -> LoggerSpinner:
+		"Create a spinner task. kwargs are passed to `Spinner`."
+		return LoggerSpinner(logger=self, **kwargs)
+	
+	# def seq_task(self, **kwargs) -> LoggerSpinner:
+	# 	"Create a sequential task with progress bar. kwargs are passed to `tqdm`."
+	# 	return LoggerSpinner(message=message, logger=self, **kwargs)

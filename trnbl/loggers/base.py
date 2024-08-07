@@ -3,6 +3,7 @@ from typing import Any
 from pathlib import Path
 import warnings
 import time
+import random
 
 from muutils.spinner import Spinner
 
@@ -27,15 +28,35 @@ except ImportError as e:
 	PSUTIL_AVAILABLE = False
 
 
+VOWELS: str = "aeiou"
+CONSONANTS: str = "bcdfghjklmnpqrstvwxyz"
+
+
+def rand_syllabic_string(length: int = 6) -> str:
+	"""Generate a random string of alternating consonants and vowels to use as a unique identifier
+
+	for a length of 2n, there are about 10^{2n} possible strings
+
+	default is 6 characters, which gives 10^6 possible strings
+	"""
+	string: str = ""
+	for i in range(length):
+		if i % 2 == 0:
+			string += random.choice(CONSONANTS)
+		else:
+			string += random.choice(VOWELS)
+	return string
+
+
 class LoggerSpinner(Spinner):
 	"see `Spinner` for parameters. catches `update_value` and passes it to the `LocalLogger`"
 
 	def __init__(
-			self,
-			*args,
-			logger: "TrainingLoggerBase",
-			**kwargs,
-		):
+		self,
+		*args,
+		logger: "TrainingLoggerBase",
+		**kwargs,
+	):
 		super().__init__(*args, **kwargs)
 		self.logger: "TrainingLoggerBase" = logger
 
@@ -55,6 +76,7 @@ class LoggerSpinner(Spinner):
 
 	def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
 		self.stop()
+
 
 class TrainingLoggerBase(ABC):
 	"""Base class for training loggers"""
@@ -142,11 +164,10 @@ class TrainingLoggerBase(ABC):
 
 		return mem_usage
 
-
 	def spinner_task(self, **kwargs) -> LoggerSpinner:
 		"Create a spinner task. kwargs are passed to `Spinner`."
 		return LoggerSpinner(logger=self, **kwargs)
-	
+
 	# def seq_task(self, **kwargs) -> LoggerSpinner:
 	# 	"Create a sequential task with progress bar. kwargs are passed to `tqdm`."
 	# 	return LoggerSpinner(message=message, logger=self, **kwargs)

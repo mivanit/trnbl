@@ -2,25 +2,43 @@ import datetime
 from typing import Any
 from pathlib import Path
 import json
+import hashlib
 
 from torch.utils.tensorboard import SummaryWriter
 
-from trnbl.loggers.base import TrainingLoggerBase
+from trnbl.loggers.base import TrainingLoggerBase, rand_syllabic_string
 
 
 class TensorBoardLogger(TrainingLoggerBase):
-	def __init__(self, log_dir: str | Path):
-		if isinstance(log_dir, Path):
-			log_dir = log_dir.as_posix()
+	def __init__(
+		self,
+		log_dir: str | Path,
+		train_config: dict,
+		name: str | None = None,
+		**kwargs,
+	) -> None:
+		train_config_json: str = json.dumps(train_config, indent="\t")
+
+		if name is None:
+			_run_hash: str = hashlib.md5(train_config_json.encode()).hexdigest()
+			name = f"h{_run_hash[:5]}-{datetime.datetime.now().strftime('%y%m%d_%H%M')}-{rand_syllabic_string()}"
+
+		log_dir = (Path(log_dir) / name).as_posix()
 
 		# Initialize the TensorBoard SummaryWriter with the specified log directory
-		self._writer: SummaryWriter = SummaryWriter(log_dir=log_dir)
+		self._writer: SummaryWriter = SummaryWriter(log_dir=log_dir, **kwargs)
 
 		# Store the run path
 		self._run_path: Path = Path(log_dir)
 
 		# Initialize the global step counter
 		self._global_step: int = 0
+
+		# Log the training configuration
+		self._self_writer_add_text("config", train_config_json)
+		self._self_writer_add_text("name", name)
+		with open(self._run_path / "config.json", "w") as f:
+			f.write(train_config_json)
 
 	def _self_writer_add_text(self, tag: str, message: str, **kwargs) -> None:
 		self._writer.add_text(

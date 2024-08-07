@@ -4,11 +4,10 @@ import json
 from typing import Any
 from pathlib import Path
 import io
-import random
 import inspect
 
 import yaml  # type: ignore[import-untyped]
-from trnbl.loggers.base import TrainingLoggerBase
+from trnbl.loggers.base import TrainingLoggerBase, rand_syllabic_string
 
 
 class FilePaths:
@@ -38,26 +37,6 @@ class FilePaths:
 	START_SERVER: Path = Path("start_server.py")
 
 
-VOWELS: str = "aeiou"
-CONSONANTS: str = "bcdfghjklmnpqrstvwxyz"
-
-
-def rand_syllabic_string(length: int = 6):
-	"""Generate a random string of alternating consonants and vowels to use as a unique identifier
-
-	for a length of 2n, there are about 10^{2n} possible strings
-
-	default is 6 characters, which gives 10^6 possible strings
-	"""
-	string: str = ""
-	for i in range(length):
-		if i % 2 == 0:
-			string += random.choice(CONSONANTS)
-		else:
-			string += random.choice(VOWELS)
-	return string
-
-
 class LocalLogger(TrainingLoggerBase):
 	def __init__(
 		self,
@@ -77,7 +56,8 @@ class LocalLogger(TrainingLoggerBase):
 		# copy kwargs
 		self.train_config: dict = train_config
 		self.project: str = project
-		self.group: str = group + ("-" if group and group[-1] != "-" else "")
+		self.group: str = group
+		self.group_str: str = self.group + ("-" if group and group[-1] != "-" else "")
 		self.base_path: Path = Path(base_path)
 		self.console_msg_prefix: str = console_msg_prefix
 
@@ -168,7 +148,7 @@ class LocalLogger(TrainingLoggerBase):
 		return self._syllabic_id
 
 	def _get_run_id(self) -> str:
-		return f"{self.group}h{self._run_hash[:5]}-{self.run_init_timestamp.strftime('%y%m%d_%H%M')}-{self.syllabic_id}"
+		return f"{self.group_str}h{self._run_hash[:5]}-{self.run_init_timestamp.strftime('%y%m%d_%H%M')}-{self.syllabic_id}"
 
 	def get_timestamp(self) -> str:
 		return datetime.datetime.now().isoformat()

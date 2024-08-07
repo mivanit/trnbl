@@ -174,7 +174,7 @@ typing: clean
 .PHONY: test
 test: clean
 	@echo "running tests"
-	mkdir -p test/_temp
+	mkdir -p tests/_temp
 	$(PYTHON) -m pytest $(PYTEST_OPTIONS) $(TESTS_DIR)
 
 .PHONY: check

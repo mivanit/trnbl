@@ -1,5 +1,5 @@
 demos/local/**
-test/_temp/**
+tests/_temp/**
 tensorboard/
 old/**
 trnbl-logs/**

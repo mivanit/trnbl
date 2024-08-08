@@ -13,7 +13,7 @@ class TensorBoardLogger(TrainingLoggerBase):
 	def __init__(
 		self,
 		log_dir: str | Path,
-		train_config: dict,
+		train_config: dict | None = None,
 		name: str | None = None,
 		**kwargs,
 	) -> None:

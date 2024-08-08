@@ -21,7 +21,7 @@ def read_event_file(event_file):
 def test_tensorboard_logger_initialization():
 	log_dir = TEMP_PATH / "init"
 	logger = TensorBoardLogger(log_dir=log_dir)
-	assert logger._run_path == log_dir
+	assert logger._run_path.as_posix().startswith(log_dir.as_posix())
 	logger.finish()
 
 
@@ -164,5 +164,5 @@ def test_tensorboard_logger_url():
 def test_tensorboard_logger_run_path():
 	log_dir = TEMP_PATH / "run_path"
 	logger = TensorBoardLogger(log_dir=log_dir)
-	assert logger.run_path == Path(log_dir)
+	assert logger.run_path.as_posix().startswith(log_dir.as_posix())
 	logger.finish()

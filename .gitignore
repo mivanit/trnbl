@@ -8,6 +8,7 @@ frontend-mnist/**
 tests/_temp/**
 node_modules/
 .ruff_cache/
+.github/local/
 
 # default python .gitignore
 # ========================================

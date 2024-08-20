@@ -101,5 +101,8 @@ jobs:
       - name: tests
         run: make test RUN_GLOBAL=1 WARN_STRICT=1
 
+      - name: notebook tests
+        run: make test_notebooks RUN_GLOBAL=1 WARN_STRICT=1
+
       # - name: check typing
       #   run: make typing RUN_GLOBAL=1

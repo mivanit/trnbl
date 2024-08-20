@@ -14,6 +14,9 @@ TESTS_TEMP_DIR := tests/_temp
 # dev and lint requirements.txt files
 REQ_DEV := .github/dev-requirements.txt
 REQ_LINT := .github/lint-requirements.txt
+# notebook testing
+NOTEBOOKS_DIR := notebooks
+CONVERTED_NOTEBOOKS_TEMP_DIR := tests/_temp/notebooks
 
 # probably don't change these:
 # --------------------------------------------------
@@ -176,6 +179,16 @@ test: clean
 	@echo "running tests"
 	mkdir -p tests/_temp
 	$(PYTHON) -m pytest $(PYTEST_OPTIONS) $(TESTS_DIR)
+
+.PHONY: convert_notebooks
+convert_notebooks:
+	@echo "convert notebooks in $(NOTEBOOKS_DIR) using muutils.nbutils.convert_ipynb_to_script.py"
+	$(PYTHON) -m muutils.nbutils.convert_ipynb_to_script $(NOTEBOOKS_DIR) --output_dir $(CONVERTED_NOTEBOOKS_TEMP_DIR) --disable_plots
+
+.PHONY: test_notebooks
+test_notebooks: convert_notebooks
+	@echo "run tests on converted notebooks in $(CONVERTED_NOTEBOOKS_TEMP_DIR) using muutils.nbutils.run_notebook_tests.py"
+	$(PYTHON) -m muutils.nbutils.run_notebook_tests --notebooks-dir=$(NOTEBOOKS_DIR) --converted-notebooks-temp-dir=$(CONVERTED_NOTEBOOKS_TEMP_DIR)
 
 .PHONY: check
 check: clean check-format test

@@ -1,11 +1,11 @@
 demos/local/**
 tests/_temp/**
+notebooks/tests/_temp/**
 tensorboard/
 old/**
 trnbl-logs/**
 data/mnist/**
 frontend-mnist/**
-tests/_temp/**
 node_modules/
 .ruff_cache/
 .github/local/

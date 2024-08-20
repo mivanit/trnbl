@@ -414,7 +414,7 @@ class TrainingManager:
 			**self.training_status(),
 		}
 
-	def batch_update(self, samples: int | None, **kwargs):
+	def batch_update(self, samples: int | None, metrics: dict|None = None, **kwargs):
 		"""call this at the end of every batch. Pass `samples` or it will be inferred from the batch size, and any other metrics as kwargs
 
 		This function will:
@@ -422,13 +422,17 @@ class TrainingManager:
 		- run evals as needed (based on the intervals passed)
 		- log all metrics and training status
 		- save a checkpoint as needed (based on the checkpoint interval)
-
-
 		"""
 		# check init is finished
 		if not self.init_complete:
 			self.try_compute_counters()
 			self.check_is_initialized()
+
+		# process metrics and kwargs
+		if metrics is None:
+			metrics = dict()
+		
+		metrics.update(kwargs)
 
 		# update counters
 		self.batches += 1
@@ -438,13 +442,12 @@ class TrainingManager:
 			self.samples += self.batch_size
 
 		# run evals if needed
-		metrics: dict = dict()
 		for interval, eval_fn in self.evals:
 			if (self.batches % interval == 0) or (self.batches == self.batches_total):
 				metrics.update(eval_fn(self.model))
 
 		# log metrics & training status
-		self.logger.metrics({**kwargs, **metrics, **self.training_status()})
+		self.logger.metrics({**metrics, **self.training_status()})
 
 		# print metrics if needed
 

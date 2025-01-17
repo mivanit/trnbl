@@ -1,0 +1,1283 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="pdoc 15.0.1"/>
+    <title>trnbl.loggers.base API documentation</title>
+<link rel="stylesheet" href="../../resources/bootstrap-reboot.min.css"><link rel="stylesheet" href="../../resources/syntax-highlighting.css"><link rel="stylesheet" href="../../resources/theme.css"><link rel="stylesheet" href="../../resources/layout.css"><link rel="stylesheet" href="../../resources/content.css"><link rel="stylesheet" href="../../resources/custom.css"><script>
+    window.MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']]
+        }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+    /* Re-invoke MathJax when DOM content changes, for example during search. */
+    document.addEventListener("DOMContentLoaded", () => {
+        new MutationObserver(() => MathJax.typeset()).observe(
+            document.querySelector("main.pdoc").parentNode,
+            {childList: true}
+        );
+    })
+</script>
+<style>
+    mjx-container {
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+</style><style>
+    .pdoc .mermaid-pre {
+        border: none;
+        background: none;
+    }
+</style>
+<script type="module" defer>
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+
+    /* Re-invoke Mermaid when DOM content changes, for example during search. */
+    document.addEventListener("DOMContentLoaded", () => {
+        new MutationObserver(() => mermaid.run()).observe(
+            document.querySelector("main.pdoc").parentNode,
+            {childList: true}
+        );
+    })
+</script></head>
+<body>
+<div class="package-version">
+    docs for <a href="https://github.com/mivanit/trnbl">trnbl</a> v0.1.0<br>
+</div>
+    <nav class="pdoc">
+        <label id="navtoggle" for="togglestate" class="pdoc-button">
+            <img src="../../resources/svg/navtoggle.svg" alt="Toggle navigation"> 
+        </label>
+        <input id="togglestate" type="checkbox" aria-hidden="true" tabindex="-1">
+        <div>            <a class="pdoc-button module-list-button" href="../loggers.html">
+                <img src="../../resources/svg/box-arrow-in-left.svg" alt="Back to parent module"/>
+                &nbsp;trnbl.loggers</a>
+
+
+            <input type="search" placeholder="Search..." role="searchbox" aria-label="search"
+                   pattern=".+" required>
+
+
+
+            <h2>API Documentation</h2>
+                <ul class="memberlist">
+            <li>
+                    <a class="variable" href="#GPU_UTILS_AVAILABLE">GPU_UTILS_AVAILABLE</a>
+            </li>
+            <li>
+                    <a class="variable" href="#PSUTIL_AVAILABLE">PSUTIL_AVAILABLE</a>
+            </li>
+            <li>
+                    <a class="variable" href="#VOWELS">VOWELS</a>
+            </li>
+            <li>
+                    <a class="variable" href="#CONSONANTS">CONSONANTS</a>
+            </li>
+            <li>
+                    <a class="function" href="#rand_syllabic_string">rand_syllabic_string</a>
+            </li>
+            <li>
+                    <a class="class" href="#LoggerSpinner">LoggerSpinner</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#LoggerSpinner.__init__">LoggerSpinner</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#LoggerSpinner.logger">logger</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#LoggerSpinner.update_value">update_value</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#TrainingLoggerBase">TrainingLoggerBase</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#TrainingLoggerBase.debug">debug</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#TrainingLoggerBase.message">message</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#TrainingLoggerBase.warning">warning</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#TrainingLoggerBase.error">error</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#TrainingLoggerBase.metrics">metrics</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#TrainingLoggerBase.artifact">artifact</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#TrainingLoggerBase.url">url</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#TrainingLoggerBase.run_path">run_path</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#TrainingLoggerBase.flush">flush</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#TrainingLoggerBase.finish">finish</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#TrainingLoggerBase.get_mem_usage">get_mem_usage</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#TrainingLoggerBase.spinner_task">spinner_task</a>
+                        </li>
+                </ul>
+
+            </li>
+    </ul>
+
+
+
+        <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev" target="_blank">
+            built with <span class="visually-hidden">pdoc</span>
+            <img src="../../resources/svg/pdoc-logo.svg" alt="pdoc logo"/>
+        </a>
+</div>
+    </nav>
+    <main class="pdoc">
+            <section class="module-info">
+                        <a class="pdoc-button git-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py">View Source on GitHub</a>
+                    <h1 class="modulename">
+<a href="./../../trnbl.html">trnbl</a><wbr>.<a href="./../loggers.html">loggers</a><wbr>.base    </h1>
+
+                
+                        <input id="mod-base-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+
+                        <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="mod-base-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L0-L172" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+                <br/>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a>
+</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">muutils.spinner</span><span class="w"> </span><span class="kn">import</span> <span class="n">Spinner</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a>
+</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="c1"># gpu utils</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="n">GPU_UTILS_AVAILABLE</span><span class="p">:</span> <span class="nb">bool</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a><span class="k">try</span><span class="p">:</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a>	<span class="kn">import</span><span class="w"> </span><span class="nn">GPUtil</span>  <span class="c1"># type: ignore[import-untyped]</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a>
+</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a>	<span class="n">GPU_UTILS_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a><span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>	<span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;GPUtil not available: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>	<span class="n">GPU_UTILS_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>
+</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="c1"># psutil</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a><span class="n">PSUTIL_AVAILABLE</span><span class="p">:</span> <span class="nb">bool</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="k">try</span><span class="p">:</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a>	<span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>  <span class="c1"># type: ignore[import-untyped]</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a>
+</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a>	<span class="n">PSUTIL_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a><span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a>	<span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;psutil not available: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a>	<span class="n">PSUTIL_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a>
+</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a>
+</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a><span class="n">VOWELS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;aeiou&quot;</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a><span class="n">CONSONANTS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;bcdfghjklmnpqrstvwxyz&quot;</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a>
+</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a>
+</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a><span class="k">def</span><span class="w"> </span><span class="nf">rand_syllabic_string</span><span class="p">(</span><span class="n">length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">6</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a><span class="w">	</span><span class="sd">&quot;&quot;&quot;Generate a random string of alternating consonants and vowels to use as a unique identifier</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>
+</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a><span class="sd">	for a length of 2n, there are about 10^{2n} possible strings</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>
+</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a><span class="sd">	default is 6 characters, which gives 10^6 possible strings</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a><span class="sd">	&quot;&quot;&quot;</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>	<span class="n">string</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a>	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">):</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a>		<span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>			<span class="n">string</span> <span class="o">+=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">CONSONANTS</span><span class="p">)</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a>		<span class="k">else</span><span class="p">:</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>			<span class="n">string</span> <span class="o">+=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">VOWELS</span><span class="p">)</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>	<span class="k">return</span> <span class="n">string</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a>
+</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>
+</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a><span class="k">class</span><span class="w"> </span><span class="nc">LoggerSpinner</span><span class="p">(</span><span class="n">Spinner</span><span class="p">):</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a>	<span class="s2">&quot;see `Spinner` for parameters. catches `update_value` and passes it to the `LocalLogger`&quot;</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a>
+</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a>	<span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>		<span class="bp">self</span><span class="p">,</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a>		<span class="o">*</span><span class="n">args</span><span class="p">,</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a>		<span class="n">logger</span><span class="p">:</span> <span class="s2">&quot;TrainingLoggerBase&quot;</span><span class="p">,</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>		<span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>	<span class="p">):</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">:</span> <span class="s2">&quot;TrainingLoggerBase&quot;</span> <span class="o">=</span> <span class="n">logger</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>
+</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">update_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;update the value of the spinner and log it&quot;&quot;&quot;</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">message</span><span class="p">(</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>			<span class="n">message</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">,</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>			<span class="n">spinner_value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>			<span class="n">spinner_elapsed_time</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>		<span class="p">)</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">update_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>		<span class="c1"># the above should just be calling `self.current_value = value`</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>	<span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;LoggerSpinner&quot;</span><span class="p">:</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>		<span class="k">return</span> <span class="bp">self</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a>
+</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>	<span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>
+</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a><span class="k">class</span><span class="w"> </span><span class="nc">TrainingLoggerBase</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a><span class="w">	</span><span class="sd">&quot;&quot;&quot;Base class for training loggers&quot;&quot;&quot;</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>
+</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>	<span class="nd">@abstractmethod</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">debug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;log a debug message which will be saved, but not printed&quot;&quot;&quot;</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>		<span class="k">pass</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>
+</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>	<span class="nd">@abstractmethod</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;log a progress message, which will be printed to stdout&quot;&quot;&quot;</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>		<span class="k">pass</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;log a warning message, which will be printed to stderr&quot;&quot;&quot;</span>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;WARNING: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">__warning__</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;log an error message&quot;&quot;&quot;</span>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ERROR: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">__error__</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>	<span class="nd">@abstractmethod</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;Log a dictionary of metrics&quot;&quot;&quot;</span>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>		<span class="k">pass</span>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>	<span class="nd">@abstractmethod</span>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">artifact</span><span class="p">(</span>
+</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>		<span class="bp">self</span><span class="p">,</span>
+</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>		<span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>		<span class="nb">type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>		<span class="n">aliases</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>		<span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>	<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;log an artifact from a file&quot;&quot;&quot;</span>
+</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>		<span class="k">pass</span>
+</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>
+</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>	<span class="nd">@property</span>
+</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>	<span class="nd">@abstractmethod</span>
+</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;Get the URL for the current logging run&quot;&quot;&quot;</span>
+</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>		<span class="k">pass</span>
+</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>
+</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>	<span class="nd">@property</span>
+</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>	<span class="nd">@abstractmethod</span>
+</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">run_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
+</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;Get the path to the current logging run&quot;&quot;&quot;</span>
+</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a>		<span class="k">pass</span>
+</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>
+</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a>	<span class="nd">@abstractmethod</span>
+</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;Flush the logger&quot;&quot;&quot;</span>
+</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>		<span class="k">pass</span>
+</span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>
+</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a>	<span class="nd">@abstractmethod</span>
+</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">finish</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;Finish logging&quot;&quot;&quot;</span>
+</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>		<span class="k">pass</span>
+</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>
+</span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">get_mem_usage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a>		<span class="n">mem_usage</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a>
+</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a>		<span class="k">try</span><span class="p">:</span>
+</span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a>			<span class="c1"># CPU/Memory usage (if available)</span>
+</span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a>			<span class="k">if</span> <span class="n">PSUTIL_AVAILABLE</span><span class="p">:</span>
+</span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a>				<span class="n">cpu_percent</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_percent</span><span class="p">()</span>
+</span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a>				<span class="n">mem_usage</span><span class="p">[</span><span class="s2">&quot;cpu/percent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cpu_percent</span>
+</span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a>
+</span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a>				<span class="c1"># Memory usage</span>
+</span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a>				<span class="n">virtual_mem</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span>
+</span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a>				<span class="n">mem_usage</span><span class="p">[</span><span class="s2">&quot;ram/used&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">virtual_mem</span><span class="o">.</span><span class="n">used</span>
+</span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a>				<span class="n">mem_usage</span><span class="p">[</span><span class="s2">&quot;ram/percent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">virtual_mem</span><span class="o">.</span><span class="n">percent</span>
+</span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a>
+</span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a>			<span class="c1"># GPU information (if available)</span>
+</span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a>			<span class="k">if</span> <span class="n">GPU_UTILS_AVAILABLE</span><span class="p">:</span>
+</span><span id="L-156"><a href="#L-156"><span class="linenos">156</span></a>				<span class="n">gpus</span> <span class="o">=</span> <span class="n">GPUtil</span><span class="o">.</span><span class="n">getGPUs</span><span class="p">()</span>
+</span><span id="L-157"><a href="#L-157"><span class="linenos">157</span></a>				<span class="k">for</span> <span class="n">gpu</span> <span class="ow">in</span> <span class="n">gpus</span><span class="p">:</span>
+</span><span id="L-158"><a href="#L-158"><span class="linenos">158</span></a>					<span class="n">gpu_id</span> <span class="o">=</span> <span class="n">gpu</span><span class="o">.</span><span class="n">id</span>
+</span><span id="L-159"><a href="#L-159"><span class="linenos">159</span></a>					<span class="n">mem_usage</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;gpu:</span><span class="si">{</span><span class="n">gpu_id</span><span class="si">}</span><span class="s2">/load&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gpu</span><span class="o">.</span><span class="n">load</span>
+</span><span id="L-160"><a href="#L-160"><span class="linenos">160</span></a>					<span class="n">mem_usage</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;gpu:</span><span class="si">{</span><span class="n">gpu_id</span><span class="si">}</span><span class="s2">/memory_used&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gpu</span><span class="o">.</span><span class="n">memoryUsed</span>
+</span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a>					<span class="n">mem_usage</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;gpu:</span><span class="si">{</span><span class="n">gpu_id</span><span class="si">}</span><span class="s2">/temperature&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gpu</span><span class="o">.</span><span class="n">temperature</span>
+</span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a>		<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>			<span class="bp">self</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error getting memory usage: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a>
+</span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a>		<span class="k">return</span> <span class="n">mem_usage</span>
+</span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a>
+</span><span id="L-167"><a href="#L-167"><span class="linenos">167</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">spinner_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LoggerSpinner</span><span class="p">:</span>
+</span><span id="L-168"><a href="#L-168"><span class="linenos">168</span></a>		<span class="s2">&quot;Create a spinner task. kwargs are passed to `Spinner`.&quot;</span>
+</span><span id="L-169"><a href="#L-169"><span class="linenos">169</span></a>		<span class="k">return</span> <span class="n">LoggerSpinner</span><span class="p">(</span><span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="L-170"><a href="#L-170"><span class="linenos">170</span></a>
+</span><span id="L-171"><a href="#L-171"><span class="linenos">171</span></a>	<span class="c1"># def seq_task(self, **kwargs) -&gt; LoggerSpinner:</span>
+</span><span id="L-172"><a href="#L-172"><span class="linenos">172</span></a>	<span class="c1"># 	&quot;Create a sequential task with progress bar. kwargs are passed to `tqdm`.&quot;</span>
+</span><span id="L-173"><a href="#L-173"><span class="linenos">173</span></a>	<span class="c1"># 	return LoggerSpinner(message=message, logger=self, **kwargs)</span>
+</span></pre></div>
+
+
+                <br/>
+            </section>
+                <section id="GPU_UTILS_AVAILABLE">
+                    <div class="attr variable">
+            <span class="name">GPU_UTILS_AVAILABLE</span><span class="annotation">: bool</span>        =
+<span class="default_value">True</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GPU_UTILS_AVAILABLE"></a>
+    
+    
+
+                </section>
+                <section id="PSUTIL_AVAILABLE">
+                    <div class="attr variable">
+            <span class="name">PSUTIL_AVAILABLE</span><span class="annotation">: bool</span>        =
+<span class="default_value">True</span>
+
+        
+    </div>
+    <a class="headerlink" href="#PSUTIL_AVAILABLE"></a>
+    
+    
+
+                </section>
+                <section id="VOWELS">
+                    <div class="attr variable">
+            <span class="name">VOWELS</span><span class="annotation">: str</span>        =
+<span class="default_value">&#39;aeiou&#39;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#VOWELS"></a>
+    
+    
+
+                </section>
+                <section id="CONSONANTS">
+                    <div class="attr variable">
+            <span class="name">CONSONANTS</span><span class="annotation">: str</span>        =
+<span class="default_value">&#39;bcdfghjklmnpqrstvwxyz&#39;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#CONSONANTS"></a>
+    
+    
+
+                </section>
+                <section id="rand_syllabic_string">
+                            <input id="rand_syllabic_string-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">rand_syllabic_string</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">6</span></span><span class="return-annotation">) -> <span class="nb">str</span>:</span></span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="rand_syllabic_string-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L35-L48" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#rand_syllabic_string"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="rand_syllabic_string-36"><a href="#rand_syllabic_string-36"><span class="linenos">36</span></a><span class="k">def</span><span class="w"> </span><span class="nf">rand_syllabic_string</span><span class="p">(</span><span class="n">length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">6</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="rand_syllabic_string-37"><a href="#rand_syllabic_string-37"><span class="linenos">37</span></a><span class="w">	</span><span class="sd">&quot;&quot;&quot;Generate a random string of alternating consonants and vowels to use as a unique identifier</span>
+</span><span id="rand_syllabic_string-38"><a href="#rand_syllabic_string-38"><span class="linenos">38</span></a>
+</span><span id="rand_syllabic_string-39"><a href="#rand_syllabic_string-39"><span class="linenos">39</span></a><span class="sd">	for a length of 2n, there are about 10^{2n} possible strings</span>
+</span><span id="rand_syllabic_string-40"><a href="#rand_syllabic_string-40"><span class="linenos">40</span></a>
+</span><span id="rand_syllabic_string-41"><a href="#rand_syllabic_string-41"><span class="linenos">41</span></a><span class="sd">	default is 6 characters, which gives 10^6 possible strings</span>
+</span><span id="rand_syllabic_string-42"><a href="#rand_syllabic_string-42"><span class="linenos">42</span></a><span class="sd">	&quot;&quot;&quot;</span>
+</span><span id="rand_syllabic_string-43"><a href="#rand_syllabic_string-43"><span class="linenos">43</span></a>	<span class="n">string</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+</span><span id="rand_syllabic_string-44"><a href="#rand_syllabic_string-44"><span class="linenos">44</span></a>	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">):</span>
+</span><span id="rand_syllabic_string-45"><a href="#rand_syllabic_string-45"><span class="linenos">45</span></a>		<span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="rand_syllabic_string-46"><a href="#rand_syllabic_string-46"><span class="linenos">46</span></a>			<span class="n">string</span> <span class="o">+=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">CONSONANTS</span><span class="p">)</span>
+</span><span id="rand_syllabic_string-47"><a href="#rand_syllabic_string-47"><span class="linenos">47</span></a>		<span class="k">else</span><span class="p">:</span>
+</span><span id="rand_syllabic_string-48"><a href="#rand_syllabic_string-48"><span class="linenos">48</span></a>			<span class="n">string</span> <span class="o">+=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">VOWELS</span><span class="p">)</span>
+</span><span id="rand_syllabic_string-49"><a href="#rand_syllabic_string-49"><span class="linenos">49</span></a>	<span class="k">return</span> <span class="n">string</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Generate a random string of alternating consonants and vowels to use as a unique identifier</p>
+
+<p>for a length of 2n, there are about 10^{2n} possible strings</p>
+
+<p>default is 6 characters, which gives 10^6 possible strings</p>
+</div>
+
+
+                </section>
+                <section id="LoggerSpinner">
+                            <input id="LoggerSpinner-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">LoggerSpinner</span><wbr>(<span class="base">muutils.spinner.Spinner</span>):
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="LoggerSpinner-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L51-L78" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#LoggerSpinner"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LoggerSpinner-52"><a href="#LoggerSpinner-52"><span class="linenos">52</span></a><span class="k">class</span><span class="w"> </span><span class="nc">LoggerSpinner</span><span class="p">(</span><span class="n">Spinner</span><span class="p">):</span>
+</span><span id="LoggerSpinner-53"><a href="#LoggerSpinner-53"><span class="linenos">53</span></a>	<span class="s2">&quot;see `Spinner` for parameters. catches `update_value` and passes it to the `LocalLogger`&quot;</span>
+</span><span id="LoggerSpinner-54"><a href="#LoggerSpinner-54"><span class="linenos">54</span></a>
+</span><span id="LoggerSpinner-55"><a href="#LoggerSpinner-55"><span class="linenos">55</span></a>	<span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="LoggerSpinner-56"><a href="#LoggerSpinner-56"><span class="linenos">56</span></a>		<span class="bp">self</span><span class="p">,</span>
+</span><span id="LoggerSpinner-57"><a href="#LoggerSpinner-57"><span class="linenos">57</span></a>		<span class="o">*</span><span class="n">args</span><span class="p">,</span>
+</span><span id="LoggerSpinner-58"><a href="#LoggerSpinner-58"><span class="linenos">58</span></a>		<span class="n">logger</span><span class="p">:</span> <span class="s2">&quot;TrainingLoggerBase&quot;</span><span class="p">,</span>
+</span><span id="LoggerSpinner-59"><a href="#LoggerSpinner-59"><span class="linenos">59</span></a>		<span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+</span><span id="LoggerSpinner-60"><a href="#LoggerSpinner-60"><span class="linenos">60</span></a>	<span class="p">):</span>
+</span><span id="LoggerSpinner-61"><a href="#LoggerSpinner-61"><span class="linenos">61</span></a>		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="LoggerSpinner-62"><a href="#LoggerSpinner-62"><span class="linenos">62</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">:</span> <span class="s2">&quot;TrainingLoggerBase&quot;</span> <span class="o">=</span> <span class="n">logger</span>
+</span><span id="LoggerSpinner-63"><a href="#LoggerSpinner-63"><span class="linenos">63</span></a>
+</span><span id="LoggerSpinner-64"><a href="#LoggerSpinner-64"><span class="linenos">64</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">update_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="LoggerSpinner-65"><a href="#LoggerSpinner-65"><span class="linenos">65</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;update the value of the spinner and log it&quot;&quot;&quot;</span>
+</span><span id="LoggerSpinner-66"><a href="#LoggerSpinner-66"><span class="linenos">66</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">message</span><span class="p">(</span>
+</span><span id="LoggerSpinner-67"><a href="#LoggerSpinner-67"><span class="linenos">67</span></a>			<span class="n">message</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">,</span>
+</span><span id="LoggerSpinner-68"><a href="#LoggerSpinner-68"><span class="linenos">68</span></a>			<span class="n">spinner_value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+</span><span id="LoggerSpinner-69"><a href="#LoggerSpinner-69"><span class="linenos">69</span></a>			<span class="n">spinner_elapsed_time</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span>
+</span><span id="LoggerSpinner-70"><a href="#LoggerSpinner-70"><span class="linenos">70</span></a>		<span class="p">)</span>
+</span><span id="LoggerSpinner-71"><a href="#LoggerSpinner-71"><span class="linenos">71</span></a>		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">update_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span id="LoggerSpinner-72"><a href="#LoggerSpinner-72"><span class="linenos">72</span></a>		<span class="c1"># the above should just be calling `self.current_value = value`</span>
+</span><span id="LoggerSpinner-73"><a href="#LoggerSpinner-73"><span class="linenos">73</span></a>
+</span><span id="LoggerSpinner-74"><a href="#LoggerSpinner-74"><span class="linenos">74</span></a>	<span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;LoggerSpinner&quot;</span><span class="p">:</span>
+</span><span id="LoggerSpinner-75"><a href="#LoggerSpinner-75"><span class="linenos">75</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span><span id="LoggerSpinner-76"><a href="#LoggerSpinner-76"><span class="linenos">76</span></a>		<span class="k">return</span> <span class="bp">self</span>
+</span><span id="LoggerSpinner-77"><a href="#LoggerSpinner-77"><span class="linenos">77</span></a>
+</span><span id="LoggerSpinner-78"><a href="#LoggerSpinner-78"><span class="linenos">78</span></a>	<span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="LoggerSpinner-79"><a href="#LoggerSpinner-79"><span class="linenos">79</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>see <code>Spinner</code> for parameters. catches <code><a href="#LoggerSpinner.update_value">update_value</a></code> and passes it to the <code>LocalLogger</code></p>
+</div>
+
+
+                            <div id="LoggerSpinner.__init__" class="classattr">
+                                        <input id="LoggerSpinner.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="name">LoggerSpinner</span><span class="signature pdoc-code condensed">(<span class="param"><span class="o">*</span><span class="n">args</span>, </span><span class="param"><span class="n">logger</span><span class="p">:</span> <span class="n"><a href="#TrainingLoggerBase">TrainingLoggerBase</a></span>, </span><span class="param"><span class="o">**</span><span class="n">kwargs</span></span>)</span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="LoggerSpinner.__init__-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L54-L61" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#LoggerSpinner.__init__"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LoggerSpinner.__init__-55"><a href="#LoggerSpinner.__init__-55"><span class="linenos">55</span></a>	<span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="LoggerSpinner.__init__-56"><a href="#LoggerSpinner.__init__-56"><span class="linenos">56</span></a>		<span class="bp">self</span><span class="p">,</span>
+</span><span id="LoggerSpinner.__init__-57"><a href="#LoggerSpinner.__init__-57"><span class="linenos">57</span></a>		<span class="o">*</span><span class="n">args</span><span class="p">,</span>
+</span><span id="LoggerSpinner.__init__-58"><a href="#LoggerSpinner.__init__-58"><span class="linenos">58</span></a>		<span class="n">logger</span><span class="p">:</span> <span class="s2">&quot;TrainingLoggerBase&quot;</span><span class="p">,</span>
+</span><span id="LoggerSpinner.__init__-59"><a href="#LoggerSpinner.__init__-59"><span class="linenos">59</span></a>		<span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+</span><span id="LoggerSpinner.__init__-60"><a href="#LoggerSpinner.__init__-60"><span class="linenos">60</span></a>	<span class="p">):</span>
+</span><span id="LoggerSpinner.__init__-61"><a href="#LoggerSpinner.__init__-61"><span class="linenos">61</span></a>		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="LoggerSpinner.__init__-62"><a href="#LoggerSpinner.__init__-62"><span class="linenos">62</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">:</span> <span class="s2">&quot;TrainingLoggerBase&quot;</span> <span class="o">=</span> <span class="n">logger</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="LoggerSpinner.logger" class="classattr">
+                                <div class="attr variable">
+            <span class="name">logger</span><span class="annotation">: <a href="#TrainingLoggerBase">TrainingLoggerBase</a></span>
+
+        
+    </div>
+    <a class="headerlink" href="#LoggerSpinner.logger"></a>
+    
+    
+
+                            </div>
+                            <div id="LoggerSpinner.update_value" class="classattr">
+                                        <input id="LoggerSpinner.update_value-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">update_value</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">value</span><span class="p">:</span> <span class="n">Any</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="LoggerSpinner.update_value-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L63-L71" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#LoggerSpinner.update_value"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LoggerSpinner.update_value-64"><a href="#LoggerSpinner.update_value-64"><span class="linenos">64</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">update_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="LoggerSpinner.update_value-65"><a href="#LoggerSpinner.update_value-65"><span class="linenos">65</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;update the value of the spinner and log it&quot;&quot;&quot;</span>
+</span><span id="LoggerSpinner.update_value-66"><a href="#LoggerSpinner.update_value-66"><span class="linenos">66</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">message</span><span class="p">(</span>
+</span><span id="LoggerSpinner.update_value-67"><a href="#LoggerSpinner.update_value-67"><span class="linenos">67</span></a>			<span class="n">message</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">,</span>
+</span><span id="LoggerSpinner.update_value-68"><a href="#LoggerSpinner.update_value-68"><span class="linenos">68</span></a>			<span class="n">spinner_value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+</span><span id="LoggerSpinner.update_value-69"><a href="#LoggerSpinner.update_value-69"><span class="linenos">69</span></a>			<span class="n">spinner_elapsed_time</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span>
+</span><span id="LoggerSpinner.update_value-70"><a href="#LoggerSpinner.update_value-70"><span class="linenos">70</span></a>		<span class="p">)</span>
+</span><span id="LoggerSpinner.update_value-71"><a href="#LoggerSpinner.update_value-71"><span class="linenos">71</span></a>		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">update_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span id="LoggerSpinner.update_value-72"><a href="#LoggerSpinner.update_value-72"><span class="linenos">72</span></a>		<span class="c1"># the above should just be calling `self.current_value = value`</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>update the value of the spinner and log it</p>
+</div>
+
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt>muutils.spinner.Spinner</dt>
+                                <dd id="LoggerSpinner.config" class="variable">config</dd>
+                <dd id="LoggerSpinner.format_string_when_updated" class="variable">format_string_when_updated</dd>
+                <dd id="LoggerSpinner.update_interval" class="variable">update_interval</dd>
+                <dd id="LoggerSpinner.message" class="variable">message</dd>
+                <dd id="LoggerSpinner.current_value" class="variable">current_value</dd>
+                <dd id="LoggerSpinner.format_string" class="variable">format_string</dd>
+                <dd id="LoggerSpinner.output_stream" class="variable">output_stream</dd>
+                <dd id="LoggerSpinner.start_time" class="variable">start_time</dd>
+                <dd id="LoggerSpinner.stop_spinner" class="variable">stop_spinner</dd>
+                <dd id="LoggerSpinner.spinner_thread" class="variable">spinner_thread</dd>
+                <dd id="LoggerSpinner.value_changed" class="variable">value_changed</dd>
+                <dd id="LoggerSpinner.term_width" class="variable">term_width</dd>
+                <dd id="LoggerSpinner.state" class="variable">state</dd>
+                <dd id="LoggerSpinner.spin" class="function">spin</dd>
+                <dd id="LoggerSpinner.start" class="function">start</dd>
+                <dd id="LoggerSpinner.stop" class="function">stop</dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="TrainingLoggerBase">
+                            <input id="TrainingLoggerBase-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">TrainingLoggerBase</span><wbr>(<span class="base">abc.ABC</span>):
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="TrainingLoggerBase-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L81-L173" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#TrainingLoggerBase"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="TrainingLoggerBase-82"><a href="#TrainingLoggerBase-82"><span class="linenos"> 82</span></a><span class="k">class</span><span class="w"> </span><span class="nc">TrainingLoggerBase</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+</span><span id="TrainingLoggerBase-83"><a href="#TrainingLoggerBase-83"><span class="linenos"> 83</span></a><span class="w">	</span><span class="sd">&quot;&quot;&quot;Base class for training loggers&quot;&quot;&quot;</span>
+</span><span id="TrainingLoggerBase-84"><a href="#TrainingLoggerBase-84"><span class="linenos"> 84</span></a>
+</span><span id="TrainingLoggerBase-85"><a href="#TrainingLoggerBase-85"><span class="linenos"> 85</span></a>	<span class="nd">@abstractmethod</span>
+</span><span id="TrainingLoggerBase-86"><a href="#TrainingLoggerBase-86"><span class="linenos"> 86</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">debug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase-87"><a href="#TrainingLoggerBase-87"><span class="linenos"> 87</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;log a debug message which will be saved, but not printed&quot;&quot;&quot;</span>
+</span><span id="TrainingLoggerBase-88"><a href="#TrainingLoggerBase-88"><span class="linenos"> 88</span></a>		<span class="k">pass</span>
+</span><span id="TrainingLoggerBase-89"><a href="#TrainingLoggerBase-89"><span class="linenos"> 89</span></a>
+</span><span id="TrainingLoggerBase-90"><a href="#TrainingLoggerBase-90"><span class="linenos"> 90</span></a>	<span class="nd">@abstractmethod</span>
+</span><span id="TrainingLoggerBase-91"><a href="#TrainingLoggerBase-91"><span class="linenos"> 91</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase-92"><a href="#TrainingLoggerBase-92"><span class="linenos"> 92</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;log a progress message, which will be printed to stdout&quot;&quot;&quot;</span>
+</span><span id="TrainingLoggerBase-93"><a href="#TrainingLoggerBase-93"><span class="linenos"> 93</span></a>		<span class="k">pass</span>
+</span><span id="TrainingLoggerBase-94"><a href="#TrainingLoggerBase-94"><span class="linenos"> 94</span></a>
+</span><span id="TrainingLoggerBase-95"><a href="#TrainingLoggerBase-95"><span class="linenos"> 95</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase-96"><a href="#TrainingLoggerBase-96"><span class="linenos"> 96</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;log a warning message, which will be printed to stderr&quot;&quot;&quot;</span>
+</span><span id="TrainingLoggerBase-97"><a href="#TrainingLoggerBase-97"><span class="linenos"> 97</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;WARNING: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">__warning__</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="TrainingLoggerBase-98"><a href="#TrainingLoggerBase-98"><span class="linenos"> 98</span></a>
+</span><span id="TrainingLoggerBase-99"><a href="#TrainingLoggerBase-99"><span class="linenos"> 99</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase-100"><a href="#TrainingLoggerBase-100"><span class="linenos">100</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;log an error message&quot;&quot;&quot;</span>
+</span><span id="TrainingLoggerBase-101"><a href="#TrainingLoggerBase-101"><span class="linenos">101</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ERROR: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">__error__</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="TrainingLoggerBase-102"><a href="#TrainingLoggerBase-102"><span class="linenos">102</span></a>
+</span><span id="TrainingLoggerBase-103"><a href="#TrainingLoggerBase-103"><span class="linenos">103</span></a>	<span class="nd">@abstractmethod</span>
+</span><span id="TrainingLoggerBase-104"><a href="#TrainingLoggerBase-104"><span class="linenos">104</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase-105"><a href="#TrainingLoggerBase-105"><span class="linenos">105</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;Log a dictionary of metrics&quot;&quot;&quot;</span>
+</span><span id="TrainingLoggerBase-106"><a href="#TrainingLoggerBase-106"><span class="linenos">106</span></a>		<span class="k">pass</span>
+</span><span id="TrainingLoggerBase-107"><a href="#TrainingLoggerBase-107"><span class="linenos">107</span></a>
+</span><span id="TrainingLoggerBase-108"><a href="#TrainingLoggerBase-108"><span class="linenos">108</span></a>	<span class="nd">@abstractmethod</span>
+</span><span id="TrainingLoggerBase-109"><a href="#TrainingLoggerBase-109"><span class="linenos">109</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">artifact</span><span class="p">(</span>
+</span><span id="TrainingLoggerBase-110"><a href="#TrainingLoggerBase-110"><span class="linenos">110</span></a>		<span class="bp">self</span><span class="p">,</span>
+</span><span id="TrainingLoggerBase-111"><a href="#TrainingLoggerBase-111"><span class="linenos">111</span></a>		<span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+</span><span id="TrainingLoggerBase-112"><a href="#TrainingLoggerBase-112"><span class="linenos">112</span></a>		<span class="nb">type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="TrainingLoggerBase-113"><a href="#TrainingLoggerBase-113"><span class="linenos">113</span></a>		<span class="n">aliases</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="TrainingLoggerBase-114"><a href="#TrainingLoggerBase-114"><span class="linenos">114</span></a>		<span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="TrainingLoggerBase-115"><a href="#TrainingLoggerBase-115"><span class="linenos">115</span></a>	<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase-116"><a href="#TrainingLoggerBase-116"><span class="linenos">116</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;log an artifact from a file&quot;&quot;&quot;</span>
+</span><span id="TrainingLoggerBase-117"><a href="#TrainingLoggerBase-117"><span class="linenos">117</span></a>		<span class="k">pass</span>
+</span><span id="TrainingLoggerBase-118"><a href="#TrainingLoggerBase-118"><span class="linenos">118</span></a>
+</span><span id="TrainingLoggerBase-119"><a href="#TrainingLoggerBase-119"><span class="linenos">119</span></a>	<span class="nd">@property</span>
+</span><span id="TrainingLoggerBase-120"><a href="#TrainingLoggerBase-120"><span class="linenos">120</span></a>	<span class="nd">@abstractmethod</span>
+</span><span id="TrainingLoggerBase-121"><a href="#TrainingLoggerBase-121"><span class="linenos">121</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+</span><span id="TrainingLoggerBase-122"><a href="#TrainingLoggerBase-122"><span class="linenos">122</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;Get the URL for the current logging run&quot;&quot;&quot;</span>
+</span><span id="TrainingLoggerBase-123"><a href="#TrainingLoggerBase-123"><span class="linenos">123</span></a>		<span class="k">pass</span>
+</span><span id="TrainingLoggerBase-124"><a href="#TrainingLoggerBase-124"><span class="linenos">124</span></a>
+</span><span id="TrainingLoggerBase-125"><a href="#TrainingLoggerBase-125"><span class="linenos">125</span></a>	<span class="nd">@property</span>
+</span><span id="TrainingLoggerBase-126"><a href="#TrainingLoggerBase-126"><span class="linenos">126</span></a>	<span class="nd">@abstractmethod</span>
+</span><span id="TrainingLoggerBase-127"><a href="#TrainingLoggerBase-127"><span class="linenos">127</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">run_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
+</span><span id="TrainingLoggerBase-128"><a href="#TrainingLoggerBase-128"><span class="linenos">128</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;Get the path to the current logging run&quot;&quot;&quot;</span>
+</span><span id="TrainingLoggerBase-129"><a href="#TrainingLoggerBase-129"><span class="linenos">129</span></a>		<span class="k">pass</span>
+</span><span id="TrainingLoggerBase-130"><a href="#TrainingLoggerBase-130"><span class="linenos">130</span></a>
+</span><span id="TrainingLoggerBase-131"><a href="#TrainingLoggerBase-131"><span class="linenos">131</span></a>	<span class="nd">@abstractmethod</span>
+</span><span id="TrainingLoggerBase-132"><a href="#TrainingLoggerBase-132"><span class="linenos">132</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase-133"><a href="#TrainingLoggerBase-133"><span class="linenos">133</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;Flush the logger&quot;&quot;&quot;</span>
+</span><span id="TrainingLoggerBase-134"><a href="#TrainingLoggerBase-134"><span class="linenos">134</span></a>		<span class="k">pass</span>
+</span><span id="TrainingLoggerBase-135"><a href="#TrainingLoggerBase-135"><span class="linenos">135</span></a>
+</span><span id="TrainingLoggerBase-136"><a href="#TrainingLoggerBase-136"><span class="linenos">136</span></a>	<span class="nd">@abstractmethod</span>
+</span><span id="TrainingLoggerBase-137"><a href="#TrainingLoggerBase-137"><span class="linenos">137</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">finish</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase-138"><a href="#TrainingLoggerBase-138"><span class="linenos">138</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;Finish logging&quot;&quot;&quot;</span>
+</span><span id="TrainingLoggerBase-139"><a href="#TrainingLoggerBase-139"><span class="linenos">139</span></a>		<span class="k">pass</span>
+</span><span id="TrainingLoggerBase-140"><a href="#TrainingLoggerBase-140"><span class="linenos">140</span></a>
+</span><span id="TrainingLoggerBase-141"><a href="#TrainingLoggerBase-141"><span class="linenos">141</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">get_mem_usage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase-142"><a href="#TrainingLoggerBase-142"><span class="linenos">142</span></a>		<span class="n">mem_usage</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="TrainingLoggerBase-143"><a href="#TrainingLoggerBase-143"><span class="linenos">143</span></a>
+</span><span id="TrainingLoggerBase-144"><a href="#TrainingLoggerBase-144"><span class="linenos">144</span></a>		<span class="k">try</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase-145"><a href="#TrainingLoggerBase-145"><span class="linenos">145</span></a>			<span class="c1"># CPU/Memory usage (if available)</span>
+</span><span id="TrainingLoggerBase-146"><a href="#TrainingLoggerBase-146"><span class="linenos">146</span></a>			<span class="k">if</span> <span class="n">PSUTIL_AVAILABLE</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase-147"><a href="#TrainingLoggerBase-147"><span class="linenos">147</span></a>				<span class="n">cpu_percent</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_percent</span><span class="p">()</span>
+</span><span id="TrainingLoggerBase-148"><a href="#TrainingLoggerBase-148"><span class="linenos">148</span></a>				<span class="n">mem_usage</span><span class="p">[</span><span class="s2">&quot;cpu/percent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cpu_percent</span>
+</span><span id="TrainingLoggerBase-149"><a href="#TrainingLoggerBase-149"><span class="linenos">149</span></a>
+</span><span id="TrainingLoggerBase-150"><a href="#TrainingLoggerBase-150"><span class="linenos">150</span></a>				<span class="c1"># Memory usage</span>
+</span><span id="TrainingLoggerBase-151"><a href="#TrainingLoggerBase-151"><span class="linenos">151</span></a>				<span class="n">virtual_mem</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span>
+</span><span id="TrainingLoggerBase-152"><a href="#TrainingLoggerBase-152"><span class="linenos">152</span></a>				<span class="n">mem_usage</span><span class="p">[</span><span class="s2">&quot;ram/used&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">virtual_mem</span><span class="o">.</span><span class="n">used</span>
+</span><span id="TrainingLoggerBase-153"><a href="#TrainingLoggerBase-153"><span class="linenos">153</span></a>				<span class="n">mem_usage</span><span class="p">[</span><span class="s2">&quot;ram/percent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">virtual_mem</span><span class="o">.</span><span class="n">percent</span>
+</span><span id="TrainingLoggerBase-154"><a href="#TrainingLoggerBase-154"><span class="linenos">154</span></a>
+</span><span id="TrainingLoggerBase-155"><a href="#TrainingLoggerBase-155"><span class="linenos">155</span></a>			<span class="c1"># GPU information (if available)</span>
+</span><span id="TrainingLoggerBase-156"><a href="#TrainingLoggerBase-156"><span class="linenos">156</span></a>			<span class="k">if</span> <span class="n">GPU_UTILS_AVAILABLE</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase-157"><a href="#TrainingLoggerBase-157"><span class="linenos">157</span></a>				<span class="n">gpus</span> <span class="o">=</span> <span class="n">GPUtil</span><span class="o">.</span><span class="n">getGPUs</span><span class="p">()</span>
+</span><span id="TrainingLoggerBase-158"><a href="#TrainingLoggerBase-158"><span class="linenos">158</span></a>				<span class="k">for</span> <span class="n">gpu</span> <span class="ow">in</span> <span class="n">gpus</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase-159"><a href="#TrainingLoggerBase-159"><span class="linenos">159</span></a>					<span class="n">gpu_id</span> <span class="o">=</span> <span class="n">gpu</span><span class="o">.</span><span class="n">id</span>
+</span><span id="TrainingLoggerBase-160"><a href="#TrainingLoggerBase-160"><span class="linenos">160</span></a>					<span class="n">mem_usage</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;gpu:</span><span class="si">{</span><span class="n">gpu_id</span><span class="si">}</span><span class="s2">/load&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gpu</span><span class="o">.</span><span class="n">load</span>
+</span><span id="TrainingLoggerBase-161"><a href="#TrainingLoggerBase-161"><span class="linenos">161</span></a>					<span class="n">mem_usage</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;gpu:</span><span class="si">{</span><span class="n">gpu_id</span><span class="si">}</span><span class="s2">/memory_used&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gpu</span><span class="o">.</span><span class="n">memoryUsed</span>
+</span><span id="TrainingLoggerBase-162"><a href="#TrainingLoggerBase-162"><span class="linenos">162</span></a>					<span class="n">mem_usage</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;gpu:</span><span class="si">{</span><span class="n">gpu_id</span><span class="si">}</span><span class="s2">/temperature&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gpu</span><span class="o">.</span><span class="n">temperature</span>
+</span><span id="TrainingLoggerBase-163"><a href="#TrainingLoggerBase-163"><span class="linenos">163</span></a>		<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase-164"><a href="#TrainingLoggerBase-164"><span class="linenos">164</span></a>			<span class="bp">self</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error getting memory usage: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="TrainingLoggerBase-165"><a href="#TrainingLoggerBase-165"><span class="linenos">165</span></a>
+</span><span id="TrainingLoggerBase-166"><a href="#TrainingLoggerBase-166"><span class="linenos">166</span></a>		<span class="k">return</span> <span class="n">mem_usage</span>
+</span><span id="TrainingLoggerBase-167"><a href="#TrainingLoggerBase-167"><span class="linenos">167</span></a>
+</span><span id="TrainingLoggerBase-168"><a href="#TrainingLoggerBase-168"><span class="linenos">168</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">spinner_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LoggerSpinner</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase-169"><a href="#TrainingLoggerBase-169"><span class="linenos">169</span></a>		<span class="s2">&quot;Create a spinner task. kwargs are passed to `Spinner`.&quot;</span>
+</span><span id="TrainingLoggerBase-170"><a href="#TrainingLoggerBase-170"><span class="linenos">170</span></a>		<span class="k">return</span> <span class="n">LoggerSpinner</span><span class="p">(</span><span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="TrainingLoggerBase-171"><a href="#TrainingLoggerBase-171"><span class="linenos">171</span></a>
+</span><span id="TrainingLoggerBase-172"><a href="#TrainingLoggerBase-172"><span class="linenos">172</span></a>	<span class="c1"># def seq_task(self, **kwargs) -&gt; LoggerSpinner:</span>
+</span><span id="TrainingLoggerBase-173"><a href="#TrainingLoggerBase-173"><span class="linenos">173</span></a>	<span class="c1"># 	&quot;Create a sequential task with progress bar. kwargs are passed to `tqdm`.&quot;</span>
+</span><span id="TrainingLoggerBase-174"><a href="#TrainingLoggerBase-174"><span class="linenos">174</span></a>	<span class="c1"># 	return LoggerSpinner(message=message, logger=self, **kwargs)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Base class for training loggers</p>
+</div>
+
+
+                            <div id="TrainingLoggerBase.debug" class="classattr">
+                                        <input id="TrainingLoggerBase.debug-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@abstractmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">debug</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">message</span><span class="p">:</span> <span class="nb">str</span>, </span><span class="param"><span class="o">**</span><span class="n">kwargs</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="TrainingLoggerBase.debug-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L84-L87" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#TrainingLoggerBase.debug"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="TrainingLoggerBase.debug-85"><a href="#TrainingLoggerBase.debug-85"><span class="linenos">85</span></a>	<span class="nd">@abstractmethod</span>
+</span><span id="TrainingLoggerBase.debug-86"><a href="#TrainingLoggerBase.debug-86"><span class="linenos">86</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">debug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase.debug-87"><a href="#TrainingLoggerBase.debug-87"><span class="linenos">87</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;log a debug message which will be saved, but not printed&quot;&quot;&quot;</span>
+</span><span id="TrainingLoggerBase.debug-88"><a href="#TrainingLoggerBase.debug-88"><span class="linenos">88</span></a>		<span class="k">pass</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>log a debug message which will be saved, but not printed</p>
+</div>
+
+
+                            </div>
+                            <div id="TrainingLoggerBase.message" class="classattr">
+                                        <input id="TrainingLoggerBase.message-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@abstractmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">message</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">message</span><span class="p">:</span> <span class="nb">str</span>, </span><span class="param"><span class="o">**</span><span class="n">kwargs</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="TrainingLoggerBase.message-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L89-L92" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#TrainingLoggerBase.message"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="TrainingLoggerBase.message-90"><a href="#TrainingLoggerBase.message-90"><span class="linenos">90</span></a>	<span class="nd">@abstractmethod</span>
+</span><span id="TrainingLoggerBase.message-91"><a href="#TrainingLoggerBase.message-91"><span class="linenos">91</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase.message-92"><a href="#TrainingLoggerBase.message-92"><span class="linenos">92</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;log a progress message, which will be printed to stdout&quot;&quot;&quot;</span>
+</span><span id="TrainingLoggerBase.message-93"><a href="#TrainingLoggerBase.message-93"><span class="linenos">93</span></a>		<span class="k">pass</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>log a progress message, which will be printed to stdout</p>
+</div>
+
+
+                            </div>
+                            <div id="TrainingLoggerBase.warning" class="classattr">
+                                        <input id="TrainingLoggerBase.warning-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">warning</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">message</span><span class="p">:</span> <span class="nb">str</span>, </span><span class="param"><span class="o">**</span><span class="n">kwargs</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="TrainingLoggerBase.warning-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L94-L96" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#TrainingLoggerBase.warning"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="TrainingLoggerBase.warning-95"><a href="#TrainingLoggerBase.warning-95"><span class="linenos">95</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase.warning-96"><a href="#TrainingLoggerBase.warning-96"><span class="linenos">96</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;log a warning message, which will be printed to stderr&quot;&quot;&quot;</span>
+</span><span id="TrainingLoggerBase.warning-97"><a href="#TrainingLoggerBase.warning-97"><span class="linenos">97</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;WARNING: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">__warning__</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>log a warning message, which will be printed to stderr</p>
+</div>
+
+
+                            </div>
+                            <div id="TrainingLoggerBase.error" class="classattr">
+                                        <input id="TrainingLoggerBase.error-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">error</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">message</span><span class="p">:</span> <span class="nb">str</span>, </span><span class="param"><span class="o">**</span><span class="n">kwargs</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="TrainingLoggerBase.error-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L98-L100" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#TrainingLoggerBase.error"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="TrainingLoggerBase.error-99"><a href="#TrainingLoggerBase.error-99"><span class="linenos"> 99</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase.error-100"><a href="#TrainingLoggerBase.error-100"><span class="linenos">100</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;log an error message&quot;&quot;&quot;</span>
+</span><span id="TrainingLoggerBase.error-101"><a href="#TrainingLoggerBase.error-101"><span class="linenos">101</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ERROR: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">__error__</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>log an error message</p>
+</div>
+
+
+                            </div>
+                            <div id="TrainingLoggerBase.metrics" class="classattr">
+                                        <input id="TrainingLoggerBase.metrics-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@abstractmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">metrics</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="TrainingLoggerBase.metrics-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L102-L105" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#TrainingLoggerBase.metrics"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="TrainingLoggerBase.metrics-103"><a href="#TrainingLoggerBase.metrics-103"><span class="linenos">103</span></a>	<span class="nd">@abstractmethod</span>
+</span><span id="TrainingLoggerBase.metrics-104"><a href="#TrainingLoggerBase.metrics-104"><span class="linenos">104</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase.metrics-105"><a href="#TrainingLoggerBase.metrics-105"><span class="linenos">105</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;Log a dictionary of metrics&quot;&quot;&quot;</span>
+</span><span id="TrainingLoggerBase.metrics-106"><a href="#TrainingLoggerBase.metrics-106"><span class="linenos">106</span></a>		<span class="k">pass</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Log a dictionary of metrics</p>
+</div>
+
+
+                            </div>
+                            <div id="TrainingLoggerBase.artifact" class="classattr">
+                                        <input id="TrainingLoggerBase.artifact-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@abstractmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">artifact</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span>,</span><span class="param">	<span class="nb">type</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">aliases</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="TrainingLoggerBase.artifact-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L107-L116" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#TrainingLoggerBase.artifact"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="TrainingLoggerBase.artifact-108"><a href="#TrainingLoggerBase.artifact-108"><span class="linenos">108</span></a>	<span class="nd">@abstractmethod</span>
+</span><span id="TrainingLoggerBase.artifact-109"><a href="#TrainingLoggerBase.artifact-109"><span class="linenos">109</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">artifact</span><span class="p">(</span>
+</span><span id="TrainingLoggerBase.artifact-110"><a href="#TrainingLoggerBase.artifact-110"><span class="linenos">110</span></a>		<span class="bp">self</span><span class="p">,</span>
+</span><span id="TrainingLoggerBase.artifact-111"><a href="#TrainingLoggerBase.artifact-111"><span class="linenos">111</span></a>		<span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+</span><span id="TrainingLoggerBase.artifact-112"><a href="#TrainingLoggerBase.artifact-112"><span class="linenos">112</span></a>		<span class="nb">type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="TrainingLoggerBase.artifact-113"><a href="#TrainingLoggerBase.artifact-113"><span class="linenos">113</span></a>		<span class="n">aliases</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="TrainingLoggerBase.artifact-114"><a href="#TrainingLoggerBase.artifact-114"><span class="linenos">114</span></a>		<span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="TrainingLoggerBase.artifact-115"><a href="#TrainingLoggerBase.artifact-115"><span class="linenos">115</span></a>	<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase.artifact-116"><a href="#TrainingLoggerBase.artifact-116"><span class="linenos">116</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;log an artifact from a file&quot;&quot;&quot;</span>
+</span><span id="TrainingLoggerBase.artifact-117"><a href="#TrainingLoggerBase.artifact-117"><span class="linenos">117</span></a>		<span class="k">pass</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>log an artifact from a file</p>
+</div>
+
+
+                            </div>
+                            <div id="TrainingLoggerBase.url" class="classattr">
+                                        <input id="TrainingLoggerBase.url-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr variable">
+            <span class="name">url</span><span class="annotation">: str | list[str]</span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="TrainingLoggerBase.url-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L118-L122" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#TrainingLoggerBase.url"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="TrainingLoggerBase.url-119"><a href="#TrainingLoggerBase.url-119"><span class="linenos">119</span></a>	<span class="nd">@property</span>
+</span><span id="TrainingLoggerBase.url-120"><a href="#TrainingLoggerBase.url-120"><span class="linenos">120</span></a>	<span class="nd">@abstractmethod</span>
+</span><span id="TrainingLoggerBase.url-121"><a href="#TrainingLoggerBase.url-121"><span class="linenos">121</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+</span><span id="TrainingLoggerBase.url-122"><a href="#TrainingLoggerBase.url-122"><span class="linenos">122</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;Get the URL for the current logging run&quot;&quot;&quot;</span>
+</span><span id="TrainingLoggerBase.url-123"><a href="#TrainingLoggerBase.url-123"><span class="linenos">123</span></a>		<span class="k">pass</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Get the URL for the current logging run</p>
+</div>
+
+
+                            </div>
+                            <div id="TrainingLoggerBase.run_path" class="classattr">
+                                        <input id="TrainingLoggerBase.run_path-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr variable">
+            <span class="name">run_path</span><span class="annotation">: pathlib.Path | list[pathlib.Path]</span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="TrainingLoggerBase.run_path-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L124-L128" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#TrainingLoggerBase.run_path"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="TrainingLoggerBase.run_path-125"><a href="#TrainingLoggerBase.run_path-125"><span class="linenos">125</span></a>	<span class="nd">@property</span>
+</span><span id="TrainingLoggerBase.run_path-126"><a href="#TrainingLoggerBase.run_path-126"><span class="linenos">126</span></a>	<span class="nd">@abstractmethod</span>
+</span><span id="TrainingLoggerBase.run_path-127"><a href="#TrainingLoggerBase.run_path-127"><span class="linenos">127</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">run_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
+</span><span id="TrainingLoggerBase.run_path-128"><a href="#TrainingLoggerBase.run_path-128"><span class="linenos">128</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;Get the path to the current logging run&quot;&quot;&quot;</span>
+</span><span id="TrainingLoggerBase.run_path-129"><a href="#TrainingLoggerBase.run_path-129"><span class="linenos">129</span></a>		<span class="k">pass</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Get the path to the current logging run</p>
+</div>
+
+
+                            </div>
+                            <div id="TrainingLoggerBase.flush" class="classattr">
+                                        <input id="TrainingLoggerBase.flush-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@abstractmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">flush</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="TrainingLoggerBase.flush-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L130-L133" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#TrainingLoggerBase.flush"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="TrainingLoggerBase.flush-131"><a href="#TrainingLoggerBase.flush-131"><span class="linenos">131</span></a>	<span class="nd">@abstractmethod</span>
+</span><span id="TrainingLoggerBase.flush-132"><a href="#TrainingLoggerBase.flush-132"><span class="linenos">132</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase.flush-133"><a href="#TrainingLoggerBase.flush-133"><span class="linenos">133</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;Flush the logger&quot;&quot;&quot;</span>
+</span><span id="TrainingLoggerBase.flush-134"><a href="#TrainingLoggerBase.flush-134"><span class="linenos">134</span></a>		<span class="k">pass</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Flush the logger</p>
+</div>
+
+
+                            </div>
+                            <div id="TrainingLoggerBase.finish" class="classattr">
+                                        <input id="TrainingLoggerBase.finish-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@abstractmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">finish</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="TrainingLoggerBase.finish-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L135-L138" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#TrainingLoggerBase.finish"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="TrainingLoggerBase.finish-136"><a href="#TrainingLoggerBase.finish-136"><span class="linenos">136</span></a>	<span class="nd">@abstractmethod</span>
+</span><span id="TrainingLoggerBase.finish-137"><a href="#TrainingLoggerBase.finish-137"><span class="linenos">137</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">finish</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase.finish-138"><a href="#TrainingLoggerBase.finish-138"><span class="linenos">138</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;Finish logging&quot;&quot;&quot;</span>
+</span><span id="TrainingLoggerBase.finish-139"><a href="#TrainingLoggerBase.finish-139"><span class="linenos">139</span></a>		<span class="k">pass</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Finish logging</p>
+</div>
+
+
+                            </div>
+                            <div id="TrainingLoggerBase.get_mem_usage" class="classattr">
+                                        <input id="TrainingLoggerBase.get_mem_usage-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">get_mem_usage</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="nb">dict</span>:</span></span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="TrainingLoggerBase.get_mem_usage-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L140-L165" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#TrainingLoggerBase.get_mem_usage"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="TrainingLoggerBase.get_mem_usage-141"><a href="#TrainingLoggerBase.get_mem_usage-141"><span class="linenos">141</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">get_mem_usage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase.get_mem_usage-142"><a href="#TrainingLoggerBase.get_mem_usage-142"><span class="linenos">142</span></a>		<span class="n">mem_usage</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="TrainingLoggerBase.get_mem_usage-143"><a href="#TrainingLoggerBase.get_mem_usage-143"><span class="linenos">143</span></a>
+</span><span id="TrainingLoggerBase.get_mem_usage-144"><a href="#TrainingLoggerBase.get_mem_usage-144"><span class="linenos">144</span></a>		<span class="k">try</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase.get_mem_usage-145"><a href="#TrainingLoggerBase.get_mem_usage-145"><span class="linenos">145</span></a>			<span class="c1"># CPU/Memory usage (if available)</span>
+</span><span id="TrainingLoggerBase.get_mem_usage-146"><a href="#TrainingLoggerBase.get_mem_usage-146"><span class="linenos">146</span></a>			<span class="k">if</span> <span class="n">PSUTIL_AVAILABLE</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase.get_mem_usage-147"><a href="#TrainingLoggerBase.get_mem_usage-147"><span class="linenos">147</span></a>				<span class="n">cpu_percent</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_percent</span><span class="p">()</span>
+</span><span id="TrainingLoggerBase.get_mem_usage-148"><a href="#TrainingLoggerBase.get_mem_usage-148"><span class="linenos">148</span></a>				<span class="n">mem_usage</span><span class="p">[</span><span class="s2">&quot;cpu/percent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cpu_percent</span>
+</span><span id="TrainingLoggerBase.get_mem_usage-149"><a href="#TrainingLoggerBase.get_mem_usage-149"><span class="linenos">149</span></a>
+</span><span id="TrainingLoggerBase.get_mem_usage-150"><a href="#TrainingLoggerBase.get_mem_usage-150"><span class="linenos">150</span></a>				<span class="c1"># Memory usage</span>
+</span><span id="TrainingLoggerBase.get_mem_usage-151"><a href="#TrainingLoggerBase.get_mem_usage-151"><span class="linenos">151</span></a>				<span class="n">virtual_mem</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span>
+</span><span id="TrainingLoggerBase.get_mem_usage-152"><a href="#TrainingLoggerBase.get_mem_usage-152"><span class="linenos">152</span></a>				<span class="n">mem_usage</span><span class="p">[</span><span class="s2">&quot;ram/used&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">virtual_mem</span><span class="o">.</span><span class="n">used</span>
+</span><span id="TrainingLoggerBase.get_mem_usage-153"><a href="#TrainingLoggerBase.get_mem_usage-153"><span class="linenos">153</span></a>				<span class="n">mem_usage</span><span class="p">[</span><span class="s2">&quot;ram/percent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">virtual_mem</span><span class="o">.</span><span class="n">percent</span>
+</span><span id="TrainingLoggerBase.get_mem_usage-154"><a href="#TrainingLoggerBase.get_mem_usage-154"><span class="linenos">154</span></a>
+</span><span id="TrainingLoggerBase.get_mem_usage-155"><a href="#TrainingLoggerBase.get_mem_usage-155"><span class="linenos">155</span></a>			<span class="c1"># GPU information (if available)</span>
+</span><span id="TrainingLoggerBase.get_mem_usage-156"><a href="#TrainingLoggerBase.get_mem_usage-156"><span class="linenos">156</span></a>			<span class="k">if</span> <span class="n">GPU_UTILS_AVAILABLE</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase.get_mem_usage-157"><a href="#TrainingLoggerBase.get_mem_usage-157"><span class="linenos">157</span></a>				<span class="n">gpus</span> <span class="o">=</span> <span class="n">GPUtil</span><span class="o">.</span><span class="n">getGPUs</span><span class="p">()</span>
+</span><span id="TrainingLoggerBase.get_mem_usage-158"><a href="#TrainingLoggerBase.get_mem_usage-158"><span class="linenos">158</span></a>				<span class="k">for</span> <span class="n">gpu</span> <span class="ow">in</span> <span class="n">gpus</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase.get_mem_usage-159"><a href="#TrainingLoggerBase.get_mem_usage-159"><span class="linenos">159</span></a>					<span class="n">gpu_id</span> <span class="o">=</span> <span class="n">gpu</span><span class="o">.</span><span class="n">id</span>
+</span><span id="TrainingLoggerBase.get_mem_usage-160"><a href="#TrainingLoggerBase.get_mem_usage-160"><span class="linenos">160</span></a>					<span class="n">mem_usage</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;gpu:</span><span class="si">{</span><span class="n">gpu_id</span><span class="si">}</span><span class="s2">/load&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gpu</span><span class="o">.</span><span class="n">load</span>
+</span><span id="TrainingLoggerBase.get_mem_usage-161"><a href="#TrainingLoggerBase.get_mem_usage-161"><span class="linenos">161</span></a>					<span class="n">mem_usage</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;gpu:</span><span class="si">{</span><span class="n">gpu_id</span><span class="si">}</span><span class="s2">/memory_used&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gpu</span><span class="o">.</span><span class="n">memoryUsed</span>
+</span><span id="TrainingLoggerBase.get_mem_usage-162"><a href="#TrainingLoggerBase.get_mem_usage-162"><span class="linenos">162</span></a>					<span class="n">mem_usage</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;gpu:</span><span class="si">{</span><span class="n">gpu_id</span><span class="si">}</span><span class="s2">/temperature&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gpu</span><span class="o">.</span><span class="n">temperature</span>
+</span><span id="TrainingLoggerBase.get_mem_usage-163"><a href="#TrainingLoggerBase.get_mem_usage-163"><span class="linenos">163</span></a>		<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase.get_mem_usage-164"><a href="#TrainingLoggerBase.get_mem_usage-164"><span class="linenos">164</span></a>			<span class="bp">self</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error getting memory usage: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="TrainingLoggerBase.get_mem_usage-165"><a href="#TrainingLoggerBase.get_mem_usage-165"><span class="linenos">165</span></a>
+</span><span id="TrainingLoggerBase.get_mem_usage-166"><a href="#TrainingLoggerBase.get_mem_usage-166"><span class="linenos">166</span></a>		<span class="k">return</span> <span class="n">mem_usage</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="TrainingLoggerBase.spinner_task" class="classattr">
+                                        <input id="TrainingLoggerBase.spinner_task-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">spinner_task</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">**</span><span class="n">kwargs</span></span><span class="return-annotation">) -> <span class="n"><a href="#LoggerSpinner">LoggerSpinner</a></span>:</span></span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="TrainingLoggerBase.spinner_task-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L167-L169" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#TrainingLoggerBase.spinner_task"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="TrainingLoggerBase.spinner_task-168"><a href="#TrainingLoggerBase.spinner_task-168"><span class="linenos">168</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">spinner_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LoggerSpinner</span><span class="p">:</span>
+</span><span id="TrainingLoggerBase.spinner_task-169"><a href="#TrainingLoggerBase.spinner_task-169"><span class="linenos">169</span></a>		<span class="s2">&quot;Create a spinner task. kwargs are passed to `Spinner`.&quot;</span>
+</span><span id="TrainingLoggerBase.spinner_task-170"><a href="#TrainingLoggerBase.spinner_task-170"><span class="linenos">170</span></a>		<span class="k">return</span> <span class="n">LoggerSpinner</span><span class="p">(</span><span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Create a spinner task. kwargs are passed to <code>Spinner</code>.</p>
+</div>
+
+
+                            </div>
+                </section>
+    </main>
+<script>
+    function escapeHTML(html) {
+        return document.createElement('div').appendChild(document.createTextNode(html)).parentNode.innerHTML;
+    }
+
+    const originalContent = document.querySelector("main.pdoc");
+    let currentContent = originalContent;
+
+    function setContent(innerHTML) {
+        let elem;
+        if (innerHTML) {
+            elem = document.createElement("main");
+            elem.classList.add("pdoc");
+            elem.innerHTML = innerHTML;
+        } else {
+            elem = originalContent;
+        }
+        if (currentContent !== elem) {
+            currentContent.replaceWith(elem);
+            currentContent = elem;
+        }
+    }
+
+    function getSearchTerm() {
+        return (new URL(window.location)).searchParams.get("search");
+    }
+
+    const searchBox = document.querySelector(".pdoc input[type=search]");
+    searchBox.addEventListener("input", function () {
+        let url = new URL(window.location);
+        if (searchBox.value.trim()) {
+            url.hash = "";
+            url.searchParams.set("search", searchBox.value);
+        } else {
+            url.searchParams.delete("search");
+        }
+        history.replaceState("", "", url.toString());
+        onInput();
+    });
+    window.addEventListener("popstate", onInput);
+
+
+    let search, searchErr;
+
+    async function initialize() {
+        try {
+            search = await new Promise((resolve, reject) => {
+                const script = document.createElement("script");
+                script.type = "text/javascript";
+                script.async = true;
+                script.onload = () => resolve(window.pdocSearch);
+                script.onerror = (e) => reject(e);
+                script.src = "../../search.js";
+                document.getElementsByTagName("head")[0].appendChild(script);
+            });
+        } catch (e) {
+            console.error("Cannot fetch pdoc search index");
+            searchErr = "Cannot fetch search index.";
+        }
+        onInput();
+
+        document.querySelector("nav.pdoc").addEventListener("click", e => {
+            if (e.target.hash) {
+                searchBox.value = "";
+                searchBox.dispatchEvent(new Event("input"));
+            }
+        });
+    }
+
+    function onInput() {
+        setContent((() => {
+            const term = getSearchTerm();
+            if (!term) {
+                return null
+            }
+            if (searchErr) {
+                return `<h3>Error: ${searchErr}</h3>`
+            }
+            if (!search) {
+                return "<h3>Searching...</h3>"
+            }
+
+            window.scrollTo({top: 0, left: 0, behavior: 'auto'});
+
+            const results = search(term);
+
+            let html;
+            if (results.length === 0) {
+                html = `No search results for '${escapeHTML(term)}'.`
+            } else {
+                html = `<h4>${results.length} search result${results.length > 1 ? "s" : ""} for '${escapeHTML(term)}'.</h4>`;
+            }
+            for (let result of results.slice(0, 10)) {
+                let doc = result.doc;
+                let url = `../../${doc.modulename.replaceAll(".", "/")}.html`;
+                if (doc.qualname) {
+                    url += `#${doc.qualname}`;
+                }
+
+                let heading;
+                switch (result.doc.kind) {
+                    case "function":
+                        if (doc.fullname.endsWith(".__init__")) {
+                            heading = `<span class="name">${doc.fullname.replace(/\.__init__$/, "")}</span>${doc.signature}`;
+                        } else {
+                            heading = `<span class="def">${doc.funcdef}</span> <span class="name">${doc.fullname}</span>${doc.signature}`;
+                        }
+                        break;
+                    case "class":
+                        heading = `<span class="def">class</span> <span class="name">${doc.fullname}</span>`;
+                        if (doc.bases)
+                            heading += `<wbr>(<span class="base">${doc.bases}</span>)`;
+                        heading += `:`;
+                        break;
+                    case "variable":
+                        heading = `<span class="name">${doc.fullname}</span>`;
+                        if (doc.annotation)
+                            heading += `<span class="annotation">${doc.annotation}</span>`;
+                        if (doc.default_value)
+                            heading += `<span class="default_value"> = ${doc.default_value}</span>`;
+                        break;
+                    default:
+                        heading = `<span class="name">${doc.fullname}</span>`;
+                        break;
+                }
+                html += `
+                        <section class="search-result">
+                        <a href="${url}" class="attr ${doc.kind}">${heading}</a>
+                        <div class="docstring">${doc.doc}</div>
+                        </section>
+                    `;
+
+            }
+            return html;
+        })());
+    }
+
+    if (getSearchTerm()) {
+        initialize();
+        searchBox.value = getSearchTerm();
+        onInput();
+    } else {
+        searchBox.addEventListener("focus", initialize, {once: true});
+    }
+
+    searchBox.addEventListener("keydown", e => {
+        if (["ArrowDown", "ArrowUp", "Enter"].includes(e.key)) {
+            let focused = currentContent.querySelector(".search-result.focused");
+            if (!focused) {
+                currentContent.querySelector(".search-result").classList.add("focused");
+            } else if (
+                e.key === "ArrowDown"
+                && focused.nextElementSibling
+                && focused.nextElementSibling.classList.contains("search-result")
+            ) {
+                focused.classList.remove("focused");
+                focused.nextElementSibling.classList.add("focused");
+                focused.nextElementSibling.scrollIntoView({
+                    behavior: "smooth",
+                    block: "nearest",
+                    inline: "nearest"
+                });
+            } else if (
+                e.key === "ArrowUp"
+                && focused.previousElementSibling
+                && focused.previousElementSibling.classList.contains("search-result")
+            ) {
+                focused.classList.remove("focused");
+                focused.previousElementSibling.classList.add("focused");
+                focused.previousElementSibling.scrollIntoView({
+                    behavior: "smooth",
+                    block: "nearest",
+                    inline: "nearest"
+                });
+            } else if (
+                e.key === "Enter"
+            ) {
+                focused.querySelector("a").click();
+            }
+        }
+    });
+</script></body>
+</html>

@@ -1,0 +1,1576 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="pdoc 15.0.1"/>
+    <title>trnbl.loggers.local API documentation</title>
+<link rel="stylesheet" href="../../resources/bootstrap-reboot.min.css"><link rel="stylesheet" href="../../resources/syntax-highlighting.css"><link rel="stylesheet" href="../../resources/theme.css"><link rel="stylesheet" href="../../resources/layout.css"><link rel="stylesheet" href="../../resources/content.css"><link rel="stylesheet" href="../../resources/custom.css"><script>
+    window.MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']]
+        }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+    /* Re-invoke MathJax when DOM content changes, for example during search. */
+    document.addEventListener("DOMContentLoaded", () => {
+        new MutationObserver(() => MathJax.typeset()).observe(
+            document.querySelector("main.pdoc").parentNode,
+            {childList: true}
+        );
+    })
+</script>
+<style>
+    mjx-container {
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+</style><style>
+    .pdoc .mermaid-pre {
+        border: none;
+        background: none;
+    }
+</style>
+<script type="module" defer>
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+
+    /* Re-invoke Mermaid when DOM content changes, for example during search. */
+    document.addEventListener("DOMContentLoaded", () => {
+        new MutationObserver(() => mermaid.run()).observe(
+            document.querySelector("main.pdoc").parentNode,
+            {childList: true}
+        );
+    })
+</script></head>
+<body>
+<div class="package-version">
+    docs for <a href="https://github.com/mivanit/trnbl">trnbl</a> v0.1.0<br>
+</div>
+    <nav class="pdoc">
+        <label id="navtoggle" for="togglestate" class="pdoc-button">
+            <img src="../../resources/svg/navtoggle.svg" alt="Toggle navigation"> 
+        </label>
+        <input id="togglestate" type="checkbox" aria-hidden="true" tabindex="-1">
+        <div>            <a class="pdoc-button module-list-button" href="../loggers.html">
+                <img src="../../resources/svg/box-arrow-in-left.svg" alt="Back to parent module"/>
+                &nbsp;trnbl.loggers</a>
+
+
+            <input type="search" placeholder="Search..." role="searchbox" aria-label="search"
+                   pattern=".+" required>
+
+
+            <h2>Submodules</h2>
+            <ul>
+                    <li><a href="local/build_dist.html">build_dist</a></li>
+                    <li><a href="local/html_frontend.html">html_frontend</a></li>
+                    <li><a href="local/locallogger.html">locallogger</a></li>
+                    <li><a href="local/start_server.html">start_server</a></li>
+            </ul>
+
+            <h2>API Documentation</h2>
+                <ul class="memberlist">
+            <li>
+                    <a class="class" href="#FilePaths">FilePaths</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#FilePaths.TRAIN_CONFIG">TRAIN_CONFIG</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#FilePaths.LOGGER_META">LOGGER_META</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#FilePaths.TRAIN_CONFIG_YML">TRAIN_CONFIG_YML</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#FilePaths.LOGGER_META_YML">LOGGER_META_YML</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#FilePaths.ARTIFACTS">ARTIFACTS</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#FilePaths.METRICS">METRICS</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#FilePaths.LOG">LOG</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#FilePaths.ERROR_FILE">ERROR_FILE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#FilePaths.RUNS_MANIFEST">RUNS_MANIFEST</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#FilePaths.RUNS_DIR">RUNS_DIR</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#FilePaths.HTML_INDEX">HTML_INDEX</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#FilePaths.START_SERVER">START_SERVER</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#LocalLogger">LocalLogger</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#LocalLogger.__init__">LocalLogger</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#LocalLogger.log_list">log_list</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#LocalLogger.metrics_list">metrics_list</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#LocalLogger.artifacts_list">artifacts_list</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#LocalLogger.train_config">train_config</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#LocalLogger.project">project</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#LocalLogger.group">group</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#LocalLogger.group_str">group_str</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#LocalLogger.base_path">base_path</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#LocalLogger.console_msg_prefix">console_msg_prefix</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#LocalLogger.run_init_timestamp">run_init_timestamp</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#LocalLogger.run_id">run_id</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#LocalLogger.project_path">project_path</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#LocalLogger.log_file">log_file</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#LocalLogger.metrics_file">metrics_file</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#LocalLogger.artifacts_file">artifacts_file</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#LocalLogger.metric_names">metric_names</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#LocalLogger.logger_meta">logger_meta</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#LocalLogger.syllabic_id">syllabic_id</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#LocalLogger.get_timestamp">get_timestamp</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#LocalLogger.debug">debug</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#LocalLogger.message">message</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#LocalLogger.warning">warning</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#LocalLogger.error">error</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#LocalLogger.metrics">metrics</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#LocalLogger.artifact">artifact</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#LocalLogger.url">url</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#LocalLogger.run_path">run_path</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#LocalLogger.flush">flush</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#LocalLogger.finish">finish</a>
+                        </li>
+                </ul>
+
+            </li>
+    </ul>
+
+
+
+        <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev" target="_blank">
+            built with <span class="visually-hidden">pdoc</span>
+            <img src="../../resources/svg/pdoc-logo.svg" alt="pdoc logo"/>
+        </a>
+</div>
+    </nav>
+    <main class="pdoc">
+            <section class="module-info">
+                        <a class="pdoc-button git-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py">View Source on GitHub</a>
+                    <h1 class="modulename">
+<a href="./../../trnbl.html">trnbl</a><wbr>.<a href="./../loggers.html">loggers</a><wbr>.local    </h1>
+
+                
+                        <input id="mod-local-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+
+                        <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="mod-local-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L0-L10" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+                <br/>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">trnbl.loggers.local.locallogger</span><span class="w"> </span><span class="kn">import</span> <span class="n">FilePaths</span><span class="p">,</span> <span class="n">LocalLogger</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>	<span class="s2">&quot;FilePaths&quot;</span><span class="p">,</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>	<span class="s2">&quot;LocalLogger&quot;</span><span class="p">,</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>	<span class="c1"># submodules</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>	<span class="s2">&quot;build_dist&quot;</span><span class="p">,</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>	<span class="s2">&quot;html_frontend&quot;</span><span class="p">,</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>	<span class="s2">&quot;locallogger&quot;</span><span class="p">,</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>	<span class="s2">&quot;start_server&quot;</span><span class="p">,</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="p">]</span>
+</span></pre></div>
+
+
+                <br/>
+            </section>
+                <section id="FilePaths">
+                            <input id="FilePaths-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">FilePaths</span>:
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="FilePaths-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L13-L37" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#FilePaths"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FilePaths-14"><a href="#FilePaths-14"><span class="linenos">14</span></a><span class="k">class</span><span class="w"> </span><span class="nc">FilePaths</span><span class="p">:</span>
+</span><span id="FilePaths-15"><a href="#FilePaths-15"><span class="linenos">15</span></a>	<span class="c1"># configs and metadata</span>
+</span><span id="FilePaths-16"><a href="#FilePaths-16"><span class="linenos">16</span></a>	<span class="n">TRAIN_CONFIG</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;config.json&quot;</span><span class="p">)</span>
+</span><span id="FilePaths-17"><a href="#FilePaths-17"><span class="linenos">17</span></a>	<span class="n">LOGGER_META</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;meta.json&quot;</span><span class="p">)</span>
+</span><span id="FilePaths-18"><a href="#FilePaths-18"><span class="linenos">18</span></a>	<span class="c1"># configs and metadata in yaml format for easier human readability</span>
+</span><span id="FilePaths-19"><a href="#FilePaths-19"><span class="linenos">19</span></a>	<span class="n">TRAIN_CONFIG_YML</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;config.yml&quot;</span><span class="p">)</span>
+</span><span id="FilePaths-20"><a href="#FilePaths-20"><span class="linenos">20</span></a>	<span class="n">LOGGER_META_YML</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;meta.yml&quot;</span><span class="p">)</span>
+</span><span id="FilePaths-21"><a href="#FilePaths-21"><span class="linenos">21</span></a>
+</span><span id="FilePaths-22"><a href="#FilePaths-22"><span class="linenos">22</span></a>	<span class="c1"># logs, metrics, and artifacts</span>
+</span><span id="FilePaths-23"><a href="#FilePaths-23"><span class="linenos">23</span></a>	<span class="n">ARTIFACTS</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;artifacts.jsonl&quot;</span><span class="p">)</span>
+</span><span id="FilePaths-24"><a href="#FilePaths-24"><span class="linenos">24</span></a>	<span class="n">METRICS</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;metrics.jsonl&quot;</span><span class="p">)</span>
+</span><span id="FilePaths-25"><a href="#FilePaths-25"><span class="linenos">25</span></a>	<span class="n">LOG</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;log.jsonl&quot;</span><span class="p">)</span>
+</span><span id="FilePaths-26"><a href="#FilePaths-26"><span class="linenos">26</span></a>	<span class="c1"># keeps error message if an error occurs</span>
+</span><span id="FilePaths-27"><a href="#FilePaths-27"><span class="linenos">27</span></a>	<span class="n">ERROR_FILE</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;ERROR.txt&quot;</span><span class="p">)</span>
+</span><span id="FilePaths-28"><a href="#FilePaths-28"><span class="linenos">28</span></a>
+</span><span id="FilePaths-29"><a href="#FilePaths-29"><span class="linenos">29</span></a>	<span class="c1"># manifest is shared between all runs in a project</span>
+</span><span id="FilePaths-30"><a href="#FilePaths-30"><span class="linenos">30</span></a>	<span class="c1"># relative to project path instead of run path</span>
+</span><span id="FilePaths-31"><a href="#FilePaths-31"><span class="linenos">31</span></a>	<span class="n">RUNS_MANIFEST</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;runs.jsonl&quot;</span><span class="p">)</span>
+</span><span id="FilePaths-32"><a href="#FilePaths-32"><span class="linenos">32</span></a>	<span class="c1"># directory in project path for runs</span>
+</span><span id="FilePaths-33"><a href="#FilePaths-33"><span class="linenos">33</span></a>	<span class="c1"># relative to project path instead of run path</span>
+</span><span id="FilePaths-34"><a href="#FilePaths-34"><span class="linenos">34</span></a>	<span class="n">RUNS_DIR</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;runs&quot;</span><span class="p">)</span>
+</span><span id="FilePaths-35"><a href="#FilePaths-35"><span class="linenos">35</span></a>
+</span><span id="FilePaths-36"><a href="#FilePaths-36"><span class="linenos">36</span></a>	<span class="c1"># frontend files</span>
+</span><span id="FilePaths-37"><a href="#FilePaths-37"><span class="linenos">37</span></a>	<span class="n">HTML_INDEX</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;index.html&quot;</span><span class="p">)</span>
+</span><span id="FilePaths-38"><a href="#FilePaths-38"><span class="linenos">38</span></a>	<span class="n">START_SERVER</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;start_server.py&quot;</span><span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            <div id="FilePaths.TRAIN_CONFIG" class="classattr">
+                                <div class="attr variable">
+            <span class="name">TRAIN_CONFIG</span><span class="annotation">: pathlib.Path</span>        =
+<span class="default_value">WindowsPath(&#39;config.json&#39;)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#FilePaths.TRAIN_CONFIG"></a>
+    
+    
+
+                            </div>
+                            <div id="FilePaths.LOGGER_META" class="classattr">
+                                <div class="attr variable">
+            <span class="name">LOGGER_META</span><span class="annotation">: pathlib.Path</span>        =
+<span class="default_value">WindowsPath(&#39;meta.json&#39;)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#FilePaths.LOGGER_META"></a>
+    
+    
+
+                            </div>
+                            <div id="FilePaths.TRAIN_CONFIG_YML" class="classattr">
+                                <div class="attr variable">
+            <span class="name">TRAIN_CONFIG_YML</span><span class="annotation">: pathlib.Path</span>        =
+<span class="default_value">WindowsPath(&#39;config.yml&#39;)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#FilePaths.TRAIN_CONFIG_YML"></a>
+    
+    
+
+                            </div>
+                            <div id="FilePaths.LOGGER_META_YML" class="classattr">
+                                <div class="attr variable">
+            <span class="name">LOGGER_META_YML</span><span class="annotation">: pathlib.Path</span>        =
+<span class="default_value">WindowsPath(&#39;meta.yml&#39;)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#FilePaths.LOGGER_META_YML"></a>
+    
+    
+
+                            </div>
+                            <div id="FilePaths.ARTIFACTS" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ARTIFACTS</span><span class="annotation">: pathlib.Path</span>        =
+<span class="default_value">WindowsPath(&#39;artifacts.jsonl&#39;)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#FilePaths.ARTIFACTS"></a>
+    
+    
+
+                            </div>
+                            <div id="FilePaths.METRICS" class="classattr">
+                                <div class="attr variable">
+            <span class="name">METRICS</span><span class="annotation">: pathlib.Path</span>        =
+<span class="default_value">WindowsPath(&#39;metrics.jsonl&#39;)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#FilePaths.METRICS"></a>
+    
+    
+
+                            </div>
+                            <div id="FilePaths.LOG" class="classattr">
+                                <div class="attr variable">
+            <span class="name">LOG</span><span class="annotation">: pathlib.Path</span>        =
+<span class="default_value">WindowsPath(&#39;log.jsonl&#39;)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#FilePaths.LOG"></a>
+    
+    
+
+                            </div>
+                            <div id="FilePaths.ERROR_FILE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ERROR_FILE</span><span class="annotation">: pathlib.Path</span>        =
+<span class="default_value">WindowsPath(&#39;ERROR.txt&#39;)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#FilePaths.ERROR_FILE"></a>
+    
+    
+
+                            </div>
+                            <div id="FilePaths.RUNS_MANIFEST" class="classattr">
+                                <div class="attr variable">
+            <span class="name">RUNS_MANIFEST</span><span class="annotation">: pathlib.Path</span>        =
+<span class="default_value">WindowsPath(&#39;runs.jsonl&#39;)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#FilePaths.RUNS_MANIFEST"></a>
+    
+    
+
+                            </div>
+                            <div id="FilePaths.RUNS_DIR" class="classattr">
+                                <div class="attr variable">
+            <span class="name">RUNS_DIR</span><span class="annotation">: pathlib.Path</span>        =
+<span class="default_value">WindowsPath(&#39;runs&#39;)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#FilePaths.RUNS_DIR"></a>
+    
+    
+
+                            </div>
+                            <div id="FilePaths.HTML_INDEX" class="classattr">
+                                <div class="attr variable">
+            <span class="name">HTML_INDEX</span><span class="annotation">: pathlib.Path</span>        =
+<span class="default_value">WindowsPath(&#39;index.html&#39;)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#FilePaths.HTML_INDEX"></a>
+    
+    
+
+                            </div>
+                            <div id="FilePaths.START_SERVER" class="classattr">
+                                <div class="attr variable">
+            <span class="name">START_SERVER</span><span class="annotation">: pathlib.Path</span>        =
+<span class="default_value">WindowsPath(&#39;start_server.py&#39;)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#FilePaths.START_SERVER"></a>
+    
+    
+
+                            </div>
+                </section>
+                <section id="LocalLogger">
+                            <input id="LocalLogger-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">LocalLogger</span><wbr>(<span class="base"><a href="base.html#TrainingLoggerBase">trnbl.loggers.base.TrainingLoggerBase</a></span>):
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="LocalLogger-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L40-L253" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#LocalLogger"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LocalLogger-41"><a href="#LocalLogger-41"><span class="linenos"> 41</span></a><span class="k">class</span><span class="w"> </span><span class="nc">LocalLogger</span><span class="p">(</span><span class="n">TrainingLoggerBase</span><span class="p">):</span>
+</span><span id="LocalLogger-42"><a href="#LocalLogger-42"><span class="linenos"> 42</span></a>	<span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="LocalLogger-43"><a href="#LocalLogger-43"><span class="linenos"> 43</span></a>		<span class="bp">self</span><span class="p">,</span>
+</span><span id="LocalLogger-44"><a href="#LocalLogger-44"><span class="linenos"> 44</span></a>		<span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="LocalLogger-45"><a href="#LocalLogger-45"><span class="linenos"> 45</span></a>		<span class="n">metric_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+</span><span id="LocalLogger-46"><a href="#LocalLogger-46"><span class="linenos"> 46</span></a>		<span class="n">train_config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+</span><span id="LocalLogger-47"><a href="#LocalLogger-47"><span class="linenos"> 47</span></a>		<span class="n">group</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+</span><span id="LocalLogger-48"><a href="#LocalLogger-48"><span class="linenos"> 48</span></a>		<span class="n">base_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;trnbl-logs&quot;</span><span class="p">),</span>
+</span><span id="LocalLogger-49"><a href="#LocalLogger-49"><span class="linenos"> 49</span></a>		<span class="n">memusage_as_metrics</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="LocalLogger-50"><a href="#LocalLogger-50"><span class="linenos"> 50</span></a>		<span class="n">console_msg_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;# &quot;</span><span class="p">,</span>
+</span><span id="LocalLogger-51"><a href="#LocalLogger-51"><span class="linenos"> 51</span></a>	<span class="p">):</span>
+</span><span id="LocalLogger-52"><a href="#LocalLogger-52"><span class="linenos"> 52</span></a>		<span class="c1"># set up lists</span>
+</span><span id="LocalLogger-53"><a href="#LocalLogger-53"><span class="linenos"> 53</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">log_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+</span><span id="LocalLogger-54"><a href="#LocalLogger-54"><span class="linenos"> 54</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">metrics_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+</span><span id="LocalLogger-55"><a href="#LocalLogger-55"><span class="linenos"> 55</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">artifacts_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+</span><span id="LocalLogger-56"><a href="#LocalLogger-56"><span class="linenos"> 56</span></a>
+</span><span id="LocalLogger-57"><a href="#LocalLogger-57"><span class="linenos"> 57</span></a>		<span class="c1"># copy kwargs</span>
+</span><span id="LocalLogger-58"><a href="#LocalLogger-58"><span class="linenos"> 58</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">train_config</span>
+</span><span id="LocalLogger-59"><a href="#LocalLogger-59"><span class="linenos"> 59</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">project</span>
+</span><span id="LocalLogger-60"><a href="#LocalLogger-60"><span class="linenos"> 60</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">group</span>
+</span><span id="LocalLogger-61"><a href="#LocalLogger-61"><span class="linenos"> 61</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">group_str</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="k">if</span> <span class="n">group</span> <span class="ow">and</span> <span class="n">group</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;-&quot;</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+</span><span id="LocalLogger-62"><a href="#LocalLogger-62"><span class="linenos"> 62</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">base_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">base_path</span><span class="p">)</span>
+</span><span id="LocalLogger-63"><a href="#LocalLogger-63"><span class="linenos"> 63</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">console_msg_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">console_msg_prefix</span>
+</span><span id="LocalLogger-64"><a href="#LocalLogger-64"><span class="linenos"> 64</span></a>
+</span><span id="LocalLogger-65"><a href="#LocalLogger-65"><span class="linenos"> 65</span></a>		<span class="c1"># set up id</span>
+</span><span id="LocalLogger-66"><a href="#LocalLogger-66"><span class="linenos"> 66</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">_syllabic_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">rand_syllabic_string</span><span class="p">()</span>
+</span><span id="LocalLogger-67"><a href="#LocalLogger-67"><span class="linenos"> 67</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">run_init_timestamp</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+</span><span id="LocalLogger-68"><a href="#LocalLogger-68"><span class="linenos"> 68</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">run_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_run_id</span><span class="p">()</span>
+</span><span id="LocalLogger-69"><a href="#LocalLogger-69"><span class="linenos"> 69</span></a>
+</span><span id="LocalLogger-70"><a href="#LocalLogger-70"><span class="linenos"> 70</span></a>		<span class="c1"># set up paths</span>
+</span><span id="LocalLogger-71"><a href="#LocalLogger-71"><span class="linenos"> 71</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">project_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_path</span> <span class="o">/</span> <span class="n">project</span>
+</span><span id="LocalLogger-72"><a href="#LocalLogger-72"><span class="linenos"> 72</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">_run_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_path</span> <span class="o">/</span> <span class="n">FilePaths</span><span class="o">.</span><span class="n">RUNS_DIR</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_id</span>
+</span><span id="LocalLogger-73"><a href="#LocalLogger-73"><span class="linenos"> 73</span></a>		<span class="c1"># make sure the run path doesn&#39;t already exist</span>
+</span><span id="LocalLogger-74"><a href="#LocalLogger-74"><span class="linenos"> 74</span></a>		<span class="k">assert</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+</span><span id="LocalLogger-75"><a href="#LocalLogger-75"><span class="linenos"> 75</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">_run_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="LocalLogger-76"><a href="#LocalLogger-76"><span class="linenos"> 76</span></a>
+</span><span id="LocalLogger-77"><a href="#LocalLogger-77"><span class="linenos"> 77</span></a>		<span class="c1"># set up files and objects for logs, artifacts, and metrics</span>
+</span><span id="LocalLogger-78"><a href="#LocalLogger-78"><span class="linenos"> 78</span></a>		<span class="c1"># ----------------------------------------</span>
+</span><span id="LocalLogger-79"><a href="#LocalLogger-79"><span class="linenos"> 79</span></a>
+</span><span id="LocalLogger-80"><a href="#LocalLogger-80"><span class="linenos"> 80</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="p">:</span> <span class="n">io</span><span class="o">.</span><span class="n">TextIOWrapper</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_path</span> <span class="o">/</span> <span class="n">FilePaths</span><span class="o">.</span><span class="n">LOG</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span>
+</span><span id="LocalLogger-81"><a href="#LocalLogger-81"><span class="linenos"> 81</span></a>
+</span><span id="LocalLogger-82"><a href="#LocalLogger-82"><span class="linenos"> 82</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">metrics_file</span><span class="p">:</span> <span class="n">io</span><span class="o">.</span><span class="n">TextIOWrapper</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span>
+</span><span id="LocalLogger-83"><a href="#LocalLogger-83"><span class="linenos"> 83</span></a>			<span class="bp">self</span><span class="o">.</span><span class="n">run_path</span> <span class="o">/</span> <span class="n">FilePaths</span><span class="o">.</span><span class="n">METRICS</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span>
+</span><span id="LocalLogger-84"><a href="#LocalLogger-84"><span class="linenos"> 84</span></a>		<span class="p">)</span>
+</span><span id="LocalLogger-85"><a href="#LocalLogger-85"><span class="linenos"> 85</span></a>
+</span><span id="LocalLogger-86"><a href="#LocalLogger-86"><span class="linenos"> 86</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">artifacts_file</span><span class="p">:</span> <span class="n">io</span><span class="o">.</span><span class="n">TextIOWrapper</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span>
+</span><span id="LocalLogger-87"><a href="#LocalLogger-87"><span class="linenos"> 87</span></a>			<span class="bp">self</span><span class="o">.</span><span class="n">run_path</span> <span class="o">/</span> <span class="n">FilePaths</span><span class="o">.</span><span class="n">ARTIFACTS</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span>
+</span><span id="LocalLogger-88"><a href="#LocalLogger-88"><span class="linenos"> 88</span></a>		<span class="p">)</span>
+</span><span id="LocalLogger-89"><a href="#LocalLogger-89"><span class="linenos"> 89</span></a>
+</span><span id="LocalLogger-90"><a href="#LocalLogger-90"><span class="linenos"> 90</span></a>		<span class="c1"># metric names (getting mem usage might cause problems if we have an error)</span>
+</span><span id="LocalLogger-91"><a href="#LocalLogger-91"><span class="linenos"> 91</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">metric_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">metric_names</span>
+</span><span id="LocalLogger-92"><a href="#LocalLogger-92"><span class="linenos"> 92</span></a>		<span class="k">if</span> <span class="n">memusage_as_metrics</span><span class="p">:</span>
+</span><span id="LocalLogger-93"><a href="#LocalLogger-93"><span class="linenos"> 93</span></a>			<span class="bp">self</span><span class="o">.</span><span class="n">metric_names</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_mem_usage</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+</span><span id="LocalLogger-94"><a href="#LocalLogger-94"><span class="linenos"> 94</span></a>
+</span><span id="LocalLogger-95"><a href="#LocalLogger-95"><span class="linenos"> 95</span></a>		<span class="c1"># put everything in a config</span>
+</span><span id="LocalLogger-96"><a href="#LocalLogger-96"><span class="linenos"> 96</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">logger_meta</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+</span><span id="LocalLogger-97"><a href="#LocalLogger-97"><span class="linenos"> 97</span></a>			<span class="n">run_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">run_id</span><span class="p">,</span>
+</span><span id="LocalLogger-98"><a href="#LocalLogger-98"><span class="linenos"> 98</span></a>			<span class="n">run_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">run_path</span><span class="o">.</span><span class="n">as_posix</span><span class="p">(),</span>
+</span><span id="LocalLogger-99"><a href="#LocalLogger-99"><span class="linenos"> 99</span></a>			<span class="n">syllabic_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">syllabic_id</span><span class="p">,</span>
+</span><span id="LocalLogger-100"><a href="#LocalLogger-100"><span class="linenos">100</span></a>			<span class="n">group</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">,</span>
+</span><span id="LocalLogger-101"><a href="#LocalLogger-101"><span class="linenos">101</span></a>			<span class="n">project</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">,</span>
+</span><span id="LocalLogger-102"><a href="#LocalLogger-102"><span class="linenos">102</span></a>			<span class="n">run_init_timestamp</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_init_timestamp</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()),</span>
+</span><span id="LocalLogger-103"><a href="#LocalLogger-103"><span class="linenos">103</span></a>			<span class="n">metric_names</span><span class="o">=</span><span class="n">metric_names</span><span class="p">,</span>
+</span><span id="LocalLogger-104"><a href="#LocalLogger-104"><span class="linenos">104</span></a>			<span class="n">train_config</span><span class="o">=</span><span class="n">train_config</span><span class="p">,</span>  <span class="c1"># TODO: this duplicates the contents of FilePaths.TRAIN_CONFIG, is that ok?</span>
+</span><span id="LocalLogger-105"><a href="#LocalLogger-105"><span class="linenos">105</span></a>		<span class="p">)</span>
+</span><span id="LocalLogger-106"><a href="#LocalLogger-106"><span class="linenos">106</span></a>
+</span><span id="LocalLogger-107"><a href="#LocalLogger-107"><span class="linenos">107</span></a>		<span class="c1"># write to the project jsonl</span>
+</span><span id="LocalLogger-108"><a href="#LocalLogger-108"><span class="linenos">108</span></a>		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_path</span> <span class="o">/</span> <span class="n">FilePaths</span><span class="o">.</span><span class="n">RUNS_MANIFEST</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="LocalLogger-109"><a href="#LocalLogger-109"><span class="linenos">109</span></a>			<span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger_meta</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+</span><span id="LocalLogger-110"><a href="#LocalLogger-110"><span class="linenos">110</span></a>			<span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="LocalLogger-111"><a href="#LocalLogger-111"><span class="linenos">111</span></a>
+</span><span id="LocalLogger-112"><a href="#LocalLogger-112"><span class="linenos">112</span></a>		<span class="c1"># write the index.html and start_server.py files</span>
+</span><span id="LocalLogger-113"><a href="#LocalLogger-113"><span class="linenos">113</span></a>		<span class="c1"># ----------------------------------------</span>
+</span><span id="LocalLogger-114"><a href="#LocalLogger-114"><span class="linenos">114</span></a>		<span class="kn">from</span><span class="w"> </span><span class="nn">trnbl.loggers.local.html_frontend</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_html_frontend</span>
+</span><span id="LocalLogger-115"><a href="#LocalLogger-115"><span class="linenos">115</span></a>
+</span><span id="LocalLogger-116"><a href="#LocalLogger-116"><span class="linenos">116</span></a>		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_path</span> <span class="o">/</span> <span class="n">FilePaths</span><span class="o">.</span><span class="n">HTML_INDEX</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="LocalLogger-117"><a href="#LocalLogger-117"><span class="linenos">117</span></a>			<span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">get_html_frontend</span><span class="p">())</span>
+</span><span id="LocalLogger-118"><a href="#LocalLogger-118"><span class="linenos">118</span></a>
+</span><span id="LocalLogger-119"><a href="#LocalLogger-119"><span class="linenos">119</span></a>		<span class="kn">import</span><span class="w"> </span><span class="nn">trnbl.loggers.local.start_server</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">start_server_module</span>
+</span><span id="LocalLogger-120"><a href="#LocalLogger-120"><span class="linenos">120</span></a>
+</span><span id="LocalLogger-121"><a href="#LocalLogger-121"><span class="linenos">121</span></a>		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_path</span> <span class="o">/</span> <span class="n">FilePaths</span><span class="o">.</span><span class="n">START_SERVER</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="LocalLogger-122"><a href="#LocalLogger-122"><span class="linenos">122</span></a>			<span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getsource</span><span class="p">(</span><span class="n">start_server_module</span><span class="p">))</span>
+</span><span id="LocalLogger-123"><a href="#LocalLogger-123"><span class="linenos">123</span></a>
+</span><span id="LocalLogger-124"><a href="#LocalLogger-124"><span class="linenos">124</span></a>		<span class="c1"># write init files</span>
+</span><span id="LocalLogger-125"><a href="#LocalLogger-125"><span class="linenos">125</span></a>		<span class="c1"># ----------------------------------------</span>
+</span><span id="LocalLogger-126"><a href="#LocalLogger-126"><span class="linenos">126</span></a>
+</span><span id="LocalLogger-127"><a href="#LocalLogger-127"><span class="linenos">127</span></a>		<span class="c1"># logger metadata</span>
+</span><span id="LocalLogger-128"><a href="#LocalLogger-128"><span class="linenos">128</span></a>		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_path</span> <span class="o">/</span> <span class="n">FilePaths</span><span class="o">.</span><span class="n">LOGGER_META</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="LocalLogger-129"><a href="#LocalLogger-129"><span class="linenos">129</span></a>			<span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger_meta</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="LocalLogger-130"><a href="#LocalLogger-130"><span class="linenos">130</span></a>
+</span><span id="LocalLogger-131"><a href="#LocalLogger-131"><span class="linenos">131</span></a>		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_path</span> <span class="o">/</span> <span class="n">FilePaths</span><span class="o">.</span><span class="n">LOGGER_META_YML</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="LocalLogger-132"><a href="#LocalLogger-132"><span class="linenos">132</span></a>			<span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger_meta</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+</span><span id="LocalLogger-133"><a href="#LocalLogger-133"><span class="linenos">133</span></a>
+</span><span id="LocalLogger-134"><a href="#LocalLogger-134"><span class="linenos">134</span></a>		<span class="c1"># training/model/dataset config</span>
+</span><span id="LocalLogger-135"><a href="#LocalLogger-135"><span class="linenos">135</span></a>		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_path</span> <span class="o">/</span> <span class="n">FilePaths</span><span class="o">.</span><span class="n">TRAIN_CONFIG</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="LocalLogger-136"><a href="#LocalLogger-136"><span class="linenos">136</span></a>			<span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">train_config</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="LocalLogger-137"><a href="#LocalLogger-137"><span class="linenos">137</span></a>
+</span><span id="LocalLogger-138"><a href="#LocalLogger-138"><span class="linenos">138</span></a>		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_path</span> <span class="o">/</span> <span class="n">FilePaths</span><span class="o">.</span><span class="n">TRAIN_CONFIG_YML</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="LocalLogger-139"><a href="#LocalLogger-139"><span class="linenos">139</span></a>			<span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">train_config</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+</span><span id="LocalLogger-140"><a href="#LocalLogger-140"><span class="linenos">140</span></a>
+</span><span id="LocalLogger-141"><a href="#LocalLogger-141"><span class="linenos">141</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;starting logger with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">run_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="LocalLogger-142"><a href="#LocalLogger-142"><span class="linenos">142</span></a>
+</span><span id="LocalLogger-143"><a href="#LocalLogger-143"><span class="linenos">143</span></a>	<span class="nd">@property</span>
+</span><span id="LocalLogger-144"><a href="#LocalLogger-144"><span class="linenos">144</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">_run_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="LocalLogger-145"><a href="#LocalLogger-145"><span class="linenos">145</span></a>		<span class="k">return</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+</span><span id="LocalLogger-146"><a href="#LocalLogger-146"><span class="linenos">146</span></a>
+</span><span id="LocalLogger-147"><a href="#LocalLogger-147"><span class="linenos">147</span></a>	<span class="nd">@property</span>
+</span><span id="LocalLogger-148"><a href="#LocalLogger-148"><span class="linenos">148</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">syllabic_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="LocalLogger-149"><a href="#LocalLogger-149"><span class="linenos">149</span></a>		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_syllabic_id</span>
+</span><span id="LocalLogger-150"><a href="#LocalLogger-150"><span class="linenos">150</span></a>
+</span><span id="LocalLogger-151"><a href="#LocalLogger-151"><span class="linenos">151</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">_get_run_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="LocalLogger-152"><a href="#LocalLogger-152"><span class="linenos">152</span></a>		<span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">group_str</span><span class="si">}</span><span class="s2">h</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_run_hash</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">run_init_timestamp</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%y%m</span><span class="si">%d</span><span class="s1">_%H%M&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">syllabic_id</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="LocalLogger-153"><a href="#LocalLogger-153"><span class="linenos">153</span></a>
+</span><span id="LocalLogger-154"><a href="#LocalLogger-154"><span class="linenos">154</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">get_timestamp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="LocalLogger-155"><a href="#LocalLogger-155"><span class="linenos">155</span></a>		<span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+</span><span id="LocalLogger-156"><a href="#LocalLogger-156"><span class="linenos">156</span></a>
+</span><span id="LocalLogger-157"><a href="#LocalLogger-157"><span class="linenos">157</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="LocalLogger-158"><a href="#LocalLogger-158"><span class="linenos">158</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;(internal) log a progress message&quot;&quot;&quot;</span>
+</span><span id="LocalLogger-159"><a href="#LocalLogger-159"><span class="linenos">159</span></a>		<span class="c1"># TODO: also log messages via regular logger to stdout</span>
+</span><span id="LocalLogger-160"><a href="#LocalLogger-160"><span class="linenos">160</span></a>		<span class="n">msg_dict</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+</span><span id="LocalLogger-161"><a href="#LocalLogger-161"><span class="linenos">161</span></a>			<span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span>
+</span><span id="LocalLogger-162"><a href="#LocalLogger-162"><span class="linenos">162</span></a>			<span class="n">timestamp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_timestamp</span><span class="p">(),</span>
+</span><span id="LocalLogger-163"><a href="#LocalLogger-163"><span class="linenos">163</span></a>		<span class="p">)</span>
+</span><span id="LocalLogger-164"><a href="#LocalLogger-164"><span class="linenos">164</span></a>		<span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span>
+</span><span id="LocalLogger-165"><a href="#LocalLogger-165"><span class="linenos">165</span></a>			<span class="n">msg_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="LocalLogger-166"><a href="#LocalLogger-166"><span class="linenos">166</span></a>
+</span><span id="LocalLogger-167"><a href="#LocalLogger-167"><span class="linenos">167</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">log_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg_dict</span><span class="p">)</span>
+</span><span id="LocalLogger-168"><a href="#LocalLogger-168"><span class="linenos">168</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">msg_dict</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="LocalLogger-169"><a href="#LocalLogger-169"><span class="linenos">169</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+</span><span id="LocalLogger-170"><a href="#LocalLogger-170"><span class="linenos">170</span></a>
+</span><span id="LocalLogger-171"><a href="#LocalLogger-171"><span class="linenos">171</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">debug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="LocalLogger-172"><a href="#LocalLogger-172"><span class="linenos">172</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;log a debug message&quot;&quot;&quot;</span>
+</span><span id="LocalLogger-173"><a href="#LocalLogger-173"><span class="linenos">173</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">__dbg__</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="LocalLogger-174"><a href="#LocalLogger-174"><span class="linenos">174</span></a>
+</span><span id="LocalLogger-175"><a href="#LocalLogger-175"><span class="linenos">175</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="LocalLogger-176"><a href="#LocalLogger-176"><span class="linenos">176</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;log a progress message&quot;&quot;&quot;</span>
+</span><span id="LocalLogger-177"><a href="#LocalLogger-177"><span class="linenos">177</span></a>		<span class="c1"># TODO: also log messages via regular logger to stdout</span>
+</span><span id="LocalLogger-178"><a href="#LocalLogger-178"><span class="linenos">178</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="LocalLogger-179"><a href="#LocalLogger-179"><span class="linenos">179</span></a>		<span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">console_msg_prefix</span> <span class="o">+</span> <span class="n">message</span><span class="p">)</span>
+</span><span id="LocalLogger-180"><a href="#LocalLogger-180"><span class="linenos">180</span></a>
+</span><span id="LocalLogger-181"><a href="#LocalLogger-181"><span class="linenos">181</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="LocalLogger-182"><a href="#LocalLogger-182"><span class="linenos">182</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;log a warning message&quot;&quot;&quot;</span>
+</span><span id="LocalLogger-183"><a href="#LocalLogger-183"><span class="linenos">183</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span>
+</span><span id="LocalLogger-184"><a href="#LocalLogger-184"><span class="linenos">184</span></a>			<span class="sa">f</span><span class="s2">&quot;WARNING: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span id="LocalLogger-185"><a href="#LocalLogger-185"><span class="linenos">185</span></a>			<span class="n">__warning__</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="LocalLogger-186"><a href="#LocalLogger-186"><span class="linenos">186</span></a>			<span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+</span><span id="LocalLogger-187"><a href="#LocalLogger-187"><span class="linenos">187</span></a>		<span class="p">)</span>
+</span><span id="LocalLogger-188"><a href="#LocalLogger-188"><span class="linenos">188</span></a>
+</span><span id="LocalLogger-189"><a href="#LocalLogger-189"><span class="linenos">189</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="LocalLogger-190"><a href="#LocalLogger-190"><span class="linenos">190</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;log an error message&quot;&quot;&quot;</span>
+</span><span id="LocalLogger-191"><a href="#LocalLogger-191"><span class="linenos">191</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span>
+</span><span id="LocalLogger-192"><a href="#LocalLogger-192"><span class="linenos">192</span></a>			<span class="sa">f</span><span class="s2">&quot;ERROR: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span id="LocalLogger-193"><a href="#LocalLogger-193"><span class="linenos">193</span></a>			<span class="n">__error__</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="LocalLogger-194"><a href="#LocalLogger-194"><span class="linenos">194</span></a>			<span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+</span><span id="LocalLogger-195"><a href="#LocalLogger-195"><span class="linenos">195</span></a>		<span class="p">)</span>
+</span><span id="LocalLogger-196"><a href="#LocalLogger-196"><span class="linenos">196</span></a>		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_path</span> <span class="o">/</span> <span class="n">FilePaths</span><span class="o">.</span><span class="n">ERROR_FILE</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="LocalLogger-197"><a href="#LocalLogger-197"><span class="linenos">197</span></a>			<span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="LocalLogger-198"><a href="#LocalLogger-198"><span class="linenos">198</span></a>			<span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;exception at &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_timestamp</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="LocalLogger-199"><a href="#LocalLogger-199"><span class="linenos">199</span></a>			<span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</span><span id="LocalLogger-200"><a href="#LocalLogger-200"><span class="linenos">200</span></a>			<span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="LocalLogger-201"><a href="#LocalLogger-201"><span class="linenos">201</span></a>			<span class="n">f</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+</span><span id="LocalLogger-202"><a href="#LocalLogger-202"><span class="linenos">202</span></a>
+</span><span id="LocalLogger-203"><a href="#LocalLogger-203"><span class="linenos">203</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="LocalLogger-204"><a href="#LocalLogger-204"><span class="linenos">204</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;log a dictionary of metrics&quot;&quot;&quot;</span>
+</span><span id="LocalLogger-205"><a href="#LocalLogger-205"><span class="linenos">205</span></a>		<span class="n">data</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_timestamp</span><span class="p">()</span>
+</span><span id="LocalLogger-206"><a href="#LocalLogger-206"><span class="linenos">206</span></a>
+</span><span id="LocalLogger-207"><a href="#LocalLogger-207"><span class="linenos">207</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">metrics_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span id="LocalLogger-208"><a href="#LocalLogger-208"><span class="linenos">208</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">metrics_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="LocalLogger-209"><a href="#LocalLogger-209"><span class="linenos">209</span></a>
+</span><span id="LocalLogger-210"><a href="#LocalLogger-210"><span class="linenos">210</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">artifact</span><span class="p">(</span>
+</span><span id="LocalLogger-211"><a href="#LocalLogger-211"><span class="linenos">211</span></a>		<span class="bp">self</span><span class="p">,</span>
+</span><span id="LocalLogger-212"><a href="#LocalLogger-212"><span class="linenos">212</span></a>		<span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+</span><span id="LocalLogger-213"><a href="#LocalLogger-213"><span class="linenos">213</span></a>		<span class="nb">type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="LocalLogger-214"><a href="#LocalLogger-214"><span class="linenos">214</span></a>		<span class="n">aliases</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="LocalLogger-215"><a href="#LocalLogger-215"><span class="linenos">215</span></a>		<span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="LocalLogger-216"><a href="#LocalLogger-216"><span class="linenos">216</span></a>	<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="LocalLogger-217"><a href="#LocalLogger-217"><span class="linenos">217</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;log an artifact from a file&quot;&quot;&quot;</span>
+</span><span id="LocalLogger-218"><a href="#LocalLogger-218"><span class="linenos">218</span></a>		<span class="n">artifact_dict</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+</span><span id="LocalLogger-219"><a href="#LocalLogger-219"><span class="linenos">219</span></a>			<span class="n">timestamp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_timestamp</span><span class="p">(),</span>
+</span><span id="LocalLogger-220"><a href="#LocalLogger-220"><span class="linenos">220</span></a>			<span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="o">.</span><span class="n">as_posix</span><span class="p">(),</span>
+</span><span id="LocalLogger-221"><a href="#LocalLogger-221"><span class="linenos">221</span></a>			<span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">,</span>
+</span><span id="LocalLogger-222"><a href="#LocalLogger-222"><span class="linenos">222</span></a>			<span class="n">aliases</span><span class="o">=</span><span class="n">aliases</span><span class="p">,</span>
+</span><span id="LocalLogger-223"><a href="#LocalLogger-223"><span class="linenos">223</span></a>			<span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span> <span class="k">if</span> <span class="n">metadata</span> <span class="k">else</span> <span class="p">{},</span>
+</span><span id="LocalLogger-224"><a href="#LocalLogger-224"><span class="linenos">224</span></a>		<span class="p">)</span>
+</span><span id="LocalLogger-225"><a href="#LocalLogger-225"><span class="linenos">225</span></a>
+</span><span id="LocalLogger-226"><a href="#LocalLogger-226"><span class="linenos">226</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">artifacts_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">artifact_dict</span><span class="p">)</span>
+</span><span id="LocalLogger-227"><a href="#LocalLogger-227"><span class="linenos">227</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">artifacts_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">artifact_dict</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="LocalLogger-228"><a href="#LocalLogger-228"><span class="linenos">228</span></a>
+</span><span id="LocalLogger-229"><a href="#LocalLogger-229"><span class="linenos">229</span></a>	<span class="nd">@property</span>
+</span><span id="LocalLogger-230"><a href="#LocalLogger-230"><span class="linenos">230</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="LocalLogger-231"><a href="#LocalLogger-231"><span class="linenos">231</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;Get the URL for the current logging run&quot;&quot;&quot;</span>
+</span><span id="LocalLogger-232"><a href="#LocalLogger-232"><span class="linenos">232</span></a>		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_path</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
+</span><span id="LocalLogger-233"><a href="#LocalLogger-233"><span class="linenos">233</span></a>
+</span><span id="LocalLogger-234"><a href="#LocalLogger-234"><span class="linenos">234</span></a>	<span class="nd">@property</span>
+</span><span id="LocalLogger-235"><a href="#LocalLogger-235"><span class="linenos">235</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">run_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+</span><span id="LocalLogger-236"><a href="#LocalLogger-236"><span class="linenos">236</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;Get the path to the current logging run&quot;&quot;&quot;</span>
+</span><span id="LocalLogger-237"><a href="#LocalLogger-237"><span class="linenos">237</span></a>		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_path</span>
+</span><span id="LocalLogger-238"><a href="#LocalLogger-238"><span class="linenos">238</span></a>
+</span><span id="LocalLogger-239"><a href="#LocalLogger-239"><span class="linenos">239</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="LocalLogger-240"><a href="#LocalLogger-240"><span class="linenos">240</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+</span><span id="LocalLogger-241"><a href="#LocalLogger-241"><span class="linenos">241</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">metrics_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+</span><span id="LocalLogger-242"><a href="#LocalLogger-242"><span class="linenos">242</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">artifacts_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+</span><span id="LocalLogger-243"><a href="#LocalLogger-243"><span class="linenos">243</span></a>
+</span><span id="LocalLogger-244"><a href="#LocalLogger-244"><span class="linenos">244</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">finish</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="LocalLogger-245"><a href="#LocalLogger-245"><span class="linenos">245</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s2">&quot;closing logger&quot;</span><span class="p">)</span>
+</span><span id="LocalLogger-246"><a href="#LocalLogger-246"><span class="linenos">246</span></a>
+</span><span id="LocalLogger-247"><a href="#LocalLogger-247"><span class="linenos">247</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+</span><span id="LocalLogger-248"><a href="#LocalLogger-248"><span class="linenos">248</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="LocalLogger-249"><a href="#LocalLogger-249"><span class="linenos">249</span></a>
+</span><span id="LocalLogger-250"><a href="#LocalLogger-250"><span class="linenos">250</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">metrics_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+</span><span id="LocalLogger-251"><a href="#LocalLogger-251"><span class="linenos">251</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">metrics_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="LocalLogger-252"><a href="#LocalLogger-252"><span class="linenos">252</span></a>
+</span><span id="LocalLogger-253"><a href="#LocalLogger-253"><span class="linenos">253</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">artifacts_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+</span><span id="LocalLogger-254"><a href="#LocalLogger-254"><span class="linenos">254</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">artifacts_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Base class for training loggers</p>
+</div>
+
+
+                            <div id="LocalLogger.__init__" class="classattr">
+                                        <input id="LocalLogger.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="name">LocalLogger</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">project</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">metric_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>,</span><span class="param">	<span class="n">train_config</span><span class="p">:</span> <span class="nb">dict</span>,</span><span class="param">	<span class="n">group</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>,</span><span class="param">	<span class="n">base_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">=</span> <span class="n">WindowsPath</span><span class="p">(</span><span class="s1">&#39;trnbl-logs&#39;</span><span class="p">)</span>,</span><span class="param">	<span class="n">memusage_as_metrics</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>,</span><span class="param">	<span class="n">console_msg_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;# &#39;</span></span>)</span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="LocalLogger.__init__-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L41-L140" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#LocalLogger.__init__"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LocalLogger.__init__-42"><a href="#LocalLogger.__init__-42"><span class="linenos"> 42</span></a>	<span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="LocalLogger.__init__-43"><a href="#LocalLogger.__init__-43"><span class="linenos"> 43</span></a>		<span class="bp">self</span><span class="p">,</span>
+</span><span id="LocalLogger.__init__-44"><a href="#LocalLogger.__init__-44"><span class="linenos"> 44</span></a>		<span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="LocalLogger.__init__-45"><a href="#LocalLogger.__init__-45"><span class="linenos"> 45</span></a>		<span class="n">metric_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+</span><span id="LocalLogger.__init__-46"><a href="#LocalLogger.__init__-46"><span class="linenos"> 46</span></a>		<span class="n">train_config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+</span><span id="LocalLogger.__init__-47"><a href="#LocalLogger.__init__-47"><span class="linenos"> 47</span></a>		<span class="n">group</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+</span><span id="LocalLogger.__init__-48"><a href="#LocalLogger.__init__-48"><span class="linenos"> 48</span></a>		<span class="n">base_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;trnbl-logs&quot;</span><span class="p">),</span>
+</span><span id="LocalLogger.__init__-49"><a href="#LocalLogger.__init__-49"><span class="linenos"> 49</span></a>		<span class="n">memusage_as_metrics</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="LocalLogger.__init__-50"><a href="#LocalLogger.__init__-50"><span class="linenos"> 50</span></a>		<span class="n">console_msg_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;# &quot;</span><span class="p">,</span>
+</span><span id="LocalLogger.__init__-51"><a href="#LocalLogger.__init__-51"><span class="linenos"> 51</span></a>	<span class="p">):</span>
+</span><span id="LocalLogger.__init__-52"><a href="#LocalLogger.__init__-52"><span class="linenos"> 52</span></a>		<span class="c1"># set up lists</span>
+</span><span id="LocalLogger.__init__-53"><a href="#LocalLogger.__init__-53"><span class="linenos"> 53</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">log_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+</span><span id="LocalLogger.__init__-54"><a href="#LocalLogger.__init__-54"><span class="linenos"> 54</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">metrics_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+</span><span id="LocalLogger.__init__-55"><a href="#LocalLogger.__init__-55"><span class="linenos"> 55</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">artifacts_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+</span><span id="LocalLogger.__init__-56"><a href="#LocalLogger.__init__-56"><span class="linenos"> 56</span></a>
+</span><span id="LocalLogger.__init__-57"><a href="#LocalLogger.__init__-57"><span class="linenos"> 57</span></a>		<span class="c1"># copy kwargs</span>
+</span><span id="LocalLogger.__init__-58"><a href="#LocalLogger.__init__-58"><span class="linenos"> 58</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">train_config</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">train_config</span>
+</span><span id="LocalLogger.__init__-59"><a href="#LocalLogger.__init__-59"><span class="linenos"> 59</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">project</span>
+</span><span id="LocalLogger.__init__-60"><a href="#LocalLogger.__init__-60"><span class="linenos"> 60</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">group</span>
+</span><span id="LocalLogger.__init__-61"><a href="#LocalLogger.__init__-61"><span class="linenos"> 61</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">group_str</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="k">if</span> <span class="n">group</span> <span class="ow">and</span> <span class="n">group</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;-&quot;</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+</span><span id="LocalLogger.__init__-62"><a href="#LocalLogger.__init__-62"><span class="linenos"> 62</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">base_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">base_path</span><span class="p">)</span>
+</span><span id="LocalLogger.__init__-63"><a href="#LocalLogger.__init__-63"><span class="linenos"> 63</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">console_msg_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">console_msg_prefix</span>
+</span><span id="LocalLogger.__init__-64"><a href="#LocalLogger.__init__-64"><span class="linenos"> 64</span></a>
+</span><span id="LocalLogger.__init__-65"><a href="#LocalLogger.__init__-65"><span class="linenos"> 65</span></a>		<span class="c1"># set up id</span>
+</span><span id="LocalLogger.__init__-66"><a href="#LocalLogger.__init__-66"><span class="linenos"> 66</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">_syllabic_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">rand_syllabic_string</span><span class="p">()</span>
+</span><span id="LocalLogger.__init__-67"><a href="#LocalLogger.__init__-67"><span class="linenos"> 67</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">run_init_timestamp</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+</span><span id="LocalLogger.__init__-68"><a href="#LocalLogger.__init__-68"><span class="linenos"> 68</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">run_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_run_id</span><span class="p">()</span>
+</span><span id="LocalLogger.__init__-69"><a href="#LocalLogger.__init__-69"><span class="linenos"> 69</span></a>
+</span><span id="LocalLogger.__init__-70"><a href="#LocalLogger.__init__-70"><span class="linenos"> 70</span></a>		<span class="c1"># set up paths</span>
+</span><span id="LocalLogger.__init__-71"><a href="#LocalLogger.__init__-71"><span class="linenos"> 71</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">project_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_path</span> <span class="o">/</span> <span class="n">project</span>
+</span><span id="LocalLogger.__init__-72"><a href="#LocalLogger.__init__-72"><span class="linenos"> 72</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">_run_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_path</span> <span class="o">/</span> <span class="n">FilePaths</span><span class="o">.</span><span class="n">RUNS_DIR</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_id</span>
+</span><span id="LocalLogger.__init__-73"><a href="#LocalLogger.__init__-73"><span class="linenos"> 73</span></a>		<span class="c1"># make sure the run path doesn&#39;t already exist</span>
+</span><span id="LocalLogger.__init__-74"><a href="#LocalLogger.__init__-74"><span class="linenos"> 74</span></a>		<span class="k">assert</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+</span><span id="LocalLogger.__init__-75"><a href="#LocalLogger.__init__-75"><span class="linenos"> 75</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">_run_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="LocalLogger.__init__-76"><a href="#LocalLogger.__init__-76"><span class="linenos"> 76</span></a>
+</span><span id="LocalLogger.__init__-77"><a href="#LocalLogger.__init__-77"><span class="linenos"> 77</span></a>		<span class="c1"># set up files and objects for logs, artifacts, and metrics</span>
+</span><span id="LocalLogger.__init__-78"><a href="#LocalLogger.__init__-78"><span class="linenos"> 78</span></a>		<span class="c1"># ----------------------------------------</span>
+</span><span id="LocalLogger.__init__-79"><a href="#LocalLogger.__init__-79"><span class="linenos"> 79</span></a>
+</span><span id="LocalLogger.__init__-80"><a href="#LocalLogger.__init__-80"><span class="linenos"> 80</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="p">:</span> <span class="n">io</span><span class="o">.</span><span class="n">TextIOWrapper</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_path</span> <span class="o">/</span> <span class="n">FilePaths</span><span class="o">.</span><span class="n">LOG</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span>
+</span><span id="LocalLogger.__init__-81"><a href="#LocalLogger.__init__-81"><span class="linenos"> 81</span></a>
+</span><span id="LocalLogger.__init__-82"><a href="#LocalLogger.__init__-82"><span class="linenos"> 82</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">metrics_file</span><span class="p">:</span> <span class="n">io</span><span class="o">.</span><span class="n">TextIOWrapper</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span>
+</span><span id="LocalLogger.__init__-83"><a href="#LocalLogger.__init__-83"><span class="linenos"> 83</span></a>			<span class="bp">self</span><span class="o">.</span><span class="n">run_path</span> <span class="o">/</span> <span class="n">FilePaths</span><span class="o">.</span><span class="n">METRICS</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span>
+</span><span id="LocalLogger.__init__-84"><a href="#LocalLogger.__init__-84"><span class="linenos"> 84</span></a>		<span class="p">)</span>
+</span><span id="LocalLogger.__init__-85"><a href="#LocalLogger.__init__-85"><span class="linenos"> 85</span></a>
+</span><span id="LocalLogger.__init__-86"><a href="#LocalLogger.__init__-86"><span class="linenos"> 86</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">artifacts_file</span><span class="p">:</span> <span class="n">io</span><span class="o">.</span><span class="n">TextIOWrapper</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span>
+</span><span id="LocalLogger.__init__-87"><a href="#LocalLogger.__init__-87"><span class="linenos"> 87</span></a>			<span class="bp">self</span><span class="o">.</span><span class="n">run_path</span> <span class="o">/</span> <span class="n">FilePaths</span><span class="o">.</span><span class="n">ARTIFACTS</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span>
+</span><span id="LocalLogger.__init__-88"><a href="#LocalLogger.__init__-88"><span class="linenos"> 88</span></a>		<span class="p">)</span>
+</span><span id="LocalLogger.__init__-89"><a href="#LocalLogger.__init__-89"><span class="linenos"> 89</span></a>
+</span><span id="LocalLogger.__init__-90"><a href="#LocalLogger.__init__-90"><span class="linenos"> 90</span></a>		<span class="c1"># metric names (getting mem usage might cause problems if we have an error)</span>
+</span><span id="LocalLogger.__init__-91"><a href="#LocalLogger.__init__-91"><span class="linenos"> 91</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">metric_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">metric_names</span>
+</span><span id="LocalLogger.__init__-92"><a href="#LocalLogger.__init__-92"><span class="linenos"> 92</span></a>		<span class="k">if</span> <span class="n">memusage_as_metrics</span><span class="p">:</span>
+</span><span id="LocalLogger.__init__-93"><a href="#LocalLogger.__init__-93"><span class="linenos"> 93</span></a>			<span class="bp">self</span><span class="o">.</span><span class="n">metric_names</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_mem_usage</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+</span><span id="LocalLogger.__init__-94"><a href="#LocalLogger.__init__-94"><span class="linenos"> 94</span></a>
+</span><span id="LocalLogger.__init__-95"><a href="#LocalLogger.__init__-95"><span class="linenos"> 95</span></a>		<span class="c1"># put everything in a config</span>
+</span><span id="LocalLogger.__init__-96"><a href="#LocalLogger.__init__-96"><span class="linenos"> 96</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">logger_meta</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+</span><span id="LocalLogger.__init__-97"><a href="#LocalLogger.__init__-97"><span class="linenos"> 97</span></a>			<span class="n">run_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">run_id</span><span class="p">,</span>
+</span><span id="LocalLogger.__init__-98"><a href="#LocalLogger.__init__-98"><span class="linenos"> 98</span></a>			<span class="n">run_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">run_path</span><span class="o">.</span><span class="n">as_posix</span><span class="p">(),</span>
+</span><span id="LocalLogger.__init__-99"><a href="#LocalLogger.__init__-99"><span class="linenos"> 99</span></a>			<span class="n">syllabic_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">syllabic_id</span><span class="p">,</span>
+</span><span id="LocalLogger.__init__-100"><a href="#LocalLogger.__init__-100"><span class="linenos">100</span></a>			<span class="n">group</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">,</span>
+</span><span id="LocalLogger.__init__-101"><a href="#LocalLogger.__init__-101"><span class="linenos">101</span></a>			<span class="n">project</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">,</span>
+</span><span id="LocalLogger.__init__-102"><a href="#LocalLogger.__init__-102"><span class="linenos">102</span></a>			<span class="n">run_init_timestamp</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_init_timestamp</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()),</span>
+</span><span id="LocalLogger.__init__-103"><a href="#LocalLogger.__init__-103"><span class="linenos">103</span></a>			<span class="n">metric_names</span><span class="o">=</span><span class="n">metric_names</span><span class="p">,</span>
+</span><span id="LocalLogger.__init__-104"><a href="#LocalLogger.__init__-104"><span class="linenos">104</span></a>			<span class="n">train_config</span><span class="o">=</span><span class="n">train_config</span><span class="p">,</span>  <span class="c1"># TODO: this duplicates the contents of FilePaths.TRAIN_CONFIG, is that ok?</span>
+</span><span id="LocalLogger.__init__-105"><a href="#LocalLogger.__init__-105"><span class="linenos">105</span></a>		<span class="p">)</span>
+</span><span id="LocalLogger.__init__-106"><a href="#LocalLogger.__init__-106"><span class="linenos">106</span></a>
+</span><span id="LocalLogger.__init__-107"><a href="#LocalLogger.__init__-107"><span class="linenos">107</span></a>		<span class="c1"># write to the project jsonl</span>
+</span><span id="LocalLogger.__init__-108"><a href="#LocalLogger.__init__-108"><span class="linenos">108</span></a>		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_path</span> <span class="o">/</span> <span class="n">FilePaths</span><span class="o">.</span><span class="n">RUNS_MANIFEST</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="LocalLogger.__init__-109"><a href="#LocalLogger.__init__-109"><span class="linenos">109</span></a>			<span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger_meta</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+</span><span id="LocalLogger.__init__-110"><a href="#LocalLogger.__init__-110"><span class="linenos">110</span></a>			<span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="LocalLogger.__init__-111"><a href="#LocalLogger.__init__-111"><span class="linenos">111</span></a>
+</span><span id="LocalLogger.__init__-112"><a href="#LocalLogger.__init__-112"><span class="linenos">112</span></a>		<span class="c1"># write the index.html and start_server.py files</span>
+</span><span id="LocalLogger.__init__-113"><a href="#LocalLogger.__init__-113"><span class="linenos">113</span></a>		<span class="c1"># ----------------------------------------</span>
+</span><span id="LocalLogger.__init__-114"><a href="#LocalLogger.__init__-114"><span class="linenos">114</span></a>		<span class="kn">from</span><span class="w"> </span><span class="nn">trnbl.loggers.local.html_frontend</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_html_frontend</span>
+</span><span id="LocalLogger.__init__-115"><a href="#LocalLogger.__init__-115"><span class="linenos">115</span></a>
+</span><span id="LocalLogger.__init__-116"><a href="#LocalLogger.__init__-116"><span class="linenos">116</span></a>		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_path</span> <span class="o">/</span> <span class="n">FilePaths</span><span class="o">.</span><span class="n">HTML_INDEX</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="LocalLogger.__init__-117"><a href="#LocalLogger.__init__-117"><span class="linenos">117</span></a>			<span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">get_html_frontend</span><span class="p">())</span>
+</span><span id="LocalLogger.__init__-118"><a href="#LocalLogger.__init__-118"><span class="linenos">118</span></a>
+</span><span id="LocalLogger.__init__-119"><a href="#LocalLogger.__init__-119"><span class="linenos">119</span></a>		<span class="kn">import</span><span class="w"> </span><span class="nn">trnbl.loggers.local.start_server</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">start_server_module</span>
+</span><span id="LocalLogger.__init__-120"><a href="#LocalLogger.__init__-120"><span class="linenos">120</span></a>
+</span><span id="LocalLogger.__init__-121"><a href="#LocalLogger.__init__-121"><span class="linenos">121</span></a>		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_path</span> <span class="o">/</span> <span class="n">FilePaths</span><span class="o">.</span><span class="n">START_SERVER</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="LocalLogger.__init__-122"><a href="#LocalLogger.__init__-122"><span class="linenos">122</span></a>			<span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getsource</span><span class="p">(</span><span class="n">start_server_module</span><span class="p">))</span>
+</span><span id="LocalLogger.__init__-123"><a href="#LocalLogger.__init__-123"><span class="linenos">123</span></a>
+</span><span id="LocalLogger.__init__-124"><a href="#LocalLogger.__init__-124"><span class="linenos">124</span></a>		<span class="c1"># write init files</span>
+</span><span id="LocalLogger.__init__-125"><a href="#LocalLogger.__init__-125"><span class="linenos">125</span></a>		<span class="c1"># ----------------------------------------</span>
+</span><span id="LocalLogger.__init__-126"><a href="#LocalLogger.__init__-126"><span class="linenos">126</span></a>
+</span><span id="LocalLogger.__init__-127"><a href="#LocalLogger.__init__-127"><span class="linenos">127</span></a>		<span class="c1"># logger metadata</span>
+</span><span id="LocalLogger.__init__-128"><a href="#LocalLogger.__init__-128"><span class="linenos">128</span></a>		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_path</span> <span class="o">/</span> <span class="n">FilePaths</span><span class="o">.</span><span class="n">LOGGER_META</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="LocalLogger.__init__-129"><a href="#LocalLogger.__init__-129"><span class="linenos">129</span></a>			<span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger_meta</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="LocalLogger.__init__-130"><a href="#LocalLogger.__init__-130"><span class="linenos">130</span></a>
+</span><span id="LocalLogger.__init__-131"><a href="#LocalLogger.__init__-131"><span class="linenos">131</span></a>		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_path</span> <span class="o">/</span> <span class="n">FilePaths</span><span class="o">.</span><span class="n">LOGGER_META_YML</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="LocalLogger.__init__-132"><a href="#LocalLogger.__init__-132"><span class="linenos">132</span></a>			<span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger_meta</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+</span><span id="LocalLogger.__init__-133"><a href="#LocalLogger.__init__-133"><span class="linenos">133</span></a>
+</span><span id="LocalLogger.__init__-134"><a href="#LocalLogger.__init__-134"><span class="linenos">134</span></a>		<span class="c1"># training/model/dataset config</span>
+</span><span id="LocalLogger.__init__-135"><a href="#LocalLogger.__init__-135"><span class="linenos">135</span></a>		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_path</span> <span class="o">/</span> <span class="n">FilePaths</span><span class="o">.</span><span class="n">TRAIN_CONFIG</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="LocalLogger.__init__-136"><a href="#LocalLogger.__init__-136"><span class="linenos">136</span></a>			<span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">train_config</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="LocalLogger.__init__-137"><a href="#LocalLogger.__init__-137"><span class="linenos">137</span></a>
+</span><span id="LocalLogger.__init__-138"><a href="#LocalLogger.__init__-138"><span class="linenos">138</span></a>		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_path</span> <span class="o">/</span> <span class="n">FilePaths</span><span class="o">.</span><span class="n">TRAIN_CONFIG_YML</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="LocalLogger.__init__-139"><a href="#LocalLogger.__init__-139"><span class="linenos">139</span></a>			<span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">train_config</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+</span><span id="LocalLogger.__init__-140"><a href="#LocalLogger.__init__-140"><span class="linenos">140</span></a>
+</span><span id="LocalLogger.__init__-141"><a href="#LocalLogger.__init__-141"><span class="linenos">141</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;starting logger with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">run_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="LocalLogger.log_list" class="classattr">
+                                <div class="attr variable">
+            <span class="name">log_list</span><span class="annotation">: list[dict]</span>
+
+        
+    </div>
+    <a class="headerlink" href="#LocalLogger.log_list"></a>
+    
+    
+
+                            </div>
+                            <div id="LocalLogger.metrics_list" class="classattr">
+                                <div class="attr variable">
+            <span class="name">metrics_list</span><span class="annotation">: list[dict]</span>
+
+        
+    </div>
+    <a class="headerlink" href="#LocalLogger.metrics_list"></a>
+    
+    
+
+                            </div>
+                            <div id="LocalLogger.artifacts_list" class="classattr">
+                                <div class="attr variable">
+            <span class="name">artifacts_list</span><span class="annotation">: list[dict]</span>
+
+        
+    </div>
+    <a class="headerlink" href="#LocalLogger.artifacts_list"></a>
+    
+    
+
+                            </div>
+                            <div id="LocalLogger.train_config" class="classattr">
+                                <div class="attr variable">
+            <span class="name">train_config</span><span class="annotation">: dict</span>
+
+        
+    </div>
+    <a class="headerlink" href="#LocalLogger.train_config"></a>
+    
+    
+
+                            </div>
+                            <div id="LocalLogger.project" class="classattr">
+                                <div class="attr variable">
+            <span class="name">project</span><span class="annotation">: str</span>
+
+        
+    </div>
+    <a class="headerlink" href="#LocalLogger.project"></a>
+    
+    
+
+                            </div>
+                            <div id="LocalLogger.group" class="classattr">
+                                <div class="attr variable">
+            <span class="name">group</span><span class="annotation">: str</span>
+
+        
+    </div>
+    <a class="headerlink" href="#LocalLogger.group"></a>
+    
+    
+
+                            </div>
+                            <div id="LocalLogger.group_str" class="classattr">
+                                <div class="attr variable">
+            <span class="name">group_str</span><span class="annotation">: str</span>
+
+        
+    </div>
+    <a class="headerlink" href="#LocalLogger.group_str"></a>
+    
+    
+
+                            </div>
+                            <div id="LocalLogger.base_path" class="classattr">
+                                <div class="attr variable">
+            <span class="name">base_path</span><span class="annotation">: pathlib.Path</span>
+
+        
+    </div>
+    <a class="headerlink" href="#LocalLogger.base_path"></a>
+    
+    
+
+                            </div>
+                            <div id="LocalLogger.console_msg_prefix" class="classattr">
+                                <div class="attr variable">
+            <span class="name">console_msg_prefix</span><span class="annotation">: str</span>
+
+        
+    </div>
+    <a class="headerlink" href="#LocalLogger.console_msg_prefix"></a>
+    
+    
+
+                            </div>
+                            <div id="LocalLogger.run_init_timestamp" class="classattr">
+                                <div class="attr variable">
+            <span class="name">run_init_timestamp</span><span class="annotation">: datetime.datetime</span>
+
+        
+    </div>
+    <a class="headerlink" href="#LocalLogger.run_init_timestamp"></a>
+    
+    
+
+                            </div>
+                            <div id="LocalLogger.run_id" class="classattr">
+                                <div class="attr variable">
+            <span class="name">run_id</span><span class="annotation">: str</span>
+
+        
+    </div>
+    <a class="headerlink" href="#LocalLogger.run_id"></a>
+    
+    
+
+                            </div>
+                            <div id="LocalLogger.project_path" class="classattr">
+                                <div class="attr variable">
+            <span class="name">project_path</span><span class="annotation">: pathlib.Path</span>
+
+        
+    </div>
+    <a class="headerlink" href="#LocalLogger.project_path"></a>
+    
+    
+
+                            </div>
+                            <div id="LocalLogger.log_file" class="classattr">
+                                <div class="attr variable">
+            <span class="name">log_file</span><span class="annotation">: _io.TextIOWrapper</span>
+
+        
+    </div>
+    <a class="headerlink" href="#LocalLogger.log_file"></a>
+    
+    
+
+                            </div>
+                            <div id="LocalLogger.metrics_file" class="classattr">
+                                <div class="attr variable">
+            <span class="name">metrics_file</span><span class="annotation">: _io.TextIOWrapper</span>
+
+        
+    </div>
+    <a class="headerlink" href="#LocalLogger.metrics_file"></a>
+    
+    
+
+                            </div>
+                            <div id="LocalLogger.artifacts_file" class="classattr">
+                                <div class="attr variable">
+            <span class="name">artifacts_file</span><span class="annotation">: _io.TextIOWrapper</span>
+
+        
+    </div>
+    <a class="headerlink" href="#LocalLogger.artifacts_file"></a>
+    
+    
+
+                            </div>
+                            <div id="LocalLogger.metric_names" class="classattr">
+                                <div class="attr variable">
+            <span class="name">metric_names</span><span class="annotation">: list[str]</span>
+
+        
+    </div>
+    <a class="headerlink" href="#LocalLogger.metric_names"></a>
+    
+    
+
+                            </div>
+                            <div id="LocalLogger.logger_meta" class="classattr">
+                                <div class="attr variable">
+            <span class="name">logger_meta</span><span class="annotation">: dict</span>
+
+        
+    </div>
+    <a class="headerlink" href="#LocalLogger.logger_meta"></a>
+    
+    
+
+                            </div>
+                            <div id="LocalLogger.syllabic_id" class="classattr">
+                                        <input id="LocalLogger.syllabic_id-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr variable">
+            <span class="name">syllabic_id</span><span class="annotation">: str</span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="LocalLogger.syllabic_id-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L146-L148" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#LocalLogger.syllabic_id"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LocalLogger.syllabic_id-147"><a href="#LocalLogger.syllabic_id-147"><span class="linenos">147</span></a>	<span class="nd">@property</span>
+</span><span id="LocalLogger.syllabic_id-148"><a href="#LocalLogger.syllabic_id-148"><span class="linenos">148</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">syllabic_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="LocalLogger.syllabic_id-149"><a href="#LocalLogger.syllabic_id-149"><span class="linenos">149</span></a>		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_syllabic_id</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="LocalLogger.get_timestamp" class="classattr">
+                                        <input id="LocalLogger.get_timestamp-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">get_timestamp</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="nb">str</span>:</span></span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="LocalLogger.get_timestamp-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L153-L154" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#LocalLogger.get_timestamp"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LocalLogger.get_timestamp-154"><a href="#LocalLogger.get_timestamp-154"><span class="linenos">154</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">get_timestamp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="LocalLogger.get_timestamp-155"><a href="#LocalLogger.get_timestamp-155"><span class="linenos">155</span></a>		<span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="LocalLogger.debug" class="classattr">
+                                        <input id="LocalLogger.debug-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">debug</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">message</span><span class="p">:</span> <span class="nb">str</span>, </span><span class="param"><span class="o">**</span><span class="n">kwargs</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="LocalLogger.debug-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L170-L172" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#LocalLogger.debug"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LocalLogger.debug-171"><a href="#LocalLogger.debug-171"><span class="linenos">171</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">debug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="LocalLogger.debug-172"><a href="#LocalLogger.debug-172"><span class="linenos">172</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;log a debug message&quot;&quot;&quot;</span>
+</span><span id="LocalLogger.debug-173"><a href="#LocalLogger.debug-173"><span class="linenos">173</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">__dbg__</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>log a debug message</p>
+</div>
+
+
+                            </div>
+                            <div id="LocalLogger.message" class="classattr">
+                                        <input id="LocalLogger.message-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">message</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">message</span><span class="p">:</span> <span class="nb">str</span>, </span><span class="param"><span class="o">**</span><span class="n">kwargs</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="LocalLogger.message-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L174-L178" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#LocalLogger.message"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LocalLogger.message-175"><a href="#LocalLogger.message-175"><span class="linenos">175</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="LocalLogger.message-176"><a href="#LocalLogger.message-176"><span class="linenos">176</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;log a progress message&quot;&quot;&quot;</span>
+</span><span id="LocalLogger.message-177"><a href="#LocalLogger.message-177"><span class="linenos">177</span></a>		<span class="c1"># TODO: also log messages via regular logger to stdout</span>
+</span><span id="LocalLogger.message-178"><a href="#LocalLogger.message-178"><span class="linenos">178</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="LocalLogger.message-179"><a href="#LocalLogger.message-179"><span class="linenos">179</span></a>		<span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">console_msg_prefix</span> <span class="o">+</span> <span class="n">message</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>log a progress message</p>
+</div>
+
+
+                            </div>
+                            <div id="LocalLogger.warning" class="classattr">
+                                        <input id="LocalLogger.warning-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">warning</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">message</span><span class="p">:</span> <span class="nb">str</span>, </span><span class="param"><span class="o">**</span><span class="n">kwargs</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="LocalLogger.warning-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L180-L186" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#LocalLogger.warning"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LocalLogger.warning-181"><a href="#LocalLogger.warning-181"><span class="linenos">181</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="LocalLogger.warning-182"><a href="#LocalLogger.warning-182"><span class="linenos">182</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;log a warning message&quot;&quot;&quot;</span>
+</span><span id="LocalLogger.warning-183"><a href="#LocalLogger.warning-183"><span class="linenos">183</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span>
+</span><span id="LocalLogger.warning-184"><a href="#LocalLogger.warning-184"><span class="linenos">184</span></a>			<span class="sa">f</span><span class="s2">&quot;WARNING: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span id="LocalLogger.warning-185"><a href="#LocalLogger.warning-185"><span class="linenos">185</span></a>			<span class="n">__warning__</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="LocalLogger.warning-186"><a href="#LocalLogger.warning-186"><span class="linenos">186</span></a>			<span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+</span><span id="LocalLogger.warning-187"><a href="#LocalLogger.warning-187"><span class="linenos">187</span></a>		<span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>log a warning message</p>
+</div>
+
+
+                            </div>
+                            <div id="LocalLogger.error" class="classattr">
+                                        <input id="LocalLogger.error-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">error</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">message</span><span class="p">:</span> <span class="nb">str</span>, </span><span class="param"><span class="o">**</span><span class="n">kwargs</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="LocalLogger.error-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L188-L200" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#LocalLogger.error"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LocalLogger.error-189"><a href="#LocalLogger.error-189"><span class="linenos">189</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="LocalLogger.error-190"><a href="#LocalLogger.error-190"><span class="linenos">190</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;log an error message&quot;&quot;&quot;</span>
+</span><span id="LocalLogger.error-191"><a href="#LocalLogger.error-191"><span class="linenos">191</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span>
+</span><span id="LocalLogger.error-192"><a href="#LocalLogger.error-192"><span class="linenos">192</span></a>			<span class="sa">f</span><span class="s2">&quot;ERROR: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span id="LocalLogger.error-193"><a href="#LocalLogger.error-193"><span class="linenos">193</span></a>			<span class="n">__error__</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="LocalLogger.error-194"><a href="#LocalLogger.error-194"><span class="linenos">194</span></a>			<span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+</span><span id="LocalLogger.error-195"><a href="#LocalLogger.error-195"><span class="linenos">195</span></a>		<span class="p">)</span>
+</span><span id="LocalLogger.error-196"><a href="#LocalLogger.error-196"><span class="linenos">196</span></a>		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_path</span> <span class="o">/</span> <span class="n">FilePaths</span><span class="o">.</span><span class="n">ERROR_FILE</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="LocalLogger.error-197"><a href="#LocalLogger.error-197"><span class="linenos">197</span></a>			<span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="LocalLogger.error-198"><a href="#LocalLogger.error-198"><span class="linenos">198</span></a>			<span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;exception at &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_timestamp</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="LocalLogger.error-199"><a href="#LocalLogger.error-199"><span class="linenos">199</span></a>			<span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</span><span id="LocalLogger.error-200"><a href="#LocalLogger.error-200"><span class="linenos">200</span></a>			<span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="LocalLogger.error-201"><a href="#LocalLogger.error-201"><span class="linenos">201</span></a>			<span class="n">f</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>log an error message</p>
+</div>
+
+
+                            </div>
+                            <div id="LocalLogger.metrics" class="classattr">
+                                        <input id="LocalLogger.metrics-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">metrics</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="LocalLogger.metrics-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L202-L207" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#LocalLogger.metrics"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LocalLogger.metrics-203"><a href="#LocalLogger.metrics-203"><span class="linenos">203</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="LocalLogger.metrics-204"><a href="#LocalLogger.metrics-204"><span class="linenos">204</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;log a dictionary of metrics&quot;&quot;&quot;</span>
+</span><span id="LocalLogger.metrics-205"><a href="#LocalLogger.metrics-205"><span class="linenos">205</span></a>		<span class="n">data</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_timestamp</span><span class="p">()</span>
+</span><span id="LocalLogger.metrics-206"><a href="#LocalLogger.metrics-206"><span class="linenos">206</span></a>
+</span><span id="LocalLogger.metrics-207"><a href="#LocalLogger.metrics-207"><span class="linenos">207</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">metrics_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span id="LocalLogger.metrics-208"><a href="#LocalLogger.metrics-208"><span class="linenos">208</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">metrics_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>log a dictionary of metrics</p>
+</div>
+
+
+                            </div>
+                            <div id="LocalLogger.artifact" class="classattr">
+                                        <input id="LocalLogger.artifact-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">artifact</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span>,</span><span class="param">	<span class="nb">type</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">aliases</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="LocalLogger.artifact-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L209-L226" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#LocalLogger.artifact"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LocalLogger.artifact-210"><a href="#LocalLogger.artifact-210"><span class="linenos">210</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">artifact</span><span class="p">(</span>
+</span><span id="LocalLogger.artifact-211"><a href="#LocalLogger.artifact-211"><span class="linenos">211</span></a>		<span class="bp">self</span><span class="p">,</span>
+</span><span id="LocalLogger.artifact-212"><a href="#LocalLogger.artifact-212"><span class="linenos">212</span></a>		<span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+</span><span id="LocalLogger.artifact-213"><a href="#LocalLogger.artifact-213"><span class="linenos">213</span></a>		<span class="nb">type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="LocalLogger.artifact-214"><a href="#LocalLogger.artifact-214"><span class="linenos">214</span></a>		<span class="n">aliases</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="LocalLogger.artifact-215"><a href="#LocalLogger.artifact-215"><span class="linenos">215</span></a>		<span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="LocalLogger.artifact-216"><a href="#LocalLogger.artifact-216"><span class="linenos">216</span></a>	<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="LocalLogger.artifact-217"><a href="#LocalLogger.artifact-217"><span class="linenos">217</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;log an artifact from a file&quot;&quot;&quot;</span>
+</span><span id="LocalLogger.artifact-218"><a href="#LocalLogger.artifact-218"><span class="linenos">218</span></a>		<span class="n">artifact_dict</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+</span><span id="LocalLogger.artifact-219"><a href="#LocalLogger.artifact-219"><span class="linenos">219</span></a>			<span class="n">timestamp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_timestamp</span><span class="p">(),</span>
+</span><span id="LocalLogger.artifact-220"><a href="#LocalLogger.artifact-220"><span class="linenos">220</span></a>			<span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="o">.</span><span class="n">as_posix</span><span class="p">(),</span>
+</span><span id="LocalLogger.artifact-221"><a href="#LocalLogger.artifact-221"><span class="linenos">221</span></a>			<span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">,</span>
+</span><span id="LocalLogger.artifact-222"><a href="#LocalLogger.artifact-222"><span class="linenos">222</span></a>			<span class="n">aliases</span><span class="o">=</span><span class="n">aliases</span><span class="p">,</span>
+</span><span id="LocalLogger.artifact-223"><a href="#LocalLogger.artifact-223"><span class="linenos">223</span></a>			<span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span> <span class="k">if</span> <span class="n">metadata</span> <span class="k">else</span> <span class="p">{},</span>
+</span><span id="LocalLogger.artifact-224"><a href="#LocalLogger.artifact-224"><span class="linenos">224</span></a>		<span class="p">)</span>
+</span><span id="LocalLogger.artifact-225"><a href="#LocalLogger.artifact-225"><span class="linenos">225</span></a>
+</span><span id="LocalLogger.artifact-226"><a href="#LocalLogger.artifact-226"><span class="linenos">226</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">artifacts_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">artifact_dict</span><span class="p">)</span>
+</span><span id="LocalLogger.artifact-227"><a href="#LocalLogger.artifact-227"><span class="linenos">227</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">artifacts_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">artifact_dict</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>log an artifact from a file</p>
+</div>
+
+
+                            </div>
+                            <div id="LocalLogger.url" class="classattr">
+                                        <input id="LocalLogger.url-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr variable">
+            <span class="name">url</span><span class="annotation">: str</span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="LocalLogger.url-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L228-L231" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#LocalLogger.url"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LocalLogger.url-229"><a href="#LocalLogger.url-229"><span class="linenos">229</span></a>	<span class="nd">@property</span>
+</span><span id="LocalLogger.url-230"><a href="#LocalLogger.url-230"><span class="linenos">230</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="LocalLogger.url-231"><a href="#LocalLogger.url-231"><span class="linenos">231</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;Get the URL for the current logging run&quot;&quot;&quot;</span>
+</span><span id="LocalLogger.url-232"><a href="#LocalLogger.url-232"><span class="linenos">232</span></a>		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_path</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Get the URL for the current logging run</p>
+</div>
+
+
+                            </div>
+                            <div id="LocalLogger.run_path" class="classattr">
+                                        <input id="LocalLogger.run_path-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr variable">
+            <span class="name">run_path</span><span class="annotation">: pathlib.Path</span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="LocalLogger.run_path-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L233-L236" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#LocalLogger.run_path"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LocalLogger.run_path-234"><a href="#LocalLogger.run_path-234"><span class="linenos">234</span></a>	<span class="nd">@property</span>
+</span><span id="LocalLogger.run_path-235"><a href="#LocalLogger.run_path-235"><span class="linenos">235</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">run_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+</span><span id="LocalLogger.run_path-236"><a href="#LocalLogger.run_path-236"><span class="linenos">236</span></a><span class="w">		</span><span class="sd">&quot;&quot;&quot;Get the path to the current logging run&quot;&quot;&quot;</span>
+</span><span id="LocalLogger.run_path-237"><a href="#LocalLogger.run_path-237"><span class="linenos">237</span></a>		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_path</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Get the path to the current logging run</p>
+</div>
+
+
+                            </div>
+                            <div id="LocalLogger.flush" class="classattr">
+                                        <input id="LocalLogger.flush-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">flush</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="LocalLogger.flush-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L238-L241" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#LocalLogger.flush"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LocalLogger.flush-239"><a href="#LocalLogger.flush-239"><span class="linenos">239</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="LocalLogger.flush-240"><a href="#LocalLogger.flush-240"><span class="linenos">240</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+</span><span id="LocalLogger.flush-241"><a href="#LocalLogger.flush-241"><span class="linenos">241</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">metrics_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+</span><span id="LocalLogger.flush-242"><a href="#LocalLogger.flush-242"><span class="linenos">242</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">artifacts_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Flush the logger</p>
+</div>
+
+
+                            </div>
+                            <div id="LocalLogger.finish" class="classattr">
+                                        <input id="LocalLogger.finish-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">finish</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+
+                <div class="source-button-container">
+            <label class="pdoc-button view-source-button" for="LocalLogger.finish-view-source"><span>View Source</span></label>
+            <div class="github-button-wrapper">
+                <a class="pdoc-button github-link-button" href="https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L243-L253" target="_blank">
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <a class="headerlink" href="#LocalLogger.finish"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LocalLogger.finish-244"><a href="#LocalLogger.finish-244"><span class="linenos">244</span></a>	<span class="k">def</span><span class="w"> </span><span class="nf">finish</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="LocalLogger.finish-245"><a href="#LocalLogger.finish-245"><span class="linenos">245</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s2">&quot;closing logger&quot;</span><span class="p">)</span>
+</span><span id="LocalLogger.finish-246"><a href="#LocalLogger.finish-246"><span class="linenos">246</span></a>
+</span><span id="LocalLogger.finish-247"><a href="#LocalLogger.finish-247"><span class="linenos">247</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+</span><span id="LocalLogger.finish-248"><a href="#LocalLogger.finish-248"><span class="linenos">248</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="LocalLogger.finish-249"><a href="#LocalLogger.finish-249"><span class="linenos">249</span></a>
+</span><span id="LocalLogger.finish-250"><a href="#LocalLogger.finish-250"><span class="linenos">250</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">metrics_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+</span><span id="LocalLogger.finish-251"><a href="#LocalLogger.finish-251"><span class="linenos">251</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">metrics_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="LocalLogger.finish-252"><a href="#LocalLogger.finish-252"><span class="linenos">252</span></a>
+</span><span id="LocalLogger.finish-253"><a href="#LocalLogger.finish-253"><span class="linenos">253</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">artifacts_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+</span><span id="LocalLogger.finish-254"><a href="#LocalLogger.finish-254"><span class="linenos">254</span></a>		<span class="bp">self</span><span class="o">.</span><span class="n">artifacts_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Finish logging</p>
+</div>
+
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="base.html#TrainingLoggerBase">trnbl.loggers.base.TrainingLoggerBase</a></dt>
+                                <dd id="LocalLogger.get_mem_usage" class="function"><a href="base.html#TrainingLoggerBase.get_mem_usage">get_mem_usage</a></dd>
+                <dd id="LocalLogger.spinner_task" class="function"><a href="base.html#TrainingLoggerBase.spinner_task">spinner_task</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+    </main>
+<script>
+    function escapeHTML(html) {
+        return document.createElement('div').appendChild(document.createTextNode(html)).parentNode.innerHTML;
+    }
+
+    const originalContent = document.querySelector("main.pdoc");
+    let currentContent = originalContent;
+
+    function setContent(innerHTML) {
+        let elem;
+        if (innerHTML) {
+            elem = document.createElement("main");
+            elem.classList.add("pdoc");
+            elem.innerHTML = innerHTML;
+        } else {
+            elem = originalContent;
+        }
+        if (currentContent !== elem) {
+            currentContent.replaceWith(elem);
+            currentContent = elem;
+        }
+    }
+
+    function getSearchTerm() {
+        return (new URL(window.location)).searchParams.get("search");
+    }
+
+    const searchBox = document.querySelector(".pdoc input[type=search]");
+    searchBox.addEventListener("input", function () {
+        let url = new URL(window.location);
+        if (searchBox.value.trim()) {
+            url.hash = "";
+            url.searchParams.set("search", searchBox.value);
+        } else {
+            url.searchParams.delete("search");
+        }
+        history.replaceState("", "", url.toString());
+        onInput();
+    });
+    window.addEventListener("popstate", onInput);
+
+
+    let search, searchErr;
+
+    async function initialize() {
+        try {
+            search = await new Promise((resolve, reject) => {
+                const script = document.createElement("script");
+                script.type = "text/javascript";
+                script.async = true;
+                script.onload = () => resolve(window.pdocSearch);
+                script.onerror = (e) => reject(e);
+                script.src = "../../search.js";
+                document.getElementsByTagName("head")[0].appendChild(script);
+            });
+        } catch (e) {
+            console.error("Cannot fetch pdoc search index");
+            searchErr = "Cannot fetch search index.";
+        }
+        onInput();
+
+        document.querySelector("nav.pdoc").addEventListener("click", e => {
+            if (e.target.hash) {
+                searchBox.value = "";
+                searchBox.dispatchEvent(new Event("input"));
+            }
+        });
+    }
+
+    function onInput() {
+        setContent((() => {
+            const term = getSearchTerm();
+            if (!term) {
+                return null
+            }
+            if (searchErr) {
+                return `<h3>Error: ${searchErr}</h3>`
+            }
+            if (!search) {
+                return "<h3>Searching...</h3>"
+            }
+
+            window.scrollTo({top: 0, left: 0, behavior: 'auto'});
+
+            const results = search(term);
+
+            let html;
+            if (results.length === 0) {
+                html = `No search results for '${escapeHTML(term)}'.`
+            } else {
+                html = `<h4>${results.length} search result${results.length > 1 ? "s" : ""} for '${escapeHTML(term)}'.</h4>`;
+            }
+            for (let result of results.slice(0, 10)) {
+                let doc = result.doc;
+                let url = `../../${doc.modulename.replaceAll(".", "/")}.html`;
+                if (doc.qualname) {
+                    url += `#${doc.qualname}`;
+                }
+
+                let heading;
+                switch (result.doc.kind) {
+                    case "function":
+                        if (doc.fullname.endsWith(".__init__")) {
+                            heading = `<span class="name">${doc.fullname.replace(/\.__init__$/, "")}</span>${doc.signature}`;
+                        } else {
+                            heading = `<span class="def">${doc.funcdef}</span> <span class="name">${doc.fullname}</span>${doc.signature}`;
+                        }
+                        break;
+                    case "class":
+                        heading = `<span class="def">class</span> <span class="name">${doc.fullname}</span>`;
+                        if (doc.bases)
+                            heading += `<wbr>(<span class="base">${doc.bases}</span>)`;
+                        heading += `:`;
+                        break;
+                    case "variable":
+                        heading = `<span class="name">${doc.fullname}</span>`;
+                        if (doc.annotation)
+                            heading += `<span class="annotation">${doc.annotation}</span>`;
+                        if (doc.default_value)
+                            heading += `<span class="default_value"> = ${doc.default_value}</span>`;
+                        break;
+                    default:
+                        heading = `<span class="name">${doc.fullname}</span>`;
+                        break;
+                }
+                html += `
+                        <section class="search-result">
+                        <a href="${url}" class="attr ${doc.kind}">${heading}</a>
+                        <div class="docstring">${doc.doc}</div>
+                        </section>
+                    `;
+
+            }
+            return html;
+        })());
+    }
+
+    if (getSearchTerm()) {
+        initialize();
+        searchBox.value = getSearchTerm();
+        onInput();
+    } else {
+        searchBox.addEventListener("focus", initialize, {once: true});
+    }
+
+    searchBox.addEventListener("keydown", e => {
+        if (["ArrowDown", "ArrowUp", "Enter"].includes(e.key)) {
+            let focused = currentContent.querySelector(".search-result.focused");
+            if (!focused) {
+                currentContent.querySelector(".search-result").classList.add("focused");
+            } else if (
+                e.key === "ArrowDown"
+                && focused.nextElementSibling
+                && focused.nextElementSibling.classList.contains("search-result")
+            ) {
+                focused.classList.remove("focused");
+                focused.nextElementSibling.classList.add("focused");
+                focused.nextElementSibling.scrollIntoView({
+                    behavior: "smooth",
+                    block: "nearest",
+                    inline: "nearest"
+                });
+            } else if (
+                e.key === "ArrowUp"
+                && focused.previousElementSibling
+                && focused.previousElementSibling.classList.contains("search-result")
+            ) {
+                focused.classList.remove("focused");
+                focused.previousElementSibling.classList.add("focused");
+                focused.previousElementSibling.scrollIntoView({
+                    behavior: "smooth",
+                    block: "nearest",
+                    inline: "nearest"
+                });
+            } else if (
+                e.key === "Enter"
+            ) {
+                focused.querySelector("a").click();
+            }
+        }
+    });
+</script></body>
+</html>

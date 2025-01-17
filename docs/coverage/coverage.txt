@@ -1,0 +1,22 @@
+Name                                            Stmts   Miss  Cover   Missing
+-----------------------------------------------------------------------------
+tests\unit\loggers\test_local_logger.py            70      0   100%
+tests\unit\loggers\test_tensorboard_logger.py     104      0   100%
+tests\unit\test_tm_integration.py                  86      0   100%
+tests\unit\test_training_interval.py              152      0   100%
+tests\unit\test_training_manager.py               216      4    98%   83, 228, 423-424
+trnbl\__init__.py                                   4      0   100%
+trnbl\loggers\__init__.py                           1      0   100%
+trnbl\loggers\base.py                              94     26    72%   16-18, 26-28, 60-61, 65-70, 74-75, 78, 87, 92, 96, 100, 105, 116, 122, 128, 133, 138, 162-163, 169
+trnbl\loggers\local\__init__.py                     2      0   100%
+trnbl\loggers\local\build_dist.py                 106    106     0%   1-251
+trnbl\loggers\local\html_frontend.py                4      1    75%   6
+trnbl\loggers\local\locallogger.py                123      9    93%   182, 190-200, 231
+trnbl\loggers\local\start_server.py                18     13    28%   10-15, 19-29
+trnbl\loggers\multi.py                             38     38     0%   1-71
+trnbl\loggers\tensorboard.py                       45      1    98%   51
+trnbl\loggers\wandb.py                             46     46     0%   1-100
+trnbl\training_interval.py                        118      7    94%   89, 97, 118, 169-170, 222-223
+trnbl\training_manager.py                         146     11    92%   12-13, 51-52, 274, 279, 284, 388-389, 445-446
+-----------------------------------------------------------------------------
+TOTAL                                            1373    262    81%

@@ -2,10 +2,7 @@
 # configuration & variables
 # ==================================================
 
-# !!! MODIFY AT LEAST THIS PART TO SUIT YOUR PROJECT !!!
-# it assumes that the source is in a directory named the same as the package name
-# this also gets passed to some other places
-PACKAGE_NAME := myproject
+PACKAGE_NAME := trnbl
 
 # for checking you are on the right branch when publishing
 PUBLISH_BRANCH := main
@@ -23,6 +20,15 @@ TESTS_DIR := tests/
 
 # tests temp directory to clean up. will remove this in `make clean`
 TESTS_TEMP_DIR := _temp/
+
+# some custom variables
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# notebook testing
+NOTEBOOKS_DIR := notebooks
+CONVERTED_NOTEBOOKS_TEMP_DIR := tests/_temp/notebooks
+# where the html frontend will be stored after minification
+HTML_FRONTEND_FILE := ../html_frontend.py
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # probably don't change these:
 # --------------------------------------------------
@@ -452,14 +458,34 @@ typing: clean
 	$(PYTHON) -m mypy --config-file $(PYPROJECT) $(TYPECHECK_ARGS) $(PACKAGE_NAME)/
 	$(PYTHON) -m mypy --config-file $(PYPROJECT) $(TYPECHECK_ARGS) $(TESTS_DIR)/
 
-.PHONY: test
-test: clean
+# separate target for running unit tests
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.PHONY: test-unit
+test-unit: clean
 	@echo "running tests"
 	$(PYTHON) -m pytest $(PYTEST_OPTIONS) $(TESTS_DIR)
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .PHONY: check
 check: clean format-check test typing
 	@echo "run format checks, tests, and typing checks"
+
+# notebook conversion, tests, and all tests
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.PHONY: convert_notebooks
+convert_notebooks:
+	@echo "convert notebooks in $(NOTEBOOKS_DIR) using muutils.nbutils.convert_ipynb_to_script.py"
+	$(PYTHON) -m muutils.nbutils.convert_ipynb_to_script $(NOTEBOOKS_DIR) --output_dir $(CONVERTED_NOTEBOOKS_TEMP_DIR) --disable_plots
+
+.PHONY: test-notebooks
+test-notebooks: convert_notebooks
+	@echo "run tests on converted notebooks in $(CONVERTED_NOTEBOOKS_TEMP_DIR) using muutils.nbutils.run_notebook_tests.py"
+	$(PYTHON) -m muutils.nbutils.run_notebook_tests --notebooks-dir=$(NOTEBOOKS_DIR) --converted-notebooks-temp-dir=$(CONVERTED_NOTEBOOKS_TEMP_DIR)
+
+.PHONY: test
+test: test-unit test-notebooks
+	@echo "run unit tests"
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # ==================================================
 # coverage & docs
@@ -510,8 +536,11 @@ cov:
 	rm -rf $(COVERAGE_REPORTS_DIR)/html/.gitignore
 
 # runs the coverage report, then the docs, then the combined docs
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# this also runs `update-demo-frontend`
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .PHONY: docs
-docs: cov docs-html docs-combined
+docs: cov docs-html docs-combined update-demo-frontend
 	@echo "generate all documentation and coverage reports"
 
 # removed all generated documentation files, but leaves the templates and the `docs/make_docs.py` script
@@ -532,6 +561,36 @@ docs-clean:
 # ==================================================
 # build and publish
 # ==================================================
+
+
+# building and updating the frontend
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.PHONY: build-frontend
+build-frontend:
+	@echo "building html frontend"
+	cd $(PACKAGE_NAME)/loggers/local/frontend_src/; \
+	echo "def get_html_frontend() -> str:" > $(HTML_FRONTEND_FILE); \
+	echo "    return (" >> $(HTML_FRONTEND_FILE); \
+	$(PYTHON) -m trnbl.loggers.local.build_dist --pkg-info ../../../../$(PYPROJECT) --json index_src.html >> $(HTML_FRONTEND_FILE); \
+	echo ")" >> $(HTML_FRONTEND_FILE); \
+	echo "if __name__ == '__main__':" >> $(HTML_FRONTEND_FILE); \
+	echo "    print(get_html_frontend())" >> $(HTML_FRONTEND_FILE); \
+	$(PYTHON) -m ruff format --config ../../../../$(PYPROJECT) $(HTML_FRONTEND_FILE)
+
+.PHONY: update-demo-frontend
+update-demo-frontend: build-frontend
+	@echo "update frontend html for iris demo"
+	pwd
+	$(PYTHON) -m trnbl.loggers.local.html_frontend > demos/local/iris-demo/index.html
+
+.PHONY: copy-dev-frontend
+copy-dev-frontend:
+	@echo "update frontend html with raw dev version for iris demo"
+	pwd
+	cp trnbl/loggers/local/frontend_src/index_src.html demos/local/iris-demo/index.html
+	cp trnbl/loggers/local/frontend_src/dashboard.js demos/local/iris-demo/dashboard.js
+	cp trnbl/loggers/local/frontend_src/style.css demos/local/iris-demo/style.css
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # verifies that the current branch is $(PUBLISH_BRANCH) and that git is clean
 # used before publishing

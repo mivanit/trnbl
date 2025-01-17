@@ -1,59 +1,85 @@
-[tool.poetry]
+[project]
 name = "trnbl"
-version = "0.0.2"
+version = "0.1.0"
 description = "training manager and loggers"
-license = "GPL-3.0-only"
-homepage = "https://github.com/mivanit/trnbl"
-repository = "https://github.com/mivanit/trnbl"
-authors = ["mivanit <mivanits@umich.edu>"]
 readme = "README.md"
-packages = [{include = "trnbl"}]
 classifiers=[
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Operating System :: OS Independent",
 ]
 
-[tool.poetry.dependencies]
-python = "^3.10"
-muutils = "^0.6.7"
-tqdm = "^4.66.4"
-pyyaml = "^6.0.1 "
-# optional
-wandb = {version = "^0.16.6", optional = true}
-tensorboard = {version = "^2.17.0", optional = true}
-numpy = {version = "^1.12.0", optional = true} # tensorboard breaks with numpy >=2.0.0
-gputil = {version = "^1.4.0", optional = true}
-psutil = {version = "^5.9.8", optional = true}
+requires-python = ">=3.10"
 
-[tool.poetry.group.lint.dependencies]
-# python formatting / linting
-ruff = "^0.4.8"
-pycln = "^2.1.3"
+dependencies = [
+    "muutils>=0.6.19",
+    "tqdm>=4.66.4",
+    "pyyaml>=6.0.1",
+]
 
-[tool.poetry.group.dev.dependencies]
-pytest = "^7.2.1"
-mypy = "^1.0.1"
-# coverage
-pytest-cov = "^4.1.0"
-coverage-badge = "^1.1.0"
-# frontend minification
-rjsmin = "^1.2.2"
-rcssmin = "^1.1.2"
-minify-html = "^0.15.0"
-beautifulsoup4 = "^4.12.3"
-# type hints
-torch = "^2.0.0"
-# running demo
-pandas = "^2.2.2"
-ipykernel = "^6.29.5"
+[dependency-groups]
+dev = [
+    # frontend minification
+    "rjsmin>=1.2.2",
+    "rcssmin>=1.1.2",
+    "minify-html>=0.15.0",
+    "beautifulsoup4>=4.12.3",
+    # type hints
+    "torch>=2.0.0",
+    # running demo
+    "pandas>=2.2.2",
+    "ipykernel>=6.29.5",
+	# test
+	"pytest>=8.2.2",
+	# coverage
+	"pytest-cov>=4.1.0",
+	"coverage-badge>=1.1.0",
+	# type checking
+	"mypy>=1.0.1",
+	# docs
+	'pdoc>=14.6.0',
+	# tomli since no tomlib in python < 3.11
+	"tomli>=2.1.0; python_version < '3.11'",
+]
+lint = [
+	# lint
+	"pycln>=2.1.3",
+	"ruff>=0.4.8",
+]
 
-[tool.poetry.extras]
-wandb = ["wandb"]
-tensorboard = ["tensorboard", "numpy"]
-monitoring = ["gputil", "psutil"]
+
+[project.optional-dependencies]
+wandb = [
+    "wandb>=0.16.6",
+]
+tensorboard = [
+    "tensorboard>=2.17.0",
+    "numpy>=1.12.0",
+]
+monitoring = [
+    "gputil>=1.4.0",
+    "psutil>=5.9.8",
+]
+
+
+
+[tool.uv]
+default-groups = ["dev", "lint"]
+
+[project.urls]
+Homepage = "https://miv.name/trnbl"
+Documentation = "https://miv.name/trnbl"
+Repository = "https://github.com/mivanit/trnbl"
+Issues = "https://github.com/mivanit/trnbl/issues"
+
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 
 # pytest cfg
 [tool.pytest.ini_options]
@@ -67,12 +93,29 @@ filterwarnings = [
 
 # ruff config
 [tool.ruff]
-exclude = ["trnbl/_old/**"]
+exclude = ["trnbl/_old/**", "__pycache__"]
 
 [tool.ruff.format]
 indent-style = "tab"
 skip-magic-trailing-comma = false
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+
+# Custom export configurations
+[tool.uv-exports]
+args = [
+	"--no-hashes"
+]
+exports = [
+	# no groups, no extras, just the base dependencies
+    { name = "base", groups = false, extras = false },
+	# all extras but no groups
+    { name = "extras", groups = false, extras = true },
+	# include the dev group (this is the default behavior)
+    { name = "dev", groups = ["dev"] },
+	# only the lint group -- custom options for this
+	{ name = "lint", options = ["--only-group", "lint"] },
+	# all groups and extras
+    { name = "all", filename="requirements.txt", groups = true, extras=true },
+	# all groups and extras, a different way
+	{ name = "all", groups = true, options = ["--all-extras"] },
+]

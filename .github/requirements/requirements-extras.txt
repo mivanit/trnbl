@@ -15,7 +15,7 @@ grpcio==1.69.0
 idna==3.10
 markdown==3.7
 markupsafe==3.0.2
-muutils==0.6.19
+muutils==0.6.20
 numpy==2.2.1
 packaging==24.2
 platformdirs==4.3.6

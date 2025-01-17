@@ -2,6 +2,6 @@
 #    uv export --no-hashes --no-group dev --no-group lint
 -e .
 colorama==0.4.6 ; sys_platform == 'win32'
-muutils==0.6.19
+muutils==0.6.20
 pyyaml==6.0.2
 tqdm==4.67.1

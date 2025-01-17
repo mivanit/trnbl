@@ -6,38 +6,35 @@ import json
 
 from bs4 import BeautifulSoup, Tag  # type: ignore[import-untyped]
 
+
 @overload
 def get_remote(
 	path_or_url: str,
 	download_remote: bool = False,
 	get_bytes: Literal[False] = False,
 	allow_remote_fail: Literal[False] = False,
-) -> str:
-	...
+) -> str: ...
 @overload
 def get_remote(
 	path_or_url: str,
 	download_remote: bool = False,
 	get_bytes: Literal[True] = True,
 	allow_remote_fail: Literal[False] = False,
-) -> bytes:
-	...
+) -> bytes: ...
 @overload
 def get_remote(
 	path_or_url: str,
 	download_remote: bool = False,
 	get_bytes: Literal[False] = False,
 	allow_remote_fail: bool = False,
-) -> str | None:
-	...
+) -> str | None: ...
 @overload
 def get_remote(
 	path_or_url: str,
 	download_remote: bool = False,
 	get_bytes: Literal[True] = True,
 	allow_remote_fail: bool = False,
-) -> bytes | None:
-	...
+) -> bytes | None: ...
 def get_remote(
 	path_or_url: str,
 	download_remote: bool = False,
@@ -65,7 +62,7 @@ def get_remote(
 	# Raises:
 	 - `requests.HTTPError`
 	   if the remote resource returns an error, and `allow_remote_fail` is `False`
-	
+
 	# Returns:
 	 - `str|bytes|None`
 	"""

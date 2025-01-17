@@ -1,6 +1,10 @@
 from typing import Union, Any
 import pytest
-from trnbl.training_interval import TrainingInterval, IntervalValueError
+from trnbl.training_interval import (
+	TrainingInterval,
+	IntervalValueError,
+	TrainingIntervalUnit,
+)
 
 
 def test_as_batch_count():
@@ -202,7 +206,9 @@ def test_unpacking():
 		(1e-10, "epochs"),
 	],
 )
-def test_very_small_values(quantity: Union[int, float], unit: str) -> None:
+def test_very_small_values(
+	quantity: Union[int, float], unit: TrainingIntervalUnit
+) -> None:
 	interval = TrainingInterval(quantity, unit)
 	assert interval.quantity == quantity
 	assert interval.unit == unit
@@ -236,7 +242,7 @@ def test_samples_rounding(quantity: float) -> None:
 )
 def test_as_batch_count_edge_cases(
 	quantity: Union[int, float],
-	unit: str,
+	unit: TrainingIntervalUnit,
 	batchsize: int,
 	batches_per_epoch: int,
 	epochs: int,

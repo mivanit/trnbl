@@ -143,8 +143,8 @@ def test_training_manager_enter(training_manager: TrainingManager) -> None:
 
 
 def test_training_manager_exit_normal(training_manager: TrainingManager) -> None:
-	training_manager._save_checkpoint = MagicMock()
-	training_manager.logger.finish = MagicMock()
+	training_manager._save_checkpoint = MagicMock()  # type: ignore[method-assign]
+	training_manager.logger.finish = MagicMock()  # type: ignore[method-assign]
 
 	with training_manager:
 		pass
@@ -154,9 +154,9 @@ def test_training_manager_exit_normal(training_manager: TrainingManager) -> None
 
 
 def test_training_manager_exit_exception(training_manager: TrainingManager) -> None:
-	training_manager._save_checkpoint = MagicMock()
-	training_manager.logger.error = MagicMock()
-	training_manager.logger.finish = MagicMock()
+	training_manager._save_checkpoint = MagicMock()  # type: ignore[method-assign]
+	training_manager.logger.error = MagicMock()  # type: ignore[method-assign]
+	training_manager.logger.finish = MagicMock()  # type: ignore[method-assign]
 
 	with pytest.raises(ValueError):
 		with training_manager:
@@ -210,7 +210,7 @@ def test_training_manager_get_format_kwargs(training_manager: TrainingManager) -
 
 
 def test_training_manager_batch_update_new(training_manager: TrainingManager) -> None:
-	training_manager._save_checkpoint = MagicMock()
+	training_manager._save_checkpoint = MagicMock()  # type: ignore[method-assign]
 
 	initial_samples: int = training_manager.samples
 	initial_batches: int = training_manager.batches

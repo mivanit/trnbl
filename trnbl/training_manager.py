@@ -1,6 +1,6 @@
 import time
 from types import TracebackType
-from typing import Any, Callable, Iterable, Type, TypeVar, Generator, Sequence
+from typing import Any, Callable, Generic, Iterable, Type, TypeVar, Generator, Sequence
 from pathlib import Path
 import warnings
 
@@ -90,7 +90,10 @@ def wrapped_iterable(
 		# no need to call batch_update, since the user has to call batch_update to log metrics
 
 
-class TrainingManager:
+TLogger = TypeVar("TLogger", bound=TrainingLoggerBase)
+
+
+class TrainingManager(Generic[TLogger]):
 	"""context manager for training a model, with logging, evals, and checkpoints
 
 	# Parameters:
@@ -99,7 +102,7 @@ class TrainingManager:
 	- `dataloader : torch.utils.data.DataLoader`
 	    ref to dataloader being used - used for calculating training progress
 	- `logger : TrainingLoggerBase`
-	    logger, which can be local or interface with wandb
+	    logger, which can be local or interface with wandb.
 	- `epochs : int`
 	    number of epochs to train for
 	    (defaults to `1`)
@@ -164,7 +167,7 @@ class TrainingManager:
 	def __init__(
 		self,
 		model: "torch.nn.Module",
-		logger: TrainingLoggerBase,
+		logger: TLogger,
 		# required if you don't wrap the loops
 		dataloader: "torch.utils.data.DataLoader|None" = None,
 		epochs_total: int | None = None,
@@ -183,7 +186,7 @@ class TrainingManager:
 		self.start_time: float = time.time()
 		# non path and non-interval args get copied over directly
 		self.model: "torch.nn.Module" = model
-		self.logger: TrainingLoggerBase = logger
+		self.logger: TLogger = logger
 		self.save_model: Callable[["torch.nn.Module", Path], None] = save_model
 
 		self.logger.message("starting training manager initialization")
@@ -276,7 +279,7 @@ class TrainingManager:
 			raise TrainingManagerInitError(
 				f"Dataloader has a batch size of 0. Please provide a dataloader with a non-zero batch size. {self.batch_size = }"
 			)
-		
+
 		if self.batch_size is None:
 			warnings.warn(
 				"batch size is None. This is likely because the dataloader passed to `TrainingManager` does not have a `batch_size` attribute."

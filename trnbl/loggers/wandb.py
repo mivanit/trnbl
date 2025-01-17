@@ -46,7 +46,7 @@ class WandbLogger(TrainingLoggerBase):
 
 		logger: WandbLogger = WandbLogger(run)
 		# TODO: why are we ignoring type checking here?
-		logger.progress(f"{config =}") # type: ignore[attr-defined]
+		logger.progress(f"{config =}")  # type: ignore[attr-defined]
 		return logger
 
 	def debug(self, message: str, **kwargs) -> None:

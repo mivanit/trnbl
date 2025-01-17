@@ -46,6 +46,15 @@ wheels = [
 ]
 
 [[package]]
+name = "attrs"
+version = "24.3.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/48/c8/6260f8ccc11f0917360fc0da435c5c9c7504e3db174d5a12a1494887b045/attrs-24.3.0.tar.gz", hash = "sha256:8f5c07333d543103541ba7be0e2ce16eeee8130cb0b3f9238ab904ce1e85baff", size = 805984 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/89/aa/ab0f7891a01eeb2d2e338ae8fecbe57fcebea1a24dbb64d45801bfab481d/attrs-24.3.0-py3-none-any.whl", hash = "sha256:ac96cd038792094f438ad1f6ff80837353805ac950cd2aa0e0625ef19850c308", size = 63397 },
+]
+
+[[package]]
 name = "beautifulsoup4"
 version = "4.12.3"
 source = { registry = "https://pypi.org/simple" }
@@ -55,6 +64,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/b3/ca/824b1195773ce6166d388573fc106ce56d4a805bd7427b624e063596ec58/beautifulsoup4-4.12.3.tar.gz", hash = "sha256:74e3d1928edc070d21748185c46e3fb33490f22f52a3addee9aee0f4f7781051", size = 581181 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b1/fe/e8c672695b37eecc5cbf43e1d0638d88d66ba3a44c4d321c796f4e59167f/beautifulsoup4-4.12.3-py3-none-any.whl", hash = "sha256:b80878c9f40111313e55da8ba20bdba06d8fa3969fc68304167741bbf9e082ed", size = 147925 },
+]
+
+[[package]]
+name = "bracex"
+version = "2.5.post1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d6/6c/57418c4404cd22fe6275b8301ca2b46a8cdaa8157938017a9ae0b3edf363/bracex-2.5.post1.tar.gz", hash = "sha256:12c50952415bfa773d2d9ccb8e79651b8cdb1f31a42f6091b804f6ba2b4a66b6", size = 26641 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4b/02/8db98cdc1a58e0abd6716d5e63244658e6e63513c65f469f34b6f1053fd0/bracex-2.5.post1-py3-none-any.whl", hash = "sha256:13e5732fec27828d6af308628285ad358047cec36801598368cb28bc631dbaf6", size = 11558 },
 ]
 
 [[package]]
@@ -182,6 +200,19 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/cd/e5/131d2fb1b0dddafc37be4f3a2fa79aa4c037368be9423061dccadfd90091/charset_normalizer-3.4.1-cp313-cp313-win32.whl", hash = "sha256:eb8178fe3dba6450a3e024e95ac49ed3400e506fd4e9e5c32d30adda88cbd407", size = 95391 },
     { url = "https://files.pythonhosted.org/packages/27/f2/4f9a69cc7712b9b5ad8fdb87039fd89abba997ad5cbe690d1835d40405b0/charset_normalizer-3.4.1-cp313-cp313-win_amd64.whl", hash = "sha256:b1ac5992a838106edb89654e0aebfc24f5848ae2547d22c2c3f66454daa11971", size = 102702 },
     { url = "https://files.pythonhosted.org/packages/0e/f6/65ecc6878a89bb1c23a086ea335ad4bf21a588990c3f535a227b9eea9108/charset_normalizer-3.4.1-py3-none-any.whl", hash = "sha256:d98b1668f06378c6dbefec3b92299716b931cd4e6061f3c875a71ced1780ab85", size = 49767 },
+]
+
+[[package]]
+name = "cli-exit-tools"
+version = "1.2.7"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "click", marker = "python_full_version >= '3.11'" },
+    { name = "lib-detect-testenv", marker = "python_full_version >= '3.11'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c1/31/cdfa180d48d35df219dea166b6932a190c90de2a30c4c0243243abd6eba7/cli_exit_tools-1.2.7.tar.gz", hash = "sha256:e752427a4aa9db1f18370c8dc11ebef6e245cc5891ec2fa79e7169be583c2423", size = 31417 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4e/04/99c10558a3f6e7b817d16bfcd56caf12ac0c0cfd5944f26b1bf5fe2f3a30/cli_exit_tools-1.2.7-py3-none-any.whl", hash = "sha256:bdfdd8b0613e49faf6f4d8695328ce815858f980ea8ab2ddb69867ca1970e551", size = 11912 },
 ]
 
 [[package]]
@@ -460,6 +491,22 @@ wheels = [
 ]
 
 [[package]]
+name = "igittigitt"
+version = "2.1.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "attrs", marker = "python_full_version >= '3.11'" },
+    { name = "cli-exit-tools", marker = "python_full_version >= '3.11'" },
+    { name = "click", marker = "python_full_version >= '3.11'" },
+    { name = "lib-detect-testenv", marker = "python_full_version >= '3.11'" },
+    { name = "wcmatch", marker = "python_full_version >= '3.11'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8f/a1/c43c5e9fb8308419d6bc9c0316e214fa08229d4c3a00b08bbfddd81aa8f4/igittigitt-2.1.5.tar.gz", hash = "sha256:7ef4984bbd53b7d5832ba547926eb49774f15556bb08506273362e92b978b58a", size = 47796 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/73/13/0d67c39993c4f3ff78daae24fd3e3524e2f170e035e05f29c4e2f4eabd88/igittigitt-2.1.5-py3-none-any.whl", hash = "sha256:bf21d657b770fea35cbe3d4f2a62f6222065460c52ca897f271bd389ec1e79af", size = 17410 },
+]
+
+[[package]]
 name = "iniconfig"
 version = "2.0.0"
 source = { registry = "https://pypi.org/simple" }
@@ -569,6 +616,15 @@ wheels = [
 ]
 
 [[package]]
+name = "lib-detect-testenv"
+version = "2.0.8"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/8d/5a/2e46392372517291fab9c0a05fb5aea377876d19f5db5755d005ffab3666/lib_detect_testenv-2.0.8.tar.gz", hash = "sha256:96527b3114727e70e80f671c204a225ae6aaaf117983f8fa4f56e542b2368d43", size = 27803 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f7/89/02e671d232234bfdd058e792d2e522255208bbcc59cf618c2a92e26114e4/lib_detect_testenv-2.0.8-py3-none-any.whl", hash = "sha256:86a2555d5919ba11f50226e99852b29eb6dfeee37228af77ae80114186a165b2", size = 8387 },
+]
+
+[[package]]
 name = "libcst"
 version = "1.6.0"
 source = { registry = "https://pypi.org/simple" }
@@ -605,6 +661,18 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/3c/39/dcfe6c02e087e3241e8e799b2ddb92e32a65076eec846205e96e3a928139/libcst-1.6.0-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:3fb953fc0155532f366ff40f6a23f191250134d6928e02074ae4eb3531fa6c30", size = 2248820 },
     { url = "https://files.pythonhosted.org/packages/20/5b/db239fcf1417bdff283ed76b027b4039e1c377d38aa3b979f32bcf34fa94/libcst-1.6.0-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:2f3c85602e5a6d3aec0a8fc74230363f943004d7c2b2a6a1c09b320b61692241", size = 2365139 },
     { url = "https://files.pythonhosted.org/packages/38/7f/ed56f5724305c08235d1edc580275aa13c8303e93d374d4fe73162907e88/libcst-1.6.0-cp313-cp313-win_amd64.whl", hash = "sha256:c4486921bebd33d67bbbd605aff8bfaefd2d13dc73c20c1fde2fb245880b7fd6", size = 2070695 },
+]
+
+[[package]]
+name = "lmcat"
+version = "0.0.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "igittigitt", marker = "python_full_version >= '3.11'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/e6/ea/8d9b8f051842b810895d9bba46001767992304d0baeb44ff139ab5ade80a/lmcat-0.0.1.tar.gz", hash = "sha256:ba5624b82854b900eeb6522fb5b193160760655d54976917698656217c8c7a55", size = 157127 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6c/27/860a4b62f8bd9ea5474e5b01c776c28cd4fa72de42840f76062c9bb6c47b/lmcat-0.0.1-py3-none-any.whl", hash = "sha256:e340638f9b2701a5a9fb6fb2f79a30a50a796afd07bf1842100758c07b706ead", size = 19461 },
 ]
 
 [[package]]
@@ -1957,6 +2025,7 @@ dev = [
     { name = "beautifulsoup4" },
     { name = "coverage-badge" },
     { name = "ipykernel" },
+    { name = "lmcat", marker = "python_full_version >= '3.11'" },
     { name = "minify-html" },
     { name = "mypy" },
     { name = "pandas" },
@@ -1990,6 +2059,7 @@ dev = [
     { name = "beautifulsoup4", specifier = ">=4.12.3" },
     { name = "coverage-badge", specifier = ">=1.1.0" },
     { name = "ipykernel", specifier = ">=6.29.5" },
+    { name = "lmcat", marker = "python_full_version >= '3.11'", specifier = ">=0.0.1" },
     { name = "minify-html", specifier = ">=0.15.0" },
     { name = "mypy", specifier = ">=1.0.1" },
     { name = "pandas", specifier = ">=2.2.2" },
@@ -2079,6 +2149,18 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/2c/40/cc10b76962fd223c46ed6e88a45621c57a033aa9a28036815c187e017f1a/wandb-0.19.4-py3-none-musllinux_1_2_x86_64.whl", hash = "sha256:3c6958f533e0f727fcc4bb77beb8b4ad1042eb940e51729bd4a69bd6531d81be", size = 20421490 },
     { url = "https://files.pythonhosted.org/packages/21/00/afe69ec6b3c8661b0a3f9f866e9c01dfdd5dc50617b15b567e2df25d5c6e/wandb-0.19.4-py3-none-win32.whl", hash = "sha256:e8b3652ef16718bb1cf5362238fd5bf24ed99bc69b02b0308868617558986177", size = 19723199 },
     { url = "https://files.pythonhosted.org/packages/f9/15/d8ba30dcb77f8bd971937ec8dace911850b23dd1ee94419c44261e4e2c00/wandb-0.19.4-py3-none-win_amd64.whl", hash = "sha256:14f33088ece77e7767c1873fba2ec80553db38bb61aa284e7abbf89df8d705bd", size = 19723202 },
+]
+
+[[package]]
+name = "wcmatch"
+version = "10.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "bracex", marker = "python_full_version >= '3.11'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/41/ab/b3a52228538ccb983653c446c1656eddf1d5303b9cb8b9aef6a91299f862/wcmatch-10.0.tar.gz", hash = "sha256:e72f0de09bba6a04e0de70937b0cf06e55f36f37b3deb422dfaf854b867b840a", size = 115578 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ab/df/4ee467ab39cc1de4b852c212c1ed3becfec2e486a51ac1ce0091f85f38d7/wcmatch-10.0-py3-none-any.whl", hash = "sha256:0dd927072d03c0a6527a20d2e6ad5ba8d0380e60870c383bc533b71744df7b7a", size = 39347 },
 ]
 
 [[package]]

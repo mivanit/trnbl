@@ -3,8 +3,12 @@
 -e .
 appnope==0.1.4 ; sys_platform == 'darwin'
 asttokens==3.0.0
+attrs==24.3.0 ; python_full_version >= '3.11'
 beautifulsoup4==4.12.3
+bracex==2.5.post1 ; python_full_version >= '3.11'
 cffi==1.17.1 ; implementation_name == 'pypy'
+cli-exit-tools==1.2.7 ; python_full_version >= '3.11'
+click==8.1.8 ; python_full_version >= '3.11'
 colorama==0.4.6 ; sys_platform == 'win32'
 comm==0.2.2
 coverage==7.6.10
@@ -15,6 +19,7 @@ exceptiongroup==1.2.2 ; python_full_version < '3.11'
 executing==2.1.0
 filelock==3.16.1
 fsspec==2024.12.0
+igittigitt==2.1.5 ; python_full_version >= '3.11'
 iniconfig==2.0.0
 ipykernel==6.29.5
 ipython==8.31.0
@@ -22,6 +27,8 @@ jedi==0.19.2
 jinja2==3.1.5
 jupyter-client==8.6.3
 jupyter-core==5.7.2
+lib-detect-testenv==2.0.8 ; python_full_version >= '3.11'
+lmcat==0.0.1 ; python_full_version >= '3.11'
 markupsafe==3.0.2
 matplotlib-inline==0.1.7
 minify-html==0.15.0
@@ -79,4 +86,5 @@ traitlets==5.14.3
 triton==3.1.0 ; python_full_version < '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux'
 typing-extensions==4.12.2
 tzdata==2024.2
+wcmatch==10.0 ; python_full_version >= '3.11'
 wcwidth==0.2.13

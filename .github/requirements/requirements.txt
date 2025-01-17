@@ -5,10 +5,13 @@ absl-py==2.1.0
 annotated-types==0.7.0
 appnope==0.1.4 ; sys_platform == 'darwin'
 asttokens==3.0.0
+attrs==24.3.0 ; python_full_version >= '3.11'
 beautifulsoup4==4.12.3
+bracex==2.5.post1 ; python_full_version >= '3.11'
 certifi==2024.12.14
 cffi==1.17.1 ; implementation_name == 'pypy'
 charset-normalizer==3.4.1
+cli-exit-tools==1.2.7 ; python_full_version >= '3.11'
 click==8.1.8
 colorama==0.4.6 ; sys_platform == 'win32'
 comm==0.2.2
@@ -26,6 +29,7 @@ gitpython==3.1.44
 gputil==1.4.0
 grpcio==1.69.0
 idna==3.10
+igittigitt==2.1.5 ; python_full_version >= '3.11'
 iniconfig==2.0.0
 ipykernel==6.29.5
 ipython==8.31.0
@@ -33,7 +37,9 @@ jedi==0.19.2
 jinja2==3.1.5
 jupyter-client==8.6.3
 jupyter-core==5.7.2
+lib-detect-testenv==2.0.8 ; python_full_version >= '3.11'
 libcst==1.6.0
+lmcat==0.0.1 ; python_full_version >= '3.11'
 markdown==3.7
 markdown-it-py==3.0.0
 markupsafe==3.0.2
@@ -112,5 +118,6 @@ typing-extensions==4.12.2
 tzdata==2024.2
 urllib3==2.3.0
 wandb==0.19.4
+wcmatch==10.0 ; python_full_version >= '3.11'
 wcwidth==0.2.13
 werkzeug==3.1.3

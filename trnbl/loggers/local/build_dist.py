@@ -222,7 +222,7 @@ def main() -> None:
 		try:
 			import tomllib  # type: ignore[import-not-found]
 		except ImportError:
-			import tomli as tomllib
+			import tomli as tomllib  # type: ignore[no-redef]
 
 		# read pyproject.toml
 		with open(args.pkg_info, "rb") as f:

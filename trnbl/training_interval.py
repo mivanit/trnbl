@@ -1,4 +1,4 @@
-from typing import Any, Literal, Callable, Union, Sequence
+from typing import Any, Generator, Literal, Callable, Union, Sequence
 from dataclasses import dataclass
 
 from muutils.misc import str_to_numeric
@@ -63,11 +63,11 @@ class TrainingInterval:
 	quantity: int | float
 	unit: TrainingIntervalUnit
 
-	def __iter__(self):
+	def __iter__(self) -> Generator[int | float | TrainingIntervalUnit, None, None]:
 		yield self.quantity
 		yield self.unit
 
-	def __getitem__(self, index: int):
+	def __getitem__(self, index: int) -> int | float | TrainingIntervalUnit:
 		if index == 0:
 			return self.quantity
 		elif index == 1:
@@ -75,13 +75,13 @@ class TrainingInterval:
 		else:
 			raise IndexError(f"invalid index {index} for TrainingInterval")
 
-	def __post_init__(self):
+	def __post_init__(self) -> None:
 		try:
 			assert isinstance(self.quantity, (int, float)), (
 				"quantity should be an integer or float"
 			)
-
-			if self.unit not in TrainingIntervalUnit.__args__:
+			# TODO: Literal[...].__args__ is not defined??
+			if self.unit not in TrainingIntervalUnit.__args__:  # type: ignore[attr-defined]
 				unit_dealised: str | None = _TRAINING_INTERVAL_UNIT_ALIASES.get(
 					self.unit.lower(), None
 				)
@@ -90,7 +90,7 @@ class TrainingInterval:
 				else:
 					raise ValueError(f"invalid unit {self.unit = }")
 
-			assert self.unit in TrainingIntervalUnit.__args__, (
+			assert self.unit in TrainingIntervalUnit.__args__, (  # type: ignore[attr-defined]
 				f"invalid unit {self.unit}"
 			)
 		except AssertionError as e:

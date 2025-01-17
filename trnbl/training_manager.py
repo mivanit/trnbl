@@ -208,7 +208,7 @@ class TrainingManager:
 			print_metrics_interval
 		)
 
-		self.evals: list[tuple[int, EvalFunction]] | None = None
+		self.evals: list[tuple[int, EvalFunction]] = list()
 		self.checkpoint_interval: int | None = None
 		self.print_metrics_interval: int | None = None
 
@@ -257,8 +257,9 @@ class TrainingManager:
 			# if we don't have all the info we need, return early
 			return
 
-		self.batches_total = self.batches_per_epoch * self.epochs_total
-		self.samples_total = self.samples_per_epoch * self.epochs_total
+		# we can safely ignore type check here since we just checked for `None`
+		self.batches_total = self.batches_per_epoch * self.epochs_total  # type: ignore[operator]
+		self.samples_total = self.samples_per_epoch * self.epochs_total  # type: ignore[operator]
 
 		# check if the dataloader has a finite nonzero length
 		if self.samples_per_epoch == 0:
@@ -275,6 +276,12 @@ class TrainingManager:
 			raise TrainingManagerInitError(
 				f"Dataloader has a batch size of 0. Please provide a dataloader with a non-zero batch size. {self.batch_size = }"
 			)
+		
+		if self.batch_size is None:
+			warnings.warn(
+				"batch size is None. This is likely because the dataloader passed to `TrainingManager` does not have a `batch_size` attribute."
+				+ "\nthis should probably be an exception"
+			)
 
 		# normalize intervals for checkpoints, metrics printing, and evals
 		_batch_info_kwargs: dict[str, int | None] = dict(
@@ -282,19 +289,21 @@ class TrainingManager:
 			batchsize=self.batch_size,
 			epochs=self.epochs_total,
 		)
+
+		# TODO: no idea why we need `type: ignore[arg-type]` here
 		self.checkpoint_interval = TrainingInterval.process_to_batches(
 			interval=self._checkpoint_interval,
-			**_batch_info_kwargs,
+			**_batch_info_kwargs,  # type: ignore[arg-type]
 		)
 		self.print_metrics_interval = TrainingInterval.process_to_batches(
 			interval=self._print_metrics_interval,
-			**_batch_info_kwargs,
+			**_batch_info_kwargs,  # type: ignore[arg-type]
 		)
 
 		# list[tuple[int, EvalFunction]]
 		self.evals = [
 			(
-				TrainingInterval.process_to_batches(interval, **_batch_info_kwargs),
+				TrainingInterval.process_to_batches(interval, **_batch_info_kwargs),  # type: ignore[arg-type]
 				eval_fn,
 			)
 			for interval, eval_fn in self._evals
@@ -346,7 +355,7 @@ class TrainingManager:
 
 	def epoch_loop(
 		self,
-		epochs: Iterable[int],
+		epochs: Sequence[int],
 		use_tqdm: bool = True,
 		**tqdm_kwargs,
 	) -> Generator[int, None, None]:
@@ -360,7 +369,7 @@ class TrainingManager:
 
 	def batch_loop(
 		self,
-		batches: Iterable[int],
+		batches: Sequence[int],
 		use_tqdm: bool = False,
 		**tqdm_kwargs,
 	) -> Generator[int, None, None]:
@@ -410,7 +419,12 @@ class TrainingManager:
 
 		"""
 		return {
-			"run_path": self.logger.run_path.as_posix(),
+			"run_path": (
+				self.logger.run_path.as_posix()
+				if isinstance(self.logger.run_path, Path)
+				# HACK: just return the first one
+				else self.logger.run_path[0].as_posix()
+			),
 			**self.training_status(),
 		}
 
@@ -439,7 +453,8 @@ class TrainingManager:
 		if samples is not None:
 			self.samples += samples
 		else:
-			self.samples += self.batch_size
+			# TODO: we warn if batch size is None, but don't except
+			self.samples += self.batch_size  # type: ignore[operator]
 
 		# run evals if needed
 		for interval, eval_fn in self.evals:

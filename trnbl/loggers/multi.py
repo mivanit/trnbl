@@ -1,8 +1,19 @@
-from typing import Any
+from typing import Any, TypeVar
 from pathlib import Path
 
 from trnbl.loggers.base import TrainingLoggerBase
 
+# TODO: move this to muutils
+T = TypeVar("T")
+def maybe_flatten(lst: list[T | list[T]]) -> list[T]:
+	"""flatten a list if it is nested"""
+	flat_lst: list[T] = []
+	for item in lst:
+		if isinstance(item, list):
+			flat_lst.extend(item)
+		else:
+			flat_lst.append(item)
+	return flat_lst
 
 class MultiLogger(TrainingLoggerBase):
 	"""use multiple loggers at once"""
@@ -39,13 +50,12 @@ class MultiLogger(TrainingLoggerBase):
 	@property
 	def url(self) -> list[str]:
 		"""Get the URL for the current logging run"""
-		# TODO: flatten if recursive
-		return [logger.url for logger in self.loggers]
+		return maybe_flatten([logger.url for logger in self.loggers])		
 
 	@property
 	def run_path(self) -> list[Path]:
-		"""Get the path to the current logging run"""
-		return [logger.run_path for logger in self.loggers]
+		"""Get the paths to the current logging run"""
+		return maybe_flatten([logger.run_path for logger in self.loggers])
 
 	def flush(self) -> None:
 		"""Flush the logger"""

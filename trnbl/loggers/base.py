@@ -123,7 +123,7 @@ class TrainingLoggerBase(ABC):
 
 	@property
 	@abstractmethod
-	def run_path(self) -> Path:
+	def run_path(self) -> Path | list[Path]:
 		"""Get the path to the current logging run"""
 		pass
 

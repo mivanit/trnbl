@@ -45,7 +45,8 @@ class WandbLogger(TrainingLoggerBase):
 		assert run is not None, f"wandb.init returned None: {wandb_kwargs}"
 
 		logger: WandbLogger = WandbLogger(run)
-		logger.progress(f"{config =}")
+		# TODO: why are we ignoring type checking here?
+		logger.progress(f"{config =}") # type: ignore[attr-defined]
 		return logger
 
 	def debug(self, message: str, **kwargs) -> None:
@@ -84,15 +85,16 @@ class WandbLogger(TrainingLoggerBase):
 
 	@property
 	def url(self) -> str:
-		return self._run.get_url()
+		# TODO: get_url returns `None` for offline runs. need to adjust allowed return types in superclass
+		return str(self._run.get_url())
 
 	@property
-	def run_path(self) -> str:
-		return self._run._get_path()
+	def run_path(self) -> Path:
+		return Path(self._run._get_path())
 
 	def flush(self) -> None:
-		return super().flush()
+		self._run.save()
 
 	def finish(self) -> None:
 		"""Finish logging"""
-		pass
+		self._run.finish()

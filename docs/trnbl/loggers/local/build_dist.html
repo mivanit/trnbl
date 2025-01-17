@@ -276,7 +276,7 @@
 </span><span id="L-171"><a href="#L-171"><span class="linenos">171</span></a>	<span class="n">out_html</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">soup</span><span class="p">)</span>
 </span><span id="L-172"><a href="#L-172"><span class="linenos">172</span></a>
 </span><span id="L-173"><a href="#L-173"><span class="linenos">173</span></a>	<span class="k">if</span> <span class="n">minify</span><span class="p">:</span>
-</span><span id="L-174"><a href="#L-174"><span class="linenos">174</span></a>		<span class="kn">import</span><span class="w"> </span><span class="nn">minify_html</span>
+</span><span id="L-174"><a href="#L-174"><span class="linenos">174</span></a>		<span class="kn">import</span><span class="w"> </span><span class="nn">minify_html</span>  <span class="c1"># type: ignore[import-untyped]</span>
 </span><span id="L-175"><a href="#L-175"><span class="linenos">175</span></a>
 </span><span id="L-176"><a href="#L-176"><span class="linenos">176</span></a>		<span class="n">out_html</span> <span class="o">=</span> <span class="n">minify_html</span><span class="o">.</span><span class="n">minify</span><span class="p">(</span><span class="n">out_html</span><span class="p">,</span> <span class="n">minify_css</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">minify_js</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="L-177"><a href="#L-177"><span class="linenos">177</span></a>
@@ -325,9 +325,9 @@
 </span><span id="L-220"><a href="#L-220"><span class="linenos">220</span></a>	<span class="c1"># add package info</span>
 </span><span id="L-221"><a href="#L-221"><span class="linenos">221</span></a>	<span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">pkg_info</span><span class="p">:</span>
 </span><span id="L-222"><a href="#L-222"><span class="linenos">222</span></a>		<span class="k">try</span><span class="p">:</span>
-</span><span id="L-223"><a href="#L-223"><span class="linenos">223</span></a>			<span class="kn">import</span><span class="w"> </span><span class="nn">tomllib</span>  <span class="c1"># type: ignore[import-not-found]</span>
+</span><span id="L-223"><a href="#L-223"><span class="linenos">223</span></a>			<span class="kn">import</span><span class="w"> </span><span class="nn">tomllib</span>  <span class="c1"># type: ignore</span>
 </span><span id="L-224"><a href="#L-224"><span class="linenos">224</span></a>		<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-</span><span id="L-225"><a href="#L-225"><span class="linenos">225</span></a>			<span class="kn">import</span><span class="w"> </span><span class="nn">tomli</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tomllib</span>  <span class="c1"># type: ignore[no-redef]</span>
+</span><span id="L-225"><a href="#L-225"><span class="linenos">225</span></a>			<span class="kn">import</span><span class="w"> </span><span class="nn">tomli</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tomllib</span>  <span class="c1"># type: ignore</span>
 </span><span id="L-226"><a href="#L-226"><span class="linenos">226</span></a>
 </span><span id="L-227"><a href="#L-227"><span class="linenos">227</span></a>		<span class="c1"># read pyproject.toml</span>
 </span><span id="L-228"><a href="#L-228"><span class="linenos">228</span></a>		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">pkg_info</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -571,7 +571,7 @@ if the remote resource returns an error, and <code>allow_remote_fail</code> is <
 </span><span id="build_dist-172"><a href="#build_dist-172"><span class="linenos">172</span></a>	<span class="n">out_html</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">soup</span><span class="p">)</span>
 </span><span id="build_dist-173"><a href="#build_dist-173"><span class="linenos">173</span></a>
 </span><span id="build_dist-174"><a href="#build_dist-174"><span class="linenos">174</span></a>	<span class="k">if</span> <span class="n">minify</span><span class="p">:</span>
-</span><span id="build_dist-175"><a href="#build_dist-175"><span class="linenos">175</span></a>		<span class="kn">import</span><span class="w"> </span><span class="nn">minify_html</span>
+</span><span id="build_dist-175"><a href="#build_dist-175"><span class="linenos">175</span></a>		<span class="kn">import</span><span class="w"> </span><span class="nn">minify_html</span>  <span class="c1"># type: ignore[import-untyped]</span>
 </span><span id="build_dist-176"><a href="#build_dist-176"><span class="linenos">176</span></a>
 </span><span id="build_dist-177"><a href="#build_dist-177"><span class="linenos">177</span></a>		<span class="n">out_html</span> <span class="o">=</span> <span class="n">minify_html</span><span class="o">.</span><span class="n">minify</span><span class="p">(</span><span class="n">out_html</span><span class="p">,</span> <span class="n">minify_css</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">minify_js</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="build_dist-178"><a href="#build_dist-178"><span class="linenos">178</span></a>
@@ -646,9 +646,9 @@ if the remote resource returns an error, and <code>allow_remote_fail</code> is <
 </span><span id="main-221"><a href="#main-221"><span class="linenos">221</span></a>	<span class="c1"># add package info</span>
 </span><span id="main-222"><a href="#main-222"><span class="linenos">222</span></a>	<span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">pkg_info</span><span class="p">:</span>
 </span><span id="main-223"><a href="#main-223"><span class="linenos">223</span></a>		<span class="k">try</span><span class="p">:</span>
-</span><span id="main-224"><a href="#main-224"><span class="linenos">224</span></a>			<span class="kn">import</span><span class="w"> </span><span class="nn">tomllib</span>  <span class="c1"># type: ignore[import-not-found]</span>
+</span><span id="main-224"><a href="#main-224"><span class="linenos">224</span></a>			<span class="kn">import</span><span class="w"> </span><span class="nn">tomllib</span>  <span class="c1"># type: ignore</span>
 </span><span id="main-225"><a href="#main-225"><span class="linenos">225</span></a>		<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-</span><span id="main-226"><a href="#main-226"><span class="linenos">226</span></a>			<span class="kn">import</span><span class="w"> </span><span class="nn">tomli</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tomllib</span>  <span class="c1"># type: ignore[no-redef]</span>
+</span><span id="main-226"><a href="#main-226"><span class="linenos">226</span></a>			<span class="kn">import</span><span class="w"> </span><span class="nn">tomli</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tomllib</span>  <span class="c1"># type: ignore</span>
 </span><span id="main-227"><a href="#main-227"><span class="linenos">227</span></a>
 </span><span id="main-228"><a href="#main-228"><span class="linenos">228</span></a>		<span class="c1"># read pyproject.toml</span>
 </span><span id="main-229"><a href="#main-229"><span class="linenos">229</span></a>		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">pkg_info</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>

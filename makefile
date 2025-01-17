@@ -609,8 +609,11 @@ verify-git:
 	fi; \
 
 
+# ~~~~~~~~~~~~~~~~~~~~
+# made `build` also run `build-frontend`
+# ~~~~~~~~~~~~~~~~~~~~
 .PHONY: build
-build: 
+build: build-frontend
 	@echo "build the package"
 	uv build
 

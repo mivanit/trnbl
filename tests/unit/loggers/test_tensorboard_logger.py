@@ -131,15 +131,15 @@ def test_tensorboard_logger_artifact():
 							Path(artifact_data["path"]).as_posix()
 							== artifact_path.as_posix()
 						), f"Expected path {artifact_path}, got {artifact_data['path']}"
-						assert (
-							artifact_data["type"] == "text"
-						), f"Expected type 'text', got {artifact_data['type']}"
-						assert (
-							artifact_data["aliases"] == ["alias1"]
-						), f"Expected aliases ['alias1'], got {artifact_data['aliases']}"
-						assert (
-							artifact_data["metadata"] == {"key": "value"}
-						), f"Expected metadata {{'key': 'value'}}, got {artifact_data['metadata']}"
+						assert artifact_data["type"] == "text", (
+							f"Expected type 'text', got {artifact_data['type']}"
+						)
+						assert artifact_data["aliases"] == ["alias1"], (
+							f"Expected aliases ['alias1'], got {artifact_data['aliases']}"
+						)
+						assert artifact_data["metadata"] == {"key": "value"}, (
+							f"Expected metadata {{'key': 'value'}}, got {artifact_data['metadata']}"
+						)
 
 						# Check timestamp format (assuming it's ISO format)
 						timestamp_datetime = datetime.fromisoformat(
@@ -147,8 +147,10 @@ def test_tensorboard_logger_artifact():
 						)
 						# Check if the timestamp is within the last 5 minutes
 						assert (
-							(datetime.now() - timestamp_datetime).total_seconds() < 300
-						), f"Timestamp is not within the last 5 minutes: {timestamp_datetime}"
+							datetime.now() - timestamp_datetime
+						).total_seconds() < 300, (
+							f"Timestamp is not within the last 5 minutes: {timestamp_datetime}"
+						)
 
 	assert found_artifact, "Artifact data not found in event files"
 	logger.finish()

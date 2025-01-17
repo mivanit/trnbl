@@ -77,9 +77,9 @@ class TrainingInterval:
 
 	def __post_init__(self):
 		try:
-			assert isinstance(
-				self.quantity, (int, float)
-			), "quantity should be an integer or float"
+			assert isinstance(self.quantity, (int, float)), (
+				"quantity should be an integer or float"
+			)
 
 			if self.unit not in TrainingIntervalUnit.__args__:
 				unit_dealised: str | None = _TRAINING_INTERVAL_UNIT_ALIASES.get(
@@ -90,9 +90,9 @@ class TrainingInterval:
 				else:
 					raise ValueError(f"invalid unit {self.unit = }")
 
-			assert (
-				self.unit in TrainingIntervalUnit.__args__
-			), f"invalid unit {self.unit}"
+			assert self.unit in TrainingIntervalUnit.__args__, (
+				f"invalid unit {self.unit}"
+			)
 		except AssertionError as e:
 			raise AssertionError(
 				f"Error initializing TrainingInterval\n{self}\n{e}"
@@ -156,9 +156,9 @@ class TrainingInterval:
 
 		match self.unit:
 			case "runs":
-				assert (
-					epochs is not None
-				), "epochs must be provided to convert runs to batches"
+				assert epochs is not None, (
+					"epochs must be provided to convert runs to batches"
+				)
 				output = self.quantity * epochs * batches_per_epoch
 			case "epochs":
 				output = self.quantity * batches_per_epoch
@@ -273,9 +273,9 @@ class TrainingInterval:
 			elif isinstance(data, str):
 				return cls.from_str(data)
 			elif isinstance(data, Sequence):
-				assert (
-					len(data) == 2
-				), f"invalid length {len(data)} for TrainingInterval: {data}"
+				assert len(data) == 2, (
+					f"invalid length {len(data)} for TrainingInterval: {data}"
+				)
 				quantity, unit = data
 				if isinstance(quantity, str):
 					quantity = str_to_numeric(quantity)

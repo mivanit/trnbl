@@ -268,9 +268,9 @@ def test_from_str_edge_cases(
 	input_data: str, expected: tuple[float | int, str]
 ) -> None:
 	result = TrainingInterval.from_str(input_data)
-	assert result == TrainingInterval(
-		*expected
-	), f"Expected {expected}, but got {result} for input '{input_data}'"
+	assert result == TrainingInterval(*expected), (
+		f"Expected {expected}, but got {result} for input '{input_data}'"
+	)
 
 
 @pytest.mark.parametrize(
@@ -304,9 +304,9 @@ def test_from_any_edge_cases_nowarn(
 ) -> None:
 	"no warnings because batchsize is unknown"
 	result = TrainingInterval.from_any(input_data)
-	assert result == TrainingInterval(
-		*expected
-	), f"Expected {expected}, but got {result} for input {input_data}"
+	assert result == TrainingInterval(*expected), (
+		f"Expected {expected}, but got {result} for input {input_data}"
+	)
 
 
 @pytest.mark.parametrize(
@@ -327,9 +327,9 @@ def test_from_any_edge_cases_warn(
 	"no warnings because batchsize is unknown"
 	with pytest.warns(IntervalValueError):
 		result = TrainingInterval.from_any(input_data)
-	assert result == TrainingInterval(
-		*expected
-	), f"Expected {expected}, but got {result} for input {input_data}"
+	assert result == TrainingInterval(*expected), (
+		f"Expected {expected}, but got {result} for input {input_data}"
+	)
 
 
 @pytest.mark.parametrize(

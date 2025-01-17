@@ -234,7 +234,7 @@ def test_training_manager_epoch_update_new(training_manager: TrainingManager) ->
 	assert training_manager.epochs == initial_epochs + 1
 	assert len(training_manager.logger.log_list) > 0
 	assert (
-		f"completed epoch {initial_epochs+1}/{training_manager.epochs_total}"
+		f"completed epoch {initial_epochs + 1}/{training_manager.epochs_total}"
 		in training_manager.logger.log_list[-1]["message"]
 	)
 

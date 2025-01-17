@@ -71,7 +71,7 @@ def wrapped_iterable(
 		_tqdm_kwargs: dict[str, Any] = dict(
 			desc="training run"
 			if is_epoch
-			else f"epoch {manager.epochs+1}/{manager.epochs_total}",
+			else f"epoch {manager.epochs + 1}/{manager.epochs_total}",
 			unit=" epochs" if is_epoch else " batches",
 			total=length,
 		)
@@ -414,7 +414,7 @@ class TrainingManager:
 			**self.training_status(),
 		}
 
-	def batch_update(self, samples: int | None, metrics: dict|None = None, **kwargs):
+	def batch_update(self, samples: int | None, metrics: dict | None = None, **kwargs):
 		"""call this at the end of every batch. Pass `samples` or it will be inferred from the batch size, and any other metrics as kwargs
 
 		This function will:
@@ -431,7 +431,7 @@ class TrainingManager:
 		# process metrics and kwargs
 		if metrics is None:
 			metrics = dict()
-		
+
 		metrics.update(kwargs)
 
 		# update counters
@@ -457,7 +457,7 @@ class TrainingManager:
 
 	def epoch_update(self):
 		"""call this at the end of every epoch. This function will log the completion of the epoch and update the epoch counter"""
-		self.logger.debug(f"completed epoch {self.epochs+1}/{self.epochs_total}")
+		self.logger.debug(f"completed epoch {self.epochs + 1}/{self.epochs_total}")
 		self.epochs += 1
 
 	def _save_checkpoint(self, alias: str | None = None):

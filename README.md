@@ -1,7 +1,9 @@
 [![PyPI](https://img.shields.io/pypi/v/trnbl)](https://pypi.org/project/trnbl/)
-![PyPI - Downloads](https://img.shields.io/pypi/dm/trnbl)
+[![docs](https://img.shields.io/badge/docs-latest-blue)](https://miv.name/muutils)
 [![Checks](https://github.com/mivanit/trnbl/actions/workflows/checks.yml/badge.svg)](https://github.com/mivanit/trnbl/actions/workflows/checks.yml)
 [![Coverage](docs/coverage/coverage.svg)](docs/coverage/coverage.txt)
+
+![PyPI - Downloads](https://img.shields.io/pypi/dm/trnbl)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/t/mivanit/trnbl)
 ![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/mivanit/trnbl)
 ![code size, bytes](https://img.shields.io/github/languages/code-size/mivanit/trnbl)

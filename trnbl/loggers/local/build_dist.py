@@ -219,15 +219,18 @@ def main() -> None:
 
 	# add package info
 	if args.pkg_info:
-		import tomllib
+		try:
+			import tomllib  # type: ignore[import-not-found]
+		except ImportError:
+			import tomli as tomllib
 
 		# read pyproject.toml
 		with open(args.pkg_info, "rb") as f:
 			pkg_info = tomllib.load(f)
 		# get package name and version
-		pkg_name: str = pkg_info["tool"]["poetry"].get("name", "")
-		pkg_version: str = pkg_info["tool"]["poetry"].get("version", "")
-		pkg_homepage: str = pkg_info["tool"]["poetry"].get("homepage", "")
+		pkg_name: str = pkg_info["project"].get("name", "")
+		pkg_version: str = pkg_info["project"].get("version", "")
+		pkg_homepage: str = pkg_info["project"].get("urls", {}).get("Homepage", "")
 		# add comment
 		result = f"<!-- {pkg_name} v{pkg_version} {pkg_homepage} -->\n" + result
 

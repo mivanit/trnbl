@@ -4,4 +4,5 @@
 colorama==0.4.6 ; sys_platform == 'win32'
 muutils==0.6.21
 pyyaml==6.0.2
+tomli==2.2.1 ; python_full_version < '3.11'
 tqdm==4.67.1

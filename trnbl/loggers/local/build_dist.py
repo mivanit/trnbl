@@ -220,9 +220,9 @@ def main() -> None:
 	# add package info
 	if args.pkg_info:
 		try:
-			import tomllib  # type: ignore[import-not-found]
+			import tomllib  # type: ignore
 		except ImportError:
-			import tomli as tomllib  # type: ignore[no-redef]
+			import tomli as tomllib  # type: ignore
 
 		# read pyproject.toml
 		with open(args.pkg_info, "rb") as f:

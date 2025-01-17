@@ -3,7 +3,7 @@ import math
 from pathlib import Path
 from datetime import datetime
 
-from tensorboard.backend.event_processing.event_file_loader import EventFileLoader
+from tensorboard.backend.event_processing.event_file_loader import EventFileLoader  # type: ignore[import-untyped]
 
 from trnbl.loggers.tensorboard import TensorBoardLogger
 

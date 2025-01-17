@@ -271,7 +271,7 @@ def test_as_batch_count_without_epochs() -> None:
 	],
 )
 def test_from_str_edge_cases(
-	input_data: str, expected: tuple[float | int, str]
+	input_data: str, expected: tuple[float | int, TrainingIntervalUnit]
 ) -> None:
 	result = TrainingInterval.from_str(input_data)
 	assert result == TrainingInterval(*expected), (
@@ -306,7 +306,7 @@ def test_from_str_invalid_inputs(input_data: str) -> None:
 	],
 )
 def test_from_any_edge_cases_nowarn(
-	input_data: Any, expected: tuple[float | int, str]
+	input_data: Any, expected: tuple[float | int, TrainingIntervalUnit]
 ) -> None:
 	"no warnings because batchsize is unknown"
 	result = TrainingInterval.from_any(input_data)
@@ -328,7 +328,7 @@ def test_from_any_edge_cases_nowarn(
 	],
 )
 def test_from_any_edge_cases_warn(
-	input_data: Any, expected: tuple[float | int, str]
+	input_data: Any, expected: tuple[float | int, TrainingIntervalUnit]
 ) -> None:
 	"no warnings because batchsize is unknown"
 	with pytest.warns(IntervalValueError):

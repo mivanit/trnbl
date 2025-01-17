@@ -131,8 +131,9 @@ def test_training_manager_initialization_comprehensive(
 	assert training_manager.batch_size == dataloader.batch_size
 	assert training_manager.batches_total == len(dataloader)
 	assert training_manager.batches == 0
-	assert training_manager.samples_per_epoch == len(dataloader.dataset)
-	assert training_manager.samples_total == len(dataloader.dataset)
+	# TODO: why does it think a `Dataset[Any]` has no length?
+	assert training_manager.samples_per_epoch == len(dataloader.dataset)  # type: ignore[arg-type]
+	assert training_manager.samples_total == len(dataloader.dataset)  # type: ignore[arg-type]
 	assert training_manager.samples == 0
 	assert training_manager.checkpoints == 0
 
@@ -222,7 +223,8 @@ def test_training_manager_batch_update_new(training_manager: TrainingManager) ->
 	assert len(training_manager.logger.metrics_list) > 0
 	assert training_manager.logger.metrics_list[-1]["loss"] == 0.5
 
-	if training_manager.batches % training_manager.checkpoint_interval == 0:
+	# ok to ignore because the test will just fail?
+	if training_manager.batches % training_manager.checkpoint_interval == 0:  # type: ignore[operator]
 		training_manager._save_checkpoint.assert_called_once()
 
 
@@ -315,7 +317,8 @@ def test_training_manager_custom_save_model() -> None:
 		save_model=custom_save_model,
 	)
 	training_manager._save_checkpoint()
-	custom_save_model.assert_called_once()
+	# ignoring here because custom_save_model is a mock
+	custom_save_model.assert_called_once()  # type: ignore[attr-defined]
 
 
 def test_training_manager_custom_intervals() -> None:
@@ -357,7 +360,8 @@ def test_training_manager_batch_update_no_samples() -> None:
 	)
 	initial_samples: int = training_manager.samples
 	training_manager.batch_update(samples=None, loss=0.5)
-	assert training_manager.samples == initial_samples + training_manager.batch_size
+	# ok to ignore because the test will just fail?
+	assert training_manager.samples == initial_samples + training_manager.batch_size  # type: ignore[operator]
 
 
 def test_training_manager_multiple_evals() -> None:

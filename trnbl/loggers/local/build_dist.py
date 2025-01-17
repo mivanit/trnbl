@@ -171,7 +171,7 @@ def build_dist(
 	out_html: str = str(soup)
 
 	if minify:
-		import minify_html
+		import minify_html  # type: ignore[import-untyped]
 
 		out_html = minify_html.minify(out_html, minify_css=True, minify_js=True)
 

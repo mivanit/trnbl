@@ -102,6 +102,11 @@ exclude = ["trnbl/_old/**", "__pycache__"]
 indent-style = "tab"
 skip-magic-trailing-comma = false
 
+# mypy config
+[tool.mypy]
+exclude = [
+    'tests/_temp',
+]
 
 # Custom export configurations
 [tool.uv-exports]

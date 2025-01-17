@@ -38,7 +38,7 @@ dev = [
 	"pytest-cov>=4.1.0",
 	"coverage-badge>=1.1.0",
 	# type checking
-	"mypy>=1.0.1",
+	"mypy>=1.14.1",
 	# docs
 	'pdoc>=14.6.0',
 	# tomli since no tomlib in python < 3.11

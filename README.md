@@ -1,9 +1,9 @@
 [![PyPI](https://img.shields.io/pypi/v/trnbl)](https://pypi.org/project/trnbl/)
-<!-- ![PyPI - Downloads](https://img.shields.io/pypi/dm/trnbl) -->
+![PyPI - Downloads](https://img.shields.io/pypi/dm/trnbl)
 [![Checks](https://github.com/mivanit/trnbl/actions/workflows/checks.yml/badge.svg)](https://github.com/mivanit/trnbl/actions/workflows/checks.yml)
 [![Coverage](docs/coverage/coverage.svg)](docs/coverage/coverage.txt)
-<!-- ![GitHub commit activity](https://img.shields.io/github/commit-activity/t/mivanit/trnbl) -->
-<!-- ![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/mivanit/trnbl) -->
+![GitHub commit activity](https://img.shields.io/github/commit-activity/t/mivanit/trnbl)
+![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/mivanit/trnbl)
 ![code size, bytes](https://img.shields.io/github/languages/code-size/mivanit/trnbl)
 
 # `trnbl` -- **Tr**ai**n**ing **B**ut**l**er

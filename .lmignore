@@ -1,0 +1,7 @@
+.git/
+docs/
+.github/requirements/
+.github/versions/
+demos/
+uv.lock
+*.png

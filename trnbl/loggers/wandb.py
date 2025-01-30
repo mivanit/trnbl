@@ -45,8 +45,7 @@ class WandbLogger(TrainingLoggerBase):
 		assert run is not None, f"wandb.init returned None: {wandb_kwargs}"
 
 		logger: WandbLogger = WandbLogger(run)
-		# TODO: why are we ignoring type checking here?
-		logger.progress(f"{config =}")  # type: ignore[attr-defined]
+		logger.message(f"{config =}")
 		return logger
 
 	def debug(self, message: str, **kwargs) -> None:

@@ -1,6 +1,6 @@
 [project]
 name = "trnbl"
-version = "0.1.0"
+version = "0.1.1"
 description = "training manager and loggers"
 readme = "README.md"
 classifiers=[

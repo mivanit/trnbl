@@ -1,4 +1,4 @@
-  docs for trnbl v0.1.0
+  docs for trnbl v0.1.1
 
 Contents
 
@@ -738,7 +738,7 @@ View Source on GitHub
 call this at the end of every epoch. This function will log the
 completion of the epoch and update the epoch counter
 
-  docs for trnbl v0.1.0
+  docs for trnbl v0.1.1
 
 Submodules
 
@@ -754,7 +754,7 @@ trnbl.loggers
 
 View Source on GitHub
 
-  docs for trnbl v0.1.0
+  docs for trnbl v0.1.1
 
 API Documentation
 
@@ -937,7 +937,7 @@ View Source on GitHub
 
 Create a spinner task. kwargs are passed to Spinner.
 
-  docs for trnbl v0.1.0
+  docs for trnbl v0.1.1
 
 Submodules
 
@@ -1136,7 +1136,7 @@ Inherited Members
 -   get_mem_usage
 -   spinner_task
 
-  docs for trnbl v0.1.0
+  docs for trnbl v0.1.1
 
 API Documentation
 
@@ -1207,7 +1207,7 @@ def main
 
 View Source on GitHub
 
-  docs for trnbl v0.1.0
+  docs for trnbl v0.1.1
 
 API Documentation
 
@@ -1225,7 +1225,7 @@ def get_html_frontend
 
 View Source on GitHub
 
-  docs for trnbl v0.1.0
+  docs for trnbl v0.1.1
 
 API Documentation
 
@@ -1417,7 +1417,7 @@ Inherited Members
 -   get_mem_usage
 -   spinner_task
 
-  docs for trnbl v0.1.0
+  docs for trnbl v0.1.1
 
 Contents
 
@@ -1443,7 +1443,7 @@ View Source on GitHub
 
 Starts a server to serve the files in the given path.
 
-  docs for trnbl v0.1.0
+  docs for trnbl v0.1.1
 
 API Documentation
 
@@ -1551,7 +1551,7 @@ Inherited Members
 -   get_mem_usage
 -   spinner_task
 
-  docs for trnbl v0.1.0
+  docs for trnbl v0.1.1
 
 API Documentation
 
@@ -1653,7 +1653,7 @@ Inherited Members
 -   get_mem_usage
 -   spinner_task
 
-  docs for trnbl v0.1.0
+  docs for trnbl v0.1.1
 
 API Documentation
 
@@ -1765,7 +1765,7 @@ Inherited Members
 -   get_mem_usage
 -   spinner_task
 
-  docs for trnbl v0.1.0
+  docs for trnbl v0.1.1
 
 API Documentation
 
@@ -1927,7 +1927,7 @@ directly from any representation to a number of batches
 
 -   CastableToTrainingInterval = typing.Union[str, tuple[typing.Union[int, float, str], str], trnbl.training_interval.TrainingInterval]
 
-  docs for trnbl v0.1.0
+  docs for trnbl v0.1.1
 
 API Documentation
 

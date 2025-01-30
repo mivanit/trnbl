@@ -15,7 +15,7 @@ trnbl\loggers\local\locallogger.py                123      9    93%   182, 190-2
 trnbl\loggers\local\start_server.py                18     13    28%   10-15, 19-29
 trnbl\loggers\multi.py                             38     38     0%   1-71
 trnbl\loggers\tensorboard.py                       45      1    98%   51
-trnbl\loggers\wandb.py                             46     46     0%   1-100
+trnbl\loggers\wandb.py                             46     46     0%   1-99
 trnbl\training_interval.py                        118      7    94%   89, 97, 118, 169-170, 222-223
 trnbl\training_manager.py                         146     11    92%   12-13, 51-52, 274, 279, 284, 388-389, 445-446
 -----------------------------------------------------------------------------

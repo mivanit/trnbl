@@ -1,4 +1,4 @@
-> docs for [`trnbl`](https://github.com/mivanit/trnbl) v0.1.0
+> docs for [`trnbl`](https://github.com/mivanit/trnbl) v0.1.1
 
 
 ## Contents
@@ -155,7 +155,7 @@ Intended as a minimal logging solution for local runs, when you're too lazy to s
 
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py)
 
 # `trnbl` { #trnbl }
 
@@ -296,13 +296,13 @@ Intended as a minimal logging solution for local runs, when you're too lazy to s
 
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L0-L17)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L0-L17)
 
 
 
 ### `class TrainingInterval:` { #TrainingInterval }
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L46-L305)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L46-L305)
 
 
 A training interval, which can be specified in a few different units.
@@ -352,7 +352,7 @@ Provides methods for reading from a string or tuple, and normalizing to batches.
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L125-L181)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L125-L181)
 
 
 given the batchsize, number of batches per epoch, and number of epochs, return the interval as a number of batches
@@ -388,7 +388,7 @@ given the batchsize, number of batches per epoch, and number of epochs, return t
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L183-L196)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L183-L196)
 
 
 convert the units of the interval to batches, by calling `as_batch_count` and setting the `unit` to "batches
@@ -400,7 +400,7 @@ convert the units of the interval to batches, by calling `as_batch_count` and se
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L198-L249)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L198-L249)
 
 
 parse a string into a TrainingInterval object
@@ -423,7 +423,7 @@ TrainingInterval(0.2, 'runs')
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L251-L287)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L251-L287)
 
 
 parse a string or tuple into a TrainingInterval object
@@ -441,7 +441,7 @@ parse a string or tuple into a TrainingInterval object
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L289-L305)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L289-L305)
 
 
 directly from any representation to a number of batches
@@ -454,7 +454,7 @@ directly from any representation to a number of batches
 
 ### `class TrainingLoggerBase(abc.ABC):` { #TrainingLoggerBase }
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L81-L173)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L81-L173)
 
 
 Base class for training loggers
@@ -466,7 +466,7 @@ Base class for training loggers
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L84-L87)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L84-L87)
 
 
 log a debug message which will be saved, but not printed
@@ -478,7 +478,7 @@ log a debug message which will be saved, but not printed
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L89-L92)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L89-L92)
 
 
 log a progress message, which will be printed to stdout
@@ -490,7 +490,7 @@ log a progress message, which will be printed to stdout
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L94-L96)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L94-L96)
 
 
 log a warning message, which will be printed to stderr
@@ -502,7 +502,7 @@ log a warning message, which will be printed to stderr
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L98-L100)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L98-L100)
 
 
 log an error message
@@ -514,7 +514,7 @@ log an error message
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L102-L105)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L102-L105)
 
 
 Log a dictionary of metrics
@@ -532,7 +532,7 @@ Log a dictionary of metrics
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L107-L116)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L107-L116)
 
 
 log an artifact from a file
@@ -540,7 +540,7 @@ log an artifact from a file
 
 - `url: str | list[str] `
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L118-L122)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L118-L122)
 
 
 Get the URL for the current logging run
@@ -548,7 +548,7 @@ Get the URL for the current logging run
 
 - `run_path: pathlib.Path | list[pathlib.Path] `
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L124-L128)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L124-L128)
 
 
 Get the path to the current logging run
@@ -560,7 +560,7 @@ Get the path to the current logging run
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L130-L133)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L130-L133)
 
 
 Flush the logger
@@ -572,7 +572,7 @@ Flush the logger
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L135-L138)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L135-L138)
 
 
 Finish logging
@@ -584,7 +584,7 @@ Finish logging
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L140-L165)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L140-L165)
 
 
 
@@ -595,7 +595,7 @@ Finish logging
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L167-L169)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L167-L169)
 
 
 Create a spinner task. kwargs are passed to `Spinner`.
@@ -603,7 +603,7 @@ Create a spinner task. kwargs are passed to `Spinner`.
 
 ### `class TrainingManager(typing.Generic[~TLogger]):` { #TrainingManager }
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L96-L524)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L96-L524)
 
 
 context manager for training a model, with logging, evals, and checkpoints
@@ -691,7 +691,7 @@ with TrainingManager(
 )
 ```
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L167-L244)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L167-L244)
 
 
 
@@ -802,7 +802,7 @@ with TrainingManager(
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L246-L330)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L246-L330)
 
 
 
@@ -818,7 +818,7 @@ with TrainingManager(
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L359-L371)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L359-L371)
 
 
 
@@ -834,7 +834,7 @@ with TrainingManager(
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L373-L385)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L373-L385)
 
 
 
@@ -845,7 +845,7 @@ with TrainingManager(
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L387-L395)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L387-L395)
 
 
 
@@ -856,7 +856,7 @@ with TrainingManager(
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L397-L399)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L397-L399)
 
 
 return the elapsed time in seconds since the start of training
@@ -868,7 +868,7 @@ return the elapsed time in seconds since the start of training
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L401-L410)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L401-L410)
 
 
 status of elapsed time, samples, batches, epochs, and checkpoints
@@ -880,7 +880,7 @@ status of elapsed time, samples, batches, epochs, and checkpoints
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L434-L474)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L434-L474)
 
 
 call this at the end of every batch. Pass `samples` or it will be inferred from the batch size, and any other metrics as kwargs
@@ -898,7 +898,7 @@ This function will:
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/__init__.py#L476-L479)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/__init__.py#L476-L479)
 
 
 call this at the end of every epoch. This function will log the completion of the epoch and update the epoch counter
@@ -906,7 +906,7 @@ call this at the end of every epoch. This function will log the completion of th
 
 
 
-> docs for [`trnbl`](https://github.com/mivanit/trnbl) v0.1.0
+> docs for [`trnbl`](https://github.com/mivanit/trnbl) v0.1.1
 
 
 
@@ -921,18 +921,18 @@ call this at the end of every epoch. This function will log the completion of th
 
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/__init__.py)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/__init__.py)
 
 # `trnbl.loggers` { #trnbl.loggers }
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/__init__.py#L0-L6)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/__init__.py#L0-L6)
 
 
 
 
 
-> docs for [`trnbl`](https://github.com/mivanit/trnbl) v0.1.0
+> docs for [`trnbl`](https://github.com/mivanit/trnbl) v0.1.1
 
 
 
@@ -950,12 +950,12 @@ call this at the end of every epoch. This function will log the completion of th
 
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/base.py)
 
 # `trnbl.loggers.base` { #trnbl.loggers.base }
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L0-L172)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/base.py#L0-L172)
 
 
 
@@ -985,7 +985,7 @@ call this at the end of every epoch. This function will log the completion of th
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L35-L48)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/base.py#L35-L48)
 
 
 Generate a random string of alternating consonants and vowels to use as a unique identifier
@@ -997,7 +997,7 @@ default is 6 characters, which gives 10^6 possible strings
 
 ### `class LoggerSpinner(muutils.spinner.Spinner):` { #LoggerSpinner }
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L51-L78)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/base.py#L51-L78)
 
 
 see `Spinner` for parameters. catches `update_value` and passes it to the `LocalLogger`
@@ -1008,7 +1008,7 @@ see `Spinner` for parameters. catches `update_value` and passes it to the `Local
 (*args, logger: trnbl.loggers.base.TrainingLoggerBase, **kwargs)
 ```
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L54-L61)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/base.py#L54-L61)
 
 
 
@@ -1024,7 +1024,7 @@ see `Spinner` for parameters. catches `update_value` and passes it to the `Local
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L63-L71)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/base.py#L63-L71)
 
 
 update the value of the spinner and log it
@@ -1052,7 +1052,7 @@ update the value of the spinner and log it
 
 ### `class TrainingLoggerBase(abc.ABC):` { #TrainingLoggerBase }
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L81-L173)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/base.py#L81-L173)
 
 
 Base class for training loggers
@@ -1064,7 +1064,7 @@ Base class for training loggers
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L84-L87)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/base.py#L84-L87)
 
 
 log a debug message which will be saved, but not printed
@@ -1076,7 +1076,7 @@ log a debug message which will be saved, but not printed
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L89-L92)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/base.py#L89-L92)
 
 
 log a progress message, which will be printed to stdout
@@ -1088,7 +1088,7 @@ log a progress message, which will be printed to stdout
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L94-L96)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/base.py#L94-L96)
 
 
 log a warning message, which will be printed to stderr
@@ -1100,7 +1100,7 @@ log a warning message, which will be printed to stderr
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L98-L100)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/base.py#L98-L100)
 
 
 log an error message
@@ -1112,7 +1112,7 @@ log an error message
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L102-L105)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/base.py#L102-L105)
 
 
 Log a dictionary of metrics
@@ -1130,7 +1130,7 @@ Log a dictionary of metrics
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L107-L116)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/base.py#L107-L116)
 
 
 log an artifact from a file
@@ -1138,7 +1138,7 @@ log an artifact from a file
 
 - `url: str | list[str] `
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L118-L122)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/base.py#L118-L122)
 
 
 Get the URL for the current logging run
@@ -1146,7 +1146,7 @@ Get the URL for the current logging run
 
 - `run_path: pathlib.Path | list[pathlib.Path] `
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L124-L128)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/base.py#L124-L128)
 
 
 Get the path to the current logging run
@@ -1158,7 +1158,7 @@ Get the path to the current logging run
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L130-L133)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/base.py#L130-L133)
 
 
 Flush the logger
@@ -1170,7 +1170,7 @@ Flush the logger
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L135-L138)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/base.py#L135-L138)
 
 
 Finish logging
@@ -1182,7 +1182,7 @@ Finish logging
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L140-L165)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/base.py#L140-L165)
 
 
 
@@ -1193,7 +1193,7 @@ Finish logging
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/base.py#L167-L169)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/base.py#L167-L169)
 
 
 Create a spinner task. kwargs are passed to `Spinner`.
@@ -1201,7 +1201,7 @@ Create a spinner task. kwargs are passed to `Spinner`.
 
 
 
-> docs for [`trnbl`](https://github.com/mivanit/trnbl) v0.1.0
+> docs for [`trnbl`](https://github.com/mivanit/trnbl) v0.1.1
 
 
 
@@ -1220,18 +1220,18 @@ Create a spinner task. kwargs are passed to `Spinner`.
 
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/__init__.py)
 
 # `trnbl.loggers.local` { #trnbl.loggers.local }
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L0-L10)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/__init__.py#L0-L10)
 
 
 
 ### `class FilePaths:` { #FilePaths }
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L13-L37)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/__init__.py#L13-L37)
 
 
 
@@ -1298,7 +1298,7 @@ Create a spinner task. kwargs are passed to `Spinner`.
 
 ### `class LocalLogger(trnbl.loggers.base.TrainingLoggerBase):` { #LocalLogger }
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L40-L253)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/__init__.py#L40-L253)
 
 
 Base class for training loggers
@@ -1317,7 +1317,7 @@ Base class for training loggers
 )
 ```
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L41-L140)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/__init__.py#L41-L140)
 
 
 
@@ -1409,7 +1409,7 @@ Base class for training loggers
 
 - `syllabic_id: str `
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L146-L148)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/__init__.py#L146-L148)
 
 
 
@@ -1420,7 +1420,7 @@ Base class for training loggers
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L153-L154)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/__init__.py#L153-L154)
 
 
 
@@ -1431,7 +1431,7 @@ Base class for training loggers
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L170-L172)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/__init__.py#L170-L172)
 
 
 log a debug message
@@ -1443,7 +1443,7 @@ log a debug message
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L174-L178)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/__init__.py#L174-L178)
 
 
 log a progress message
@@ -1455,7 +1455,7 @@ log a progress message
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L180-L186)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/__init__.py#L180-L186)
 
 
 log a warning message
@@ -1467,7 +1467,7 @@ log a warning message
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L188-L200)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/__init__.py#L188-L200)
 
 
 log an error message
@@ -1479,7 +1479,7 @@ log an error message
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L202-L207)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/__init__.py#L202-L207)
 
 
 log a dictionary of metrics
@@ -1497,7 +1497,7 @@ log a dictionary of metrics
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L209-L226)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/__init__.py#L209-L226)
 
 
 log an artifact from a file
@@ -1505,7 +1505,7 @@ log an artifact from a file
 
 - `url: str `
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L228-L231)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/__init__.py#L228-L231)
 
 
 Get the URL for the current logging run
@@ -1513,7 +1513,7 @@ Get the URL for the current logging run
 
 - `run_path: pathlib.Path `
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L233-L236)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/__init__.py#L233-L236)
 
 
 Get the path to the current logging run
@@ -1525,7 +1525,7 @@ Get the path to the current logging run
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L238-L241)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/__init__.py#L238-L241)
 
 
 Flush the logger
@@ -1537,7 +1537,7 @@ Flush the logger
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/__init__.py#L243-L253)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/__init__.py#L243-L253)
 
 
 Finish logging
@@ -1551,7 +1551,7 @@ Finish logging
 
 
 
-> docs for [`trnbl`](https://github.com/mivanit/trnbl) v0.1.0
+> docs for [`trnbl`](https://github.com/mivanit/trnbl) v0.1.1
 
 
 
@@ -1565,12 +1565,12 @@ Finish logging
 
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/build_dist.py)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/build_dist.py)
 
 # `trnbl.loggers.local.build_dist` { #trnbl.loggers.local.build_dist }
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/build_dist.py#L0-L250)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/build_dist.py#L0-L250)
 
 
 
@@ -1585,7 +1585,7 @@ Finish logging
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/build_dist.py#L38-L90)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/build_dist.py#L38-L90)
 
 
 gets a resource from a path or url
@@ -1624,7 +1624,7 @@ gets a resource from a path or url
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/build_dist.py#L93-L178)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/build_dist.py#L93-L178)
 
 
 Build a single file html from a folder
@@ -1638,14 +1638,14 @@ partially from https://stackoverflow.com/questions/44646481/merging-js-css-html-
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/build_dist.py#L181-L247)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/build_dist.py#L181-L247)
 
 
 
 
 
 
-> docs for [`trnbl`](https://github.com/mivanit/trnbl) v0.1.0
+> docs for [`trnbl`](https://github.com/mivanit/trnbl) v0.1.1
 
 
 
@@ -1657,12 +1657,12 @@ partially from https://stackoverflow.com/questions/44646481/merging-js-css-html-
 
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/html_frontend.py)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/html_frontend.py)
 
 # `trnbl.loggers.local.html_frontend` { #trnbl.loggers.local.html_frontend }
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/html_frontend.py#L0-L5)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/html_frontend.py#L0-L5)
 
 
 
@@ -1672,14 +1672,14 @@ partially from https://stackoverflow.com/questions/44646481/merging-js-css-html-
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/html_frontend.py#L1-L2)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/html_frontend.py#L1-L2)
 
 
 
 
 
 
-> docs for [`trnbl`](https://github.com/mivanit/trnbl) v0.1.0
+> docs for [`trnbl`](https://github.com/mivanit/trnbl) v0.1.1
 
 
 
@@ -1692,18 +1692,18 @@ partially from https://stackoverflow.com/questions/44646481/merging-js-css-html-
 
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/locallogger.py)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/locallogger.py)
 
 # `trnbl.loggers.local.locallogger` { #trnbl.loggers.local.locallogger }
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/locallogger.py#L0-L252)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/locallogger.py#L0-L252)
 
 
 
 ### `class FilePaths:` { #FilePaths }
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/locallogger.py#L13-L37)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/locallogger.py#L13-L37)
 
 
 
@@ -1770,7 +1770,7 @@ partially from https://stackoverflow.com/questions/44646481/merging-js-css-html-
 
 ### `class LocalLogger(trnbl.loggers.base.TrainingLoggerBase):` { #LocalLogger }
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/locallogger.py#L40-L253)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/locallogger.py#L40-L253)
 
 
 Base class for training loggers
@@ -1789,7 +1789,7 @@ Base class for training loggers
 )
 ```
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/locallogger.py#L41-L140)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/locallogger.py#L41-L140)
 
 
 
@@ -1881,7 +1881,7 @@ Base class for training loggers
 
 - `syllabic_id: str `
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/locallogger.py#L146-L148)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/locallogger.py#L146-L148)
 
 
 
@@ -1892,7 +1892,7 @@ Base class for training loggers
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/locallogger.py#L153-L154)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/locallogger.py#L153-L154)
 
 
 
@@ -1903,7 +1903,7 @@ Base class for training loggers
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/locallogger.py#L170-L172)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/locallogger.py#L170-L172)
 
 
 log a debug message
@@ -1915,7 +1915,7 @@ log a debug message
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/locallogger.py#L174-L178)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/locallogger.py#L174-L178)
 
 
 log a progress message
@@ -1927,7 +1927,7 @@ log a progress message
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/locallogger.py#L180-L186)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/locallogger.py#L180-L186)
 
 
 log a warning message
@@ -1939,7 +1939,7 @@ log a warning message
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/locallogger.py#L188-L200)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/locallogger.py#L188-L200)
 
 
 log an error message
@@ -1951,7 +1951,7 @@ log an error message
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/locallogger.py#L202-L207)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/locallogger.py#L202-L207)
 
 
 log a dictionary of metrics
@@ -1969,7 +1969,7 @@ log a dictionary of metrics
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/locallogger.py#L209-L226)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/locallogger.py#L209-L226)
 
 
 log an artifact from a file
@@ -1977,7 +1977,7 @@ log an artifact from a file
 
 - `url: str `
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/locallogger.py#L228-L231)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/locallogger.py#L228-L231)
 
 
 Get the URL for the current logging run
@@ -1985,7 +1985,7 @@ Get the URL for the current logging run
 
 - `run_path: pathlib.Path `
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/locallogger.py#L233-L236)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/locallogger.py#L233-L236)
 
 
 Get the path to the current logging run
@@ -1997,7 +1997,7 @@ Get the path to the current logging run
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/locallogger.py#L238-L241)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/locallogger.py#L238-L241)
 
 
 Flush the logger
@@ -2009,7 +2009,7 @@ Flush the logger
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/locallogger.py#L243-L253)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/locallogger.py#L243-L253)
 
 
 Finish logging
@@ -2023,7 +2023,7 @@ Finish logging
 
 
 
-> docs for [`trnbl`](https://github.com/mivanit/trnbl) v0.1.0
+> docs for [`trnbl`](https://github.com/mivanit/trnbl) v0.1.1
 
 
 ## Contents
@@ -2037,13 +2037,13 @@ Usage: python start_server.py path/to/directory [port]
 
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/start_server.py)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/start_server.py)
 
 # `trnbl.loggers.local.start_server` { #trnbl.loggers.local.start_server }
 
 Usage: python start_server.py path/to/directory [port]
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/start_server.py#L0-L28)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/start_server.py#L0-L28)
 
 
 
@@ -2053,7 +2053,7 @@ Usage: python start_server.py path/to/directory [port]
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/local/start_server.py#L8-L15)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/local/start_server.py#L8-L15)
 
 
 Starts a server to serve the files in the given path.
@@ -2061,7 +2061,7 @@ Starts a server to serve the files in the given path.
 
 
 
-> docs for [`trnbl`](https://github.com/mivanit/trnbl) v0.1.0
+> docs for [`trnbl`](https://github.com/mivanit/trnbl) v0.1.1
 
 
 
@@ -2074,12 +2074,12 @@ Starts a server to serve the files in the given path.
 
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/multi.py)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/multi.py)
 
 # `trnbl.loggers.multi` { #trnbl.loggers.multi }
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/multi.py#L0-L70)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/multi.py#L0-L70)
 
 
 
@@ -2089,7 +2089,7 @@ Starts a server to serve the files in the given path.
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/multi.py#L10-L18)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/multi.py#L10-L18)
 
 
 flatten a list if it is nested
@@ -2097,7 +2097,7 @@ flatten a list if it is nested
 
 ### `class MultiLogger(trnbl.loggers.base.TrainingLoggerBase):` { #MultiLogger }
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/multi.py#L21-L71)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/multi.py#L21-L71)
 
 
 use multiple loggers at once
@@ -2108,7 +2108,7 @@ use multiple loggers at once
 (loggers: list[trnbl.loggers.base.TrainingLoggerBase])
 ```
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/multi.py#L24-L25)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/multi.py#L24-L25)
 
 
 
@@ -2124,7 +2124,7 @@ use multiple loggers at once
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/multi.py#L27-L30)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/multi.py#L27-L30)
 
 
 log a debug message which will be saved, but not printed
@@ -2136,7 +2136,7 @@ log a debug message which will be saved, but not printed
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/multi.py#L32-L35)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/multi.py#L32-L35)
 
 
 log a progress message
@@ -2148,7 +2148,7 @@ log a progress message
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/multi.py#L37-L40)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/multi.py#L37-L40)
 
 
 Log a dictionary of metrics
@@ -2166,7 +2166,7 @@ Log a dictionary of metrics
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/multi.py#L42-L51)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/multi.py#L42-L51)
 
 
 log an artifact from a file
@@ -2174,7 +2174,7 @@ log an artifact from a file
 
 - `url: list[str] `
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/multi.py#L53-L56)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/multi.py#L53-L56)
 
 
 Get the URL for the current logging run
@@ -2182,7 +2182,7 @@ Get the URL for the current logging run
 
 - `run_path: list[pathlib.Path] `
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/multi.py#L58-L61)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/multi.py#L58-L61)
 
 
 Get the paths to the current logging run
@@ -2194,7 +2194,7 @@ Get the paths to the current logging run
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/multi.py#L63-L66)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/multi.py#L63-L66)
 
 
 Flush the logger
@@ -2206,7 +2206,7 @@ Flush the logger
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/multi.py#L68-L71)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/multi.py#L68-L71)
 
 
 Finish logging
@@ -2222,7 +2222,7 @@ Finish logging
 
 
 
-> docs for [`trnbl`](https://github.com/mivanit/trnbl) v0.1.0
+> docs for [`trnbl`](https://github.com/mivanit/trnbl) v0.1.1
 
 
 
@@ -2234,18 +2234,18 @@ Finish logging
 
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/tensorboard.py)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/tensorboard.py)
 
 # `trnbl.loggers.tensorboard` { #trnbl.loggers.tensorboard }
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/tensorboard.py#L0-L104)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/tensorboard.py#L0-L104)
 
 
 
 ### `class TensorBoardLogger(trnbl.loggers.base.TrainingLoggerBase):` { #TensorBoardLogger }
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/tensorboard.py#L12-L105)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/tensorboard.py#L12-L105)
 
 
 Base class for training loggers
@@ -2261,7 +2261,7 @@ Base class for training loggers
 )
 ```
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/tensorboard.py#L13-L41)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/tensorboard.py#L13-L41)
 
 
 
@@ -2272,7 +2272,7 @@ Base class for training loggers
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/tensorboard.py#L50-L51)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/tensorboard.py#L50-L51)
 
 
 log a debug message which will be saved, but not printed
@@ -2284,7 +2284,7 @@ log a debug message which will be saved, but not printed
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/tensorboard.py#L53-L57)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/tensorboard.py#L53-L57)
 
 
 log a progress message, which will be printed to stdout
@@ -2296,7 +2296,7 @@ log a progress message, which will be printed to stdout
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/tensorboard.py#L59-L65)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/tensorboard.py#L59-L65)
 
 
 Log a dictionary of metrics
@@ -2314,7 +2314,7 @@ Log a dictionary of metrics
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/tensorboard.py#L67-L87)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/tensorboard.py#L67-L87)
 
 
 log an artifact from a file
@@ -2322,7 +2322,7 @@ log an artifact from a file
 
 - `url: str `
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/tensorboard.py#L89-L92)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/tensorboard.py#L89-L92)
 
 
 Get the URL for the current logging run
@@ -2330,7 +2330,7 @@ Get the URL for the current logging run
 
 - `run_path: pathlib.Path `
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/tensorboard.py#L94-L97)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/tensorboard.py#L94-L97)
 
 
 Get the path to the current logging run
@@ -2342,7 +2342,7 @@ Get the path to the current logging run
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/tensorboard.py#L99-L100)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/tensorboard.py#L99-L100)
 
 
 Flush the logger
@@ -2354,7 +2354,7 @@ Flush the logger
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/tensorboard.py#L102-L105)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/tensorboard.py#L102-L105)
 
 
 Finish logging
@@ -2370,7 +2370,7 @@ Finish logging
 
 
 
-> docs for [`trnbl`](https://github.com/mivanit/trnbl) v0.1.0
+> docs for [`trnbl`](https://github.com/mivanit/trnbl) v0.1.1
 
 
 
@@ -2382,18 +2382,18 @@ Finish logging
 
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/wandb.py)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/wandb.py)
 
 # `trnbl.loggers.wandb` { #trnbl.loggers.wandb }
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/wandb.py#L0-L99)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/wandb.py#L0-L98)
 
 
 
 ### `class WandbLogger(trnbl.loggers.base.TrainingLoggerBase):` { #WandbLogger }
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/wandb.py#L14-L100)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/wandb.py#L14-L99)
 
 
 wrapper around wandb logging for `TrainingLoggerBase`. create using `<a href="#WandbLogger.create">WandbLogger.create</a>(config, project, job_type)`
@@ -2404,7 +2404,7 @@ wrapper around wandb logging for `TrainingLoggerBase`. create using `<a href="#W
 (run: wandb.sdk.wandb_run.Run)
 ```
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/wandb.py#L17-L18)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/wandb.py#L17-L18)
 
 
 
@@ -2423,7 +2423,7 @@ wrapper around wandb logging for `TrainingLoggerBase`. create using `<a href="#W
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/wandb.py#L20-L50)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/wandb.py#L20-L49)
 
 
 
@@ -2434,7 +2434,7 @@ wrapper around wandb logging for `TrainingLoggerBase`. create using `<a href="#W
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/wandb.py#L52-L55)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/wandb.py#L51-L54)
 
 
 log a debug message which will be saved, but not printed
@@ -2446,7 +2446,7 @@ log a debug message which will be saved, but not printed
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/wandb.py#L57-L60)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/wandb.py#L56-L59)
 
 
 log a progress message, which will be printed to stdout
@@ -2458,7 +2458,7 @@ log a progress message, which will be printed to stdout
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/wandb.py#L62-L63)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/wandb.py#L61-L62)
 
 
 Log a dictionary of metrics
@@ -2476,7 +2476,7 @@ Log a dictionary of metrics
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/wandb.py#L65-L84)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/wandb.py#L64-L83)
 
 
 log an artifact from a file
@@ -2484,7 +2484,7 @@ log an artifact from a file
 
 - `url: str `
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/wandb.py#L86-L89)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/wandb.py#L85-L88)
 
 
 Get the URL for the current logging run
@@ -2492,7 +2492,7 @@ Get the URL for the current logging run
 
 - `run_path: pathlib.Path `
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/wandb.py#L91-L93)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/wandb.py#L90-L92)
 
 
 Get the path to the current logging run
@@ -2504,7 +2504,7 @@ Get the path to the current logging run
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/wandb.py#L95-L96)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/wandb.py#L94-L95)
 
 
 Flush the logger
@@ -2516,7 +2516,7 @@ Flush the logger
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/loggers/wandb.py#L98-L100)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/loggers/wandb.py#L97-L99)
 
 
 Finish logging
@@ -2532,7 +2532,7 @@ Finish logging
 
 
 
-> docs for [`trnbl`](https://github.com/mivanit/trnbl) v0.1.0
+> docs for [`trnbl`](https://github.com/mivanit/trnbl) v0.1.1
 
 
 
@@ -2548,12 +2548,12 @@ Finish logging
 
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/training_interval.py)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/training_interval.py)
 
 # `trnbl.training_interval` { #trnbl.training_interval }
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/training_interval.py#L0-L311)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/training_interval.py#L0-L311)
 
 
 
@@ -2569,7 +2569,7 @@ Finish logging
 
 ### `class IntervalValueError(builtins.UserWarning):` { #IntervalValueError }
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/training_interval.py#L40-L43)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/training_interval.py#L40-L43)
 
 
 Error for when the interval is less than 1 batch
@@ -2586,7 +2586,7 @@ Error for when the interval is less than 1 batch
 
 ### `class TrainingInterval:` { #TrainingInterval }
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/training_interval.py#L46-L305)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/training_interval.py#L46-L305)
 
 
 A training interval, which can be specified in a few different units.
@@ -2636,7 +2636,7 @@ Provides methods for reading from a string or tuple, and normalizing to batches.
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/training_interval.py#L125-L181)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/training_interval.py#L125-L181)
 
 
 given the batchsize, number of batches per epoch, and number of epochs, return the interval as a number of batches
@@ -2672,7 +2672,7 @@ given the batchsize, number of batches per epoch, and number of epochs, return t
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/training_interval.py#L183-L196)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/training_interval.py#L183-L196)
 
 
 convert the units of the interval to batches, by calling `as_batch_count` and setting the `unit` to "batches
@@ -2684,7 +2684,7 @@ convert the units of the interval to batches, by calling `as_batch_count` and se
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/training_interval.py#L198-L249)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/training_interval.py#L198-L249)
 
 
 parse a string into a TrainingInterval object
@@ -2707,7 +2707,7 @@ TrainingInterval(0.2, 'runs')
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/training_interval.py#L251-L287)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/training_interval.py#L251-L287)
 
 
 parse a string or tuple into a TrainingInterval object
@@ -2725,7 +2725,7 @@ parse a string or tuple into a TrainingInterval object
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/training_interval.py#L289-L305)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/training_interval.py#L289-L305)
 
 
 directly from any representation to a number of batches
@@ -2738,7 +2738,7 @@ directly from any representation to a number of batches
 
 
 
-> docs for [`trnbl`](https://github.com/mivanit/trnbl) v0.1.0
+> docs for [`trnbl`](https://github.com/mivanit/trnbl) v0.1.1
 
 
 
@@ -2753,12 +2753,12 @@ directly from any representation to a number of batches
 
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/training_manager.py)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/training_manager.py)
 
 # `trnbl.training_manager` { #trnbl.training_manager }
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/training_manager.py#L0-L523)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/training_manager.py#L0-L523)
 
 
 
@@ -2769,7 +2769,7 @@ directly from any representation to a number of batches
 
 ### `class TrainingManagerInitError(builtins.Exception):` { #TrainingManagerInitError }
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/training_manager.py#L23-L24)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/training_manager.py#L23-L24)
 
 
 Common base class for all non-exit exceptions.
@@ -2796,14 +2796,14 @@ Common base class for all non-exit exceptions.
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/training_manager.py#L30-L90)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/training_manager.py#L30-L90)
 
 
 
 
 ### `class TrainingManager(typing.Generic[~TLogger]):` { #TrainingManager }
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/training_manager.py#L96-L524)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/training_manager.py#L96-L524)
 
 
 context manager for training a model, with logging, evals, and checkpoints
@@ -2891,7 +2891,7 @@ with TrainingManager(
 )
 ```
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/training_manager.py#L167-L244)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/training_manager.py#L167-L244)
 
 
 
@@ -3002,7 +3002,7 @@ with TrainingManager(
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/training_manager.py#L246-L330)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/training_manager.py#L246-L330)
 
 
 
@@ -3018,7 +3018,7 @@ with TrainingManager(
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/training_manager.py#L359-L371)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/training_manager.py#L359-L371)
 
 
 
@@ -3034,7 +3034,7 @@ with TrainingManager(
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/training_manager.py#L373-L385)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/training_manager.py#L373-L385)
 
 
 
@@ -3045,7 +3045,7 @@ with TrainingManager(
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/training_manager.py#L387-L395)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/training_manager.py#L387-L395)
 
 
 
@@ -3056,7 +3056,7 @@ with TrainingManager(
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/training_manager.py#L397-L399)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/training_manager.py#L397-L399)
 
 
 return the elapsed time in seconds since the start of training
@@ -3068,7 +3068,7 @@ return the elapsed time in seconds since the start of training
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/training_manager.py#L401-L410)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/training_manager.py#L401-L410)
 
 
 status of elapsed time, samples, batches, epochs, and checkpoints
@@ -3080,7 +3080,7 @@ status of elapsed time, samples, batches, epochs, and checkpoints
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/training_manager.py#L434-L474)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/training_manager.py#L434-L474)
 
 
 call this at the end of every batch. Pass `samples` or it will be inferred from the batch size, and any other metrics as kwargs
@@ -3098,7 +3098,7 @@ This function will:
 ```
 
 
-[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.0/training_manager.py#L476-L479)
+[View Source on GitHub](https://github.com/mivanit/trnbl/blob/0.1.1/training_manager.py#L476-L479)
 
 
 call this at the end of every epoch. This function will log the completion of the epoch and update the epoch counter
